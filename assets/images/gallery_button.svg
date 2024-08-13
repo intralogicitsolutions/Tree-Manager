@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g id="gallery_button" transform="translate(-232 -400)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="60" height="60" rx="30" transform="translate(232 400)" fill="#689d43"/>
+    <g id="round-photo_size_select_actual-24px" transform="translate(246.654 417)">
+      <path id="Path_144" data-name="Path 144" d="M0,0H31.068V31.068H0Z" fill="none"/>
+      <path id="Path_145" data-name="Path 145" d="M26.89,3H3.589A2.784,2.784,0,0,0,1,5.589V23.712A2.6,2.6,0,0,0,3.589,26.3h23.3a2.784,2.784,0,0,0,2.589-2.589V5.589A2.784,2.784,0,0,0,26.89,3ZM6.994,20.074l3.223-4.142a.647.647,0,0,1,1.01-.013l2.718,3.275,4.013-5.165a.65.65,0,0,1,1.036.013L23.537,20.1a.647.647,0,0,1-.518,1.036H7.5A.659.659,0,0,1,6.994,20.074Z" transform="translate(0.294 0.883)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

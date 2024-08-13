@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <g id="yes_button_2x" transform="translate(-47 -449)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="100" height="100" rx="50" transform="translate(47 449)" fill="#689d43"/>
+    <g id="round-done-24px_1_" data-name="round-done-24px (1)" transform="translate(73 475)">
+      <path id="Path_92" data-name="Path 92" d="M0,0H48V48H0Z" fill="none"/>
+      <path id="Path_93" data-name="Path 93" d="M14.193,26.392l-7-7a1.98,1.98,0,0,0-2.8,2.8l8.38,8.38a1.992,1.992,0,0,0,2.82,0l21.2-21.18a1.98,1.98,0,0,0-2.8-2.8Z" transform="translate(3.808 6.007)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24.913" height="24.913" viewBox="0 0 24.913 24.913">
+  <g id="invalid_phone_number" transform="translate(-59.201 -544)">
+    <g id="round-phone-24px" transform="translate(59.201 544)">
+      <path id="Path_17" data-name="Path 17" d="M0,0H24.913V24.913H0Z" fill="none"/>
+      <path id="Path_18" data-name="Path 18" d="M21.731,17.151,18.8,16.816a2.3,2.3,0,0,0-1.893.658L14.782,19.6a17.367,17.367,0,0,1-7.607-7.607L9.31,9.855a2.3,2.3,0,0,0,.658-1.893L9.633,5.053a2.31,2.31,0,0,0-2.3-2.043h-2A2.291,2.291,0,0,0,3.031,5.4,19.614,19.614,0,0,0,21.373,23.742a2.291,2.291,0,0,0,2.389-2.309v-2A2.288,2.288,0,0,0,21.731,17.151Z" transform="translate(-0.932 -0.927)" fill="#689d43"/>
+    </g>
+    <rect id="Rectangle_176" data-name="Rectangle 176" width="10.146" height="10.146" rx="5.073" transform="translate(71.314 545.176)" fill="#689d43"/>
+    <g id="Group_216" data-name="Group 216" transform="translate(75.271 549.133)">
+      <line id="Line_5" data-name="Line 5" x1="2.232" y2="2.232" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="0.5"/>
+      <line id="Line_6" data-name="Line 6" x1="2.232" y2="2.232" transform="translate(2.232) rotate(90)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="0.5"/>
+    </g>
+  </g>
+</svg>

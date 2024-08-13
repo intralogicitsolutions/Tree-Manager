@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <g id="sitehazard_button_2x" transform="translate(-48 -313)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="100" height="100" rx="50" transform="translate(48 313)" fill="#689d43"/>
+    <path id="round-error_outline-24px" d="M21.943,11.971a2,2,0,0,1,1.994,1.994v7.977a1.994,1.994,0,0,1-3.989,0V13.966A2,2,0,0,1,21.943,11.971ZM21.923,2A19.943,19.943,0,1,0,41.886,21.943,19.933,19.933,0,0,0,21.923,2Zm.02,35.9A15.954,15.954,0,1,1,37.9,21.943,15.95,15.95,0,0,1,21.943,37.9Zm1.994-5.983H19.949V27.926h3.989Z" transform="translate(76 341)" fill="#fff"/>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g id="get_direction" transform="translate(-138 -294)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="60" height="60" rx="30" transform="translate(138 294)" fill="#689d43"/>
+    <g id="baseline-directions-24px" transform="translate(153 309)">
+      <path id="Path_55" data-name="Path 55" d="M26.636,13.613,15.386,2.363a1.245,1.245,0,0,0-1.762,0L2.373,13.613a1.245,1.245,0,0,0,0,1.763l11.25,11.25a1.245,1.245,0,0,0,1.762,0l11.25-11.25A1.245,1.245,0,0,0,26.636,13.613ZM17,17.626V14.5H12v3.75H9.5v-5A1.254,1.254,0,0,1,10.748,12H17V8.876l4.375,4.375Z" transform="translate(0.502 0.499)" fill="#fff"/>
+      <path id="Path_56" data-name="Path 56" d="M0,0H30V30H0Z" fill="none"/>
+    </g>
+  </g>
+</svg>

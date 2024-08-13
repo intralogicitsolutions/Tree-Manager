@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g id="view_on_map" transform="translate(-235 -430)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="60" height="60" rx="30" transform="translate(235 430)" fill="#689d43"/>
+    <g id="round-map-24px" transform="translate(250 445)">
+      <path id="Path_125" data-name="Path 125" d="M0,0H30V30H0Z" fill="none"/>
+      <path id="Path_126" data-name="Path 126" d="M14.959,5.009,9.827,3.232a2.071,2.071,0,0,0-1.335-.01L4.4,4.582A2.046,2.046,0,0,0,3,6.511V18.544a2.043,2.043,0,0,0,2.792,1.889L8.8,19.275a1,1,0,0,1,.708-.01l5.133,1.777a2.071,2.071,0,0,0,1.335.01l4.1-1.361a2.037,2.037,0,0,0,1.4-1.929V5.73a2.043,2.043,0,0,0-2.792-1.889L15.668,5a1.059,1.059,0,0,1-.708.01Zm.359,14.124L9.159,16.99V5.141l6.159,2.142Z" transform="translate(2.757 2.863)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

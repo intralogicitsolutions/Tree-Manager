@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+  <g id="reschedule_button" transform="translate(-248 -567)">
+    <g id="Rectangle_176" data-name="Rectangle 176" transform="translate(248 567)" fill="#fff" stroke="#689d43" stroke-width="1">
+      <rect width="70" height="70" rx="35" stroke="none"/>
+      <rect x="0.5" y="0.5" width="69" height="69" rx="34.5" fill="none"/>
+    </g>
+    <g id="round-access_time-24px" transform="translate(271 590)">
+      <path id="Path_108" data-name="Path 108" d="M0,0H23.507V23.507H0Z" fill="none"/>
+      <path id="Path_109" data-name="Path 109" d="M12.856,2A10.866,10.866,0,1,0,23.733,12.866,10.861,10.861,0,0,0,12.856,2Zm.011,19.559a8.693,8.693,0,1,1,8.693-8.693A8.691,8.691,0,0,1,12.866,21.559ZM12.627,7.433h-.065a.779.779,0,0,0-.782.782v5.129a1.076,1.076,0,0,0,.532.935l4.51,2.706a.777.777,0,1,0,.793-1.337l-4.205-2.5V8.216a.779.779,0,0,0-.782-.782Z" transform="translate(-1.113 -1.113)" fill="#689d43"/>
+    </g>
+  </g>
+</svg>

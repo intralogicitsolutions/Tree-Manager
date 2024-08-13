@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <g id="email_button_2x" transform="translate(-229 -320)">
+    <g id="Rectangle_176" data-name="Rectangle 176" transform="translate(229 320)" fill="#fff" stroke="#689d43" stroke-width="1">
+      <rect width="100" height="100" rx="50" stroke="none"/>
+      <rect x="0.5" y="0.5" width="99" height="99" rx="49.5" fill="none"/>
+    </g>
+    <g id="round-mail-24px" transform="translate(255.457 345.457)">
+      <path id="Path_148" data-name="Path 148" d="M0,0H48.51V48.51H0Z" fill="none"/>
+      <path id="Path_149" data-name="Path 149" d="M38.383,4H6.043A4.037,4.037,0,0,0,2.02,8.043L2,32.3A4.054,4.054,0,0,0,6.043,36.34h32.34A4.054,4.054,0,0,0,42.425,32.3V8.043A4.054,4.054,0,0,0,38.383,4Zm-.809,8.59-14.29,8.934a2.044,2.044,0,0,1-2.143,0L6.851,12.59A1.716,1.716,0,1,1,8.67,9.68l13.542,8.469L35.755,9.68a1.716,1.716,0,1,1,1.819,2.911Z" transform="translate(2.043 4.085)" fill="#689d43"/>
+    </g>
+  </g>
+</svg>

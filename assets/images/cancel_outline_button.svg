@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+  <g id="cancel_outline_button" transform="translate(-258 -577)">
+    <g id="Rectangle_176" data-name="Rectangle 176" transform="translate(258 577)" fill="#fff" stroke="#689d43" stroke-width="1">
+      <rect width="70" height="70" rx="35" stroke="none"/>
+      <rect x="0.5" y="0.5" width="69" height="69" rx="34.5" fill="none"/>
+    </g>
+    <g id="Group_216" data-name="Group 216" transform="translate(286 605)">
+      <line id="Line_5" data-name="Line 5" x1="14.964" y2="14.96" transform="translate(0)" fill="none" stroke="#689d43" stroke-linecap="round" stroke-width="2"/>
+      <line id="Line_6" data-name="Line 6" x1="14.96" y2="14.964" transform="translate(14.964) rotate(90)" fill="none" stroke="#689d43" stroke-linecap="round" stroke-width="2"/>
+    </g>
+  </g>
+</svg>

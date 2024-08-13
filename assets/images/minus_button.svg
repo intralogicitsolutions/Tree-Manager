@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+  <g id="minus_button" transform="translate(-50 -430)">
+    <g id="Rectangle_206" data-name="Rectangle 206" transform="translate(50 430)" fill="#fff" stroke="#689d43" stroke-width="1">
+      <rect width="70" height="70" rx="35" stroke="none"/>
+      <rect x="0.5" y="0.5" width="69" height="69" rx="34.5" fill="none"/>
+    </g>
+    <g id="round-remove-24px" transform="translate(70 450)">
+      <path id="Path_150" data-name="Path 150" d="M0,0H30V30H0Z" fill="none"/>
+      <path id="Path_151" data-name="Path 151" d="M23.571,13H6.429C5.643,13,5,12.55,5,12s.643-1,1.429-1H23.571c.786,0,1.429.45,1.429,1S24.357,13,23.571,13Z" transform="translate(0 3)" fill="#689d43"/>
+    </g>
+  </g>
+</svg>

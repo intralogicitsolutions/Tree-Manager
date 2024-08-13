@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g id="set_eta_button" transform="translate(-235 -382)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="60" height="60" rx="30" transform="translate(235 382)" fill="#689d43"/>
+    <g id="round-access_time-24px" transform="translate(250 397)">
+      <path id="Path_108" data-name="Path 108" d="M0,0H30.161V30.161H0Z" fill="none"/>
+      <path id="Path_109" data-name="Path 109" d="M15.928,2A13.942,13.942,0,1,0,29.885,15.942,13.936,13.936,0,0,0,15.928,2Zm.014,25.1A11.154,11.154,0,1,1,27.1,15.942,11.151,11.151,0,0,1,15.942,27.1ZM15.636,8.971h-.084a1,1,0,0,0-1,1v6.581a1.38,1.38,0,0,0,.683,1.2l5.786,3.472a1,1,0,1,0,1.018-1.715L16.64,16.3V9.975a1,1,0,0,0-1-1Z" transform="translate(-0.862 -0.862)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

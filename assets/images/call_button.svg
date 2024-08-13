@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <g id="call_button" transform="translate(-138 -564)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="100" height="100" rx="50" transform="translate(138 564)" fill="#fff"/>
+    <g id="round-phone-24px" transform="translate(166 593)">
+      <path id="Path_17" data-name="Path 17" d="M0,0H35.8V35.8H0Z" fill="none"/>
+      <path id="Path_18" data-name="Path 18" d="M37.73,29.246l-5.44-.621a4.263,4.263,0,0,0-3.512,1.221l-3.941,3.941A32.223,32.223,0,0,1,10.723,19.673l3.962-3.962A4.263,4.263,0,0,0,15.906,12.2l-.621-5.4A4.286,4.286,0,0,0,11.023,3.01H7.318A4.25,4.25,0,0,0,3.034,7.443,36.392,36.392,0,0,0,37.067,41.476,4.25,4.25,0,0,0,41.5,37.192V33.487A4.245,4.245,0,0,0,37.73,29.246Z" transform="translate(0.527 0.524)" fill="#689d43"/>
+    </g>
+  </g>
+</svg>

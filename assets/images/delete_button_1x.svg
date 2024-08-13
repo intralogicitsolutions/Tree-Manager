@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
+  <g id="delete_button_1x" transform="translate(-306 -226)">
+    <rect id="Rectangle_207" data-name="Rectangle 207" width="44" height="44" rx="22" transform="translate(306 226)" fill="#fff"/>
+    <g id="round-delete-24px" transform="translate(318.965 239.729)">
+      <path id="Path_156" data-name="Path 156" d="M0,0H17.715V17.715H0Z" fill="none"/>
+      <path id="Path_157" data-name="Path 157" d="M5.738,14.81a1.481,1.481,0,0,0,1.476,1.476H13.12A1.481,1.481,0,0,0,14.6,14.81V7.429A1.481,1.481,0,0,0,13.12,5.953H7.214A1.481,1.481,0,0,0,5.738,7.429ZM14.6,3.738H12.75l-.524-.524A.745.745,0,0,0,11.71,3H8.624a.745.745,0,0,0-.517.214l-.524.524H5.738a.738.738,0,1,0,0,1.476H14.6a.738.738,0,0,0,0-1.476Z" transform="translate(-1.309 -0.786)" fill="#689d43"/>
+    </g>
+  </g>
+</svg>

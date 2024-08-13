@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+  <g id="send_button" transform="translate(-153 -577)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="70" height="70" rx="35" transform="translate(153 577)" fill="#689d43"/>
+    <g id="round-send-24px" transform="translate(174 594)">
+      <path id="Path_174" data-name="Path 174" d="M0,0H37.531V37.531H0Z" fill="none"/>
+      <path id="Path_175" data-name="Path 175" d="M4.189,29.919l27.288-11.7a1.564,1.564,0,0,0,0-2.877L4.189,3.648A1.552,1.552,0,0,0,2.016,5.071L2,12.28a1.555,1.555,0,0,0,1.36,1.548l22.1,2.956-22.1,2.94A1.582,1.582,0,0,0,2,21.287L2.016,28.5A1.552,1.552,0,0,0,4.189,29.919Z" transform="translate(1.128 1.982)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

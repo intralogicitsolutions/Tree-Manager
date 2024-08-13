@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+  <g id="back_button" transform="translate(-248 -567)">
+    <g id="Rectangle_176" data-name="Rectangle 176" transform="translate(248 567)" fill="#fff" stroke="#689d43" stroke-width="1">
+      <rect width="70" height="70" rx="35" stroke="none"/>
+      <rect x="0.5" y="0.5" width="69" height="69" rx="34.5" fill="none"/>
+    </g>
+    <path id="Path_170" data-name="Path 170" d="M9.568,6.969a1.875,1.875,0,0,0,0,2.654l7.3,7.3-7.3,7.3a1.877,1.877,0,0,0,2.654,2.654l8.64-8.64a1.875,1.875,0,0,0,0-2.654l-8.64-8.64A1.892,1.892,0,0,0,9.568,6.969Z" transform="translate(298.483 618.925) rotate(180)" fill="#689d43"/>
+  </g>
+</svg>

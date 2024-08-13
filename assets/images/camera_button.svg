@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g id="camera_button" transform="translate(-83 -400)">
+    <rect id="Rectangle_175" data-name="Rectangle 175" width="60" height="60" rx="30" transform="translate(83 400)" fill="#689d43"/>
+    <g id="camera" transform="translate(99 391.5)">
+      <g id="camera-alt" transform="translate(0 25.5)">
+        <circle id="Ellipse_6" data-name="Ellipse 6" cx="4.622" cy="4.622" r="4.622" transform="translate(9.822 9.822)" fill="#fff"/>
+        <path id="Path_153" data-name="Path 153" d="M10.111,25.5l-2.6,2.889H2.889A2.9,2.9,0,0,0,0,31.278V48.611A2.9,2.9,0,0,0,2.889,51.5H26a2.9,2.9,0,0,0,2.889-2.889V31.278A2.9,2.9,0,0,0,26,28.389H21.378l-2.6-2.889Zm4.333,21.667a7.222,7.222,0,1,1,7.222-7.222A7.152,7.152,0,0,1,14.445,47.167Z" transform="translate(0 -25.5)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>
