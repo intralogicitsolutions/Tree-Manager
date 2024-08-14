@@ -329,7 +329,7 @@ class AssetThumb2 extends StatefulWidget {
     this.url,
     this.quality = 100,
     this.spinner = const Center(
-      child: SizedBox(height: 50,width: 50,
+      child: Center(
         child: CircularProgressIndicator(),
       ),
     ),
@@ -396,7 +396,7 @@ class _AssetThumb2State extends State<AssetThumb2> {
         fit: BoxFit.contain,
         filterQuality: FilterQuality.low,
         progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
+            CircularProgressIndicator(),
         errorWidget: (context, url, error) => Icon(Icons.error),
       );
     } else if (_thumbData != null) {

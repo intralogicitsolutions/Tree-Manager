@@ -567,6 +567,8 @@ class InvoiceState extends State<Invoice> {
                   .toList()[index];
               return GestureDetector(
                 onTap: () async {
+                  await Helper.openDialer(
+                      contact.mobile ?? '');
                   // if (contact.mobile != null) {
                   //   // call = FlutterPhoneState.startPhoneCall(contact.mobile);
                   //   // await call!.done;

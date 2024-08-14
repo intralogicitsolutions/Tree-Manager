@@ -37,23 +37,23 @@ class TreeInfo {
       this.age});
 
   TreeInfo.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    jobId = json['job_id'];
-    jobNo = json['job_no'];
-    jobAllocId = json['job_alloc_id'];
-    height = json['height'];
-    trunk = json['trunk'];
-    treeLocation = json['tree_location'];
-    distance = json['distance'];
-    health = json['health'];
-    access = json['access'];
-    workCategory = json['work_category'];
-    waste = json['waste'];
-    fence = json['fence'];
-    roof = json['roof'];
-    other = json['other'];
-    noTree = json['no_tree'];
-    age = json['age'];
+    id = json['id'] as String? ?? '';
+    jobId = json['job_id'] as String? ?? '';
+    jobNo = json['job_no'] as String? ?? '';
+    jobAllocId = json['job_alloc_id'] as String? ?? '';
+    height = json['height'] as String? ?? '';
+    trunk = json['trunk'] as String? ?? '';
+    treeLocation = json['tree_location'] as String? ?? '';
+    distance = json['distance'] as String? ?? '';
+    health = json['health'] as String? ?? '';
+    access = json['access'] as String? ?? '';
+    workCategory = json['work_category'] as String? ?? '';
+    waste = json['waste'] as String? ?? '';
+    fence = json['fence'] as String? ?? '';
+    roof = json['roof'] as String? ?? '';
+    other = json['other'] as String? ?? '';
+    noTree = json['no_tree'] as String? ?? '';
+    age = json['age'] as String? ?? '';
   }
 
   Map<String, dynamic> toJson() {

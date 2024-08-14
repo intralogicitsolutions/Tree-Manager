@@ -249,7 +249,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                    heroTag: 'call_${widget.quote.jobId}',
+                                    heroTag: 'call_${widget.quote.jobId}_${UniqueKey().toString()}',
                                     child: SvgPicture.asset(
                                         'assets/images/call_button_2x.svg'),
                                     onPressed: () {
@@ -270,7 +270,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                    heroTag: 'set_eta_${widget.quote.jobId}',
+                                    heroTag: 'set_eta_${widget.quote.jobId}_${UniqueKey().toString()}',
                                     child: SvgPicture.asset(
                                         'assets/images/set_eta_2x.svg'),
                                     onPressed: () async {
@@ -317,10 +317,10 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
         if (t.homeNumber != null) {
           contacts.add(Contact(mobile: t.homeNumber));
         }
-        if (t.workNumber != null) {
+        else if (t.workNumber != null) {
           contacts.add(Contact(mobile: t.workNumber));
         }
-        if (t.mobile != null) {
+        else if (t.mobile != null) {
           contacts.add(Contact(mobile: t.mobile));
         }
       });
@@ -359,6 +359,8 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
                   .toList()[index];
               return GestureDetector(
                 onTap: () async {
+                  await Helper.openDialer(
+                      contact.mobile ?? '');
                   // //if (contact.mobile != null) {
                   //   // call = FlutterPhoneState.startPhoneCall(contact.mobile);
                   //   // await call!.done;

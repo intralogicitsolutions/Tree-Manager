@@ -37,7 +37,7 @@ class DamageRoofBState extends State<DamageRoofB> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Damage(Roof)", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Damage(Roof)", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
               child: Container(

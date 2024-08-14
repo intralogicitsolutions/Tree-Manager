@@ -42,7 +42,7 @@ class TreeLocationState extends State<TreeLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Tree Location", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Tree Location", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
         child: Container(

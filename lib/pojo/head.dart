@@ -4,10 +4,10 @@ class Head {
   String? jobId;
   String? jobAllocId;
   String? costRefno;
-  int? subTotal;
+  double? subTotal;
   int? taxRate;
-  int? tpTaxTotal;
-  int? tpGrandTotal;
+  double? tpTaxTotal;
+  double? tpGrandTotal;
   String? processId;
   String? jobManager;
   String? jobContact;
@@ -90,10 +90,10 @@ class Head {
     // tpTaxTotal = double.parse(json['tp_tax_total'].toString());
     // tpGrandTotal = double.parse(json['tp_grand_total'].toString());
 
-    subTotal = json['sub_total'] as int? ?? 0;
+    subTotal = json['sub_total'] as double? ?? 0.0;
     taxRate = json['tax_rate'] as int? ?? 0;
-    tpTaxTotal = json['tp_tax_total'] as int? ?? 0;
-    tpGrandTotal = json['tp_grand_total'] as int? ?? 0;
+    tpTaxTotal = json['tp_tax_total'] as double? ?? 0.0;
+    tpGrandTotal = json['tp_grand_total'] as double? ?? 0.0;
 
     // subTotal = (json['sub_total'] as num?)?.toDouble();
     // taxRate = (json['tax_rate'] as num?)?.toDouble();

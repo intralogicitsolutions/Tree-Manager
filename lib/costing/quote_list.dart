@@ -283,7 +283,8 @@ class _QuoteListItemState extends State<QuoteListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                  heroTag: widget.quote.jobId != null ? 'photo_${widget.quote.jobId}' : 'photo_default',
+                                    heroTag: 'photo_${widget.quote.jobId}_${UniqueKey()}',
+                                 // heroTag: widget.quote.jobId != null ? 'photo_${widget.quote.jobId}' : 'photo_default',
                                     //heroTag: '${widget.quote.jobId}',
                                     child:
                                         SvgPicture.asset('assets/images/${(() {
@@ -359,9 +360,10 @@ class _QuoteListItemState extends State<QuoteListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                  heroTag:  widget.quote.jobId != null
-                                      ? 'location_${widget.quote.jobId}'
-                                      : 'location_default',
+                                    heroTag: 'location_${widget.quote.jobId}_${UniqueKey()}',
+                                  // heroTag:  widget.quote.jobId != null
+                                  //     ? 'location_${widget.quote.jobId}'
+                                  //     : 'location_default',
                                   //  heroTag: '${widget.quote.jobId}_2',
                                     child: SvgPicture.asset(
                                         'assets/images/location_button_2x.svg'),

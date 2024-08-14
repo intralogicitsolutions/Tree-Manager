@@ -29,7 +29,7 @@ class DamageFenceAState extends State<DamageFenceA> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: Helper.getAppBar(context,
-            title: "Damage", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+            title: "Damage", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         body: Container(
           color: Colors.white,
@@ -126,7 +126,7 @@ class DamageFenceAState extends State<DamageFenceA> {
           .map((f) => Option.fromJson(f))
           .toList();
     });
-    if (Global.job!.fenceRequired == 'true') {
+    if (Global.job != null && Global.job?.fenceRequired == 'true') {
       await Helper.get(
           "nativeappservice/loadOptionDetails?workflow_step=Fence%20Level%201",
           {}).then((data) {

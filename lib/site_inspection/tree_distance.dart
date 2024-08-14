@@ -39,7 +39,7 @@ class TreeDistanceState extends State<TreeDistance> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Tree Distance", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Tree Distance", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
               child: Container(

@@ -46,7 +46,7 @@ class TreeDetailState extends State<TreeDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Tree Detail", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Tree Detail", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
         child: Container(
@@ -126,7 +126,7 @@ class TreeDetailState extends State<TreeDetail> {
                         crossAxisCount: 2,
                         children: List.generate(grids.length, (index) {
                           var item = grids[index];
-                          var value = item['value'];
+                          var value = item['value'] ?? '';
                           return GestureDetector(
                             child: Container(
                               margin: EdgeInsets.all(0.5),
@@ -154,10 +154,12 @@ class TreeDetailState extends State<TreeDetail> {
                             ),
                             onTap: () {
                               setState(() {
-                                if (selected.contains(value))
-                                  selected.remove(value);
-                                else
-                                  selected.add(value!);
+                                if (value.isNotEmpty) {
+                                  if (selected.contains(value))
+                                    selected.remove(value);
+                                  else
+                                    selected.add(value);
+                                }
                               });
                             },
                           );
@@ -177,10 +179,9 @@ class TreeDetailState extends State<TreeDetail> {
                             'assets/images/continue_button.svg'),
                         onPressed: () {
                           ToastContext().init(context);
-                          if (selected.length != 0 &&
-                              selected_list.length != 0) {
-                            Global.info!.trunk = selected_list.join(',');
-                            Global.info!.health = selected.join(',');
+                          if (Global.info != null && selected_list.isNotEmpty && selected.isNotEmpty) {
+                            Global.info?.trunk = selected_list.join(',');
+                            Global.info?.health = selected.join(',');
                             Navigator.pushNamed(context, 'tree_location');
                           } else
                             Toast.show('please select any item',

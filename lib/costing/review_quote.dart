@@ -136,7 +136,8 @@ class ReviewQuoteState extends State<ReviewQuote> {
                 rePopulateCrewDetails(editedItem);
                 print('tot calc');
                 calcTotal();
-                setState(() {});
+                if (mounted) {
+                setState(() {});}
               }
             },
           );
@@ -166,13 +167,23 @@ class ReviewQuoteState extends State<ReviewQuote> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      setState(() {
-        args =
-            ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      });
+      if (mounted) {
+        setState(() {
+          args =
+          ModalRoute
+              .of(context)
+              ?.settings
+              .arguments as Map<String, dynamic>?;
+        });
+      }
     });
     // super.initState();
     // setState(() {});
+  }
+  @override
+  void dispose() {
+   // _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -246,7 +257,9 @@ class ReviewQuoteState extends State<ReviewQuote> {
                               staffs.forEach((f) {
                                 print('${f.itemName}--${f.hour}');
                               });
-                              setState(() {});
+                             if (mounted) {
+                               setState(() {});
+                             }
                             },
                             child: Text('Edit all')),
                         TextButton(
@@ -389,10 +402,11 @@ class ReviewQuoteState extends State<ReviewQuote> {
                   tmp.desc = f.subStan ?? '';
                   staffs.add(tmp);
                 });
-
-                setState(() {
-                  calcTotal();
-                });
+                if (mounted) {
+                  setState(() {
+                    calcTotal();
+                  });
+                }
               } else {
                 print('No items were selected or the result is not a List<OtherItem>');
               }
@@ -443,10 +457,11 @@ class ReviewQuoteState extends State<ReviewQuote> {
                   tmp.itemCategory = 'Equipment';
                   equips.add(tmp);
                 });
-
-                setState(() {
-                  calcTotal();
-                });
+            if (mounted) {
+              setState(() {
+                calcTotal();
+              });
+            }
               } else {
                 print('No items were selected or the result is not a List<OtherItem>');
               }
@@ -497,10 +512,11 @@ class ReviewQuoteState extends State<ReviewQuote> {
                   tmp.itemCategory = 'Others';
                   others.add(tmp);
                 });
-
+              if (mounted) {
                 setState(() {
                   calcTotal();
                 });
+              }
               } else {
                 print('No items were selected or the result is not a List<OtherItem>');
               }

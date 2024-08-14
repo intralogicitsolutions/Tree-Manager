@@ -121,7 +121,7 @@ class DamageOtherBState extends State<DamageOtherB> {
                         ToastContext().init(context);
                         print('Selected items: ${selected.length}');
                         //change code this selected.length by default 1
-                        if (selected.length != 0 && selected.length != 1) {
+                        if (selected.length != 0 && selected.length != 0) {
                           Global.info!.other = selected.join(',');
                           var updated = Global.site_info_update == true
                               ? await Helper.updateTreeInfo(context)

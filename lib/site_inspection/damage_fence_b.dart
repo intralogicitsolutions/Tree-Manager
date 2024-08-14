@@ -115,7 +115,7 @@ class DamageFenceBState extends State<DamageFenceB> {
                           ToastContext().init(context);
                           print('Selected items: ${selected.length}');
                           //change code this selected.length by default 1
-                          if (selected.length != 0 && selected.length != 1) {
+                          if (selected.length != 1) {
                             Global.info?.fence = selected.join(',');
                             Global.fence?.value4 = selected.join(',');
                             saveFenceData();

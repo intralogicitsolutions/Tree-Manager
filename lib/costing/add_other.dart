@@ -75,6 +75,7 @@ class AddOtherState extends State<AddOther> {
                         children: <Widget>[
                           _buildFloatingActionButton(
                             icon: 'assets/images/minus_button_50px.svg',
+                            heroTag: 'unique_minus_tag',
                             onPressed: () {
                               if (hours > 1) {
                                 setState(() {
@@ -94,6 +95,7 @@ class AddOtherState extends State<AddOther> {
                           SizedBox(width: 20),
                           _buildFloatingActionButton(
                             icon: 'assets/images/plus_button_50px.svg',
+                            heroTag: 'unique_plus_tag',
                             onPressed: () {
                               setState(() {
                                 hours++;
@@ -148,6 +150,7 @@ class AddOtherState extends State<AddOther> {
                     children: <Widget>[
                       _buildActionButton(
                         icon: 'assets/images/save_button.svg',
+                        heroTag: 'unique_save_tag',
                         label: "SAVE",
                         onPressed: () {
                           miscItem.subStan = messageController.text;
@@ -159,6 +162,7 @@ class AddOtherState extends State<AddOther> {
                       ),
                       _buildActionButton(
                         icon: 'assets/images/back_button.svg',
+                        heroTag: 'unique_back_tag',
                         label: "BACK",
                         onPressed: () {
                           Navigator.pop(context);
@@ -176,20 +180,20 @@ class AddOtherState extends State<AddOther> {
     );
   }
 
-  Widget _buildFloatingActionButton({required String icon, required VoidCallback onPressed,}) {
+  Widget _buildFloatingActionButton({required String icon, required VoidCallback onPressed,required String heroTag, }) {
     return Container(
       height: 50,
       width: 50,
       child: FloatingActionButton(
         child: SvgPicture.asset(icon),
-        heroTag: 'plus',
+        heroTag: heroTag,
         elevation: 10,
         onPressed: onPressed,
       ),
     );
   }
 
-  Widget _buildActionButton({required String icon, required String label, required VoidCallback onPressed}) {
+  Widget _buildActionButton({required String icon, required String label, required VoidCallback onPressed,required String heroTag,}) {
     return Column(
       children: <Widget>[
         Container(
@@ -197,7 +201,7 @@ class AddOtherState extends State<AddOther> {
           height: 60,
           width: 60,
           child: FloatingActionButton(
-            heroTag: 'back',
+            heroTag: heroTag,
             child: SvgPicture.asset(icon),
             onPressed: onPressed,
           ),

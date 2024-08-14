@@ -242,7 +242,8 @@ class _JobListItemState extends State<JobListItem> {
                                   margin: EdgeInsets.only(bottom: 10.0),
                                   child: FittedBox(
                                     child: FloatingActionButton(
-                                        heroTag: 'accept_${widget.quote.jobId}',
+                                        heroTag: 'accept_${widget.quote.jobId}_${UniqueKey()}',
+                                       // heroTag: 'accept_${widget.quote.jobId}',
                                         child: SvgPicture.asset(
                                             'assets/images/accept.svg'),
                                         onPressed: () {
@@ -276,7 +277,8 @@ class _JobListItemState extends State<JobListItem> {
                                   margin: EdgeInsets.only(bottom: 10.0),
                                   child: FittedBox(
                                     child: FloatingActionButton(
-                                        heroTag: 'reject_${widget.quote.jobId}',
+                                        heroTag: 'reject_${widget.quote.jobId}_${UniqueKey()}',
+                                        //heroTag: 'reject_${widget.quote.jobId}',
                                         child: SvgPicture.asset(
                                             'assets/images/reject.svg'),
                                         onPressed: () async {
@@ -330,7 +332,8 @@ class _JobListItemState extends State<JobListItem> {
                                   margin: EdgeInsets.only(bottom: 10.0),
                                   child: FittedBox(
                                     child: FloatingActionButton(
-                                        heroTag: 'view_job_${widget.quote.jobId}',
+                                        heroTag: 'View_job_${widget.quote.jobId}_${UniqueKey()}',
+                                       // heroTag: 'view_job_${widget.quote.jobId}',
                                         child: SvgPicture.asset(
                                             'assets/images/view_job.svg'),
                                         onPressed: () async{

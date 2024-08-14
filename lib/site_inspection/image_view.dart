@@ -13,6 +13,7 @@ import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/pojo/network_image.dart';
 
+
 class ImageViewer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +25,7 @@ class ImageViewerState extends State<ImageViewer> {
   var args;
   NetworkPhoto? item;
   var imageBytes;
-  var bytes;
+  Uint8List? bytes;
   File? file;
   String text = '';
 
@@ -86,7 +87,12 @@ class ImageViewerState extends State<ImageViewer> {
                     size: 25,
                   ),
                   onPressed: () {
-                    saveImage(bytes, item!.imgName!);
+                    if (bytes != null) {
+                      saveImage(bytes!, item?.imgName??'');
+                    }else {
+                      // Handle the null case, perhaps show a message to the user
+                      print("Bytes is null, cannot save the image.");
+                    }
                   }),
               IconButton(
                   icon: Icon(
@@ -95,13 +101,24 @@ class ImageViewerState extends State<ImageViewer> {
                     size: 25,
                   ),
                   onPressed: () async {
-                    final tempDir = await getTemporaryDirectory();
-                    final tempFile = File('${tempDir.path}/temp_image.png');
-                    await tempFile.writeAsBytes(bytes);
-                    await Share.shareFiles(
-                      [tempFile.path],
-                      text: 'My optional text.',
-                    );
+                    if (bytes != null) {
+                      try{
+                        final tempDir = await getTemporaryDirectory();
+                        final tempFile = File('${tempDir.path}/temp_image.png');
+                        await tempFile.writeAsBytes(bytes!);
+                        await Share.shareFiles(
+                          [tempFile.path],
+                          text: 'My optional text.',
+                        );
+                      }catch (e) {
+                        print("Error sharing file: $e");
+                        // Optionally, show an error message to the user
+                      }
+                    }else {
+                      print("Bytes is null, cannot share the image.");
+                      // Optionally, show a message to the user
+                    }
+
                     // await Share.file(
                     //     'esys image', 'test0.png', bytes, 'image/png',
                     //     text: 'My optional text.');
@@ -193,12 +210,14 @@ class ImageViewerState extends State<ImageViewer> {
 
     final image = img.decodeImage(bytes);
     if (image != null) {
+      ToastContext().init(context);
       final pngBytes = img.encodePng(image);
       await imageFile.writeAsBytes(pngBytes);
       Toast.show('Image has been saved.',
          // textStyle: context,
           gravity: Toast.center);
     } else {
+      ToastContext().init(context);
       Toast.show('Error decoding image.',
           //textStyle: context,
           gravity: Toast.center);
@@ -231,3 +250,188 @@ class ImageViewerState extends State<ImageViewer> {
     // }
   }
 }
+
+
+// class ImageViewerState extends State<ImageViewer> {
+//   var args;
+//   NetworkPhoto? item;
+//   Uint8List? bytes;
+//   File? file;
+//   String text = '';
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     Future.delayed(Duration.zero, () {
+//       if (!mounted) return; // Check if the widget is still mounted
+//       args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+//       item = args['image'] as NetworkPhoto;
+//       text = args['text'];
+//
+//       // Assign bytes based on the source of the image
+//       if (item != null) {
+//         if (item!.imgPath != null) {
+//           // Fetch image from network
+//           Helper.get(item!.imgPath!, {}).then((value) {
+//
+//               setState(() {
+//                 bytes = value.bodyBytes;
+//               });
+//
+//           }).catchError((onError) {
+//             if (!mounted) return;
+//             print("Error fetching image from network: $onError");
+//
+//               setState(() {
+//                 bytes = null; // Clear bytes if there's an error
+//               });
+//
+//           });
+//         } else if (item!.fromFile != null) {
+//           // Load image from local file
+//           if (mounted) {
+//             setState(() {
+//               file = item!.fromFile;
+//               bytes = file?.readAsBytesSync();
+//             });
+//           }
+//         }
+//       }
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     Size size = MediaQuery.of(context).size;
+//
+//     return Scaffold(
+//       appBar: Helper.getAppBar(context,
+//           title: "",
+//           showNotification: false,
+//           actions: Row(
+//             children: <Widget>[
+//               IconButton(
+//                 icon: Icon(
+//                   Icons.save,
+//                   color: Colors.black,
+//                   size: 25,
+//                 ),
+//                 onPressed: () {
+//                   if (bytes != null) {
+//                     saveImage(bytes!, item?.imgName ?? '');
+//                   } else {
+//                     ToastContext().init(context);
+//                     Toast.show('Image data is not available.', gravity: Toast.center);
+//                   }
+//                 },
+//               ),
+//               IconButton(
+//                 icon: Icon(
+//                   Icons.share,
+//                   color: Colors.black,
+//                   size: 25,
+//                 ),
+//                 onPressed: () async {
+//                   if (bytes != null) {
+//                     final tempDir = await getTemporaryDirectory();
+//                     final tempFile = File('${tempDir.path}/temp_image.png');
+//                     await tempFile.writeAsBytes(bytes!);
+//                     await Share.shareFiles(
+//                       [tempFile.path],
+//                       text: 'My optional text.',
+//                     );
+//                   } else {
+//                     ToastContext().init(context);
+//                     Toast.show('Cannot share, image data is not available.', gravity: Toast.center);
+//                   }
+//                 },
+//               ),
+//             ],
+//             mainAxisSize: MainAxisSize.min,
+//           )),
+//       body: Stack(
+//         children: <Widget>[
+//           Center(
+//             child: Visibility(
+//               child: Image.asset(
+//                 'assets/images/background_image.png',
+//                 width: size.width,
+//                 height: size.height,
+//                 fit: BoxFit.cover,
+//               ),
+//               visible: false,
+//             ),
+//           ),
+//           Container(
+//             decoration: BoxDecoration(color: Colors.white),
+//             width: size.width,
+//             height: size.height,
+//             child: Column(
+//               mainAxisSize: MainAxisSize.max,
+//               children: <Widget>[
+//                 (() {
+//                   if (bytes != null)
+//                     return Image.memory(
+//                       bytes!,
+//                       height: size.height * .80,
+//                     );
+//                   else if (item?.imgPath != null)
+//                     return CachedNetworkImage(
+//                       imageUrl: Helper.BASE_URL + item!.imgPath!,
+//                       height: size.height * .80,
+//                       placeholder: (context, url) {
+//                         return CircularProgressIndicator();
+//                       },
+//                     );
+//                   else if (file != null) {
+//                     return Image.file(
+//                       file!,
+//                       fit: BoxFit.contain,
+//                     );
+//                   } else {
+//                     return Center(child: Text('No image available'));
+//                   }
+//                 }()),
+//                 Spacer(),
+//                 SingleChildScrollView(
+//                   child: Container(
+//                     color: Colors.black.withOpacity(0.8),
+//                     padding: EdgeInsets.only(bottom: 10, top: 10),
+//                     child: Row(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: <Widget>[
+//                         Flexible(
+//                           child: Text(
+//                             text,
+//                             style: TextStyle(color: Colors.white, fontSize: 16),
+//                           ),
+//                         )
+//                       ],
+//                     ),
+//                   ),
+//                 )
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Future<void> saveImage(Uint8List bytes, String name) async {
+//     final directory = await getApplicationDocumentsDirectory();
+//     final imageFile = File('${directory.path}/$name');
+//
+//     final image = img.decodeImage(bytes);
+//     if (image != null) {
+//       ToastContext().init(context);
+//       final pngBytes = img.encodePng(image);
+//       await imageFile.writeAsBytes(pngBytes);
+//       Toast.show('Image has been saved.', gravity: Toast.center);
+//     } else {
+//       ToastContext().init(context);
+//       Toast.show('Error decoding image.', gravity: Toast.center);
+//     }
+//   }
+// }

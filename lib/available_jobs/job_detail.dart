@@ -23,8 +23,9 @@ class JobDetail extends StatefulWidget {
 
 class JobDetailState extends State<JobDetail> {
   Job? job = Global.job;
+  var contacts = <Contact>[];
   //var contacts = List<Contact>();
-  List<Contact> contacts = [];
+  //List<Contact> contacts = [];
   //PhoneCall? call;
   @override
   void initState() {
@@ -50,17 +51,18 @@ class JobDetailState extends State<JobDetail> {
       var tmp = (jsonDecode(response.body) as List)
           .map((f) => Contact.fromJson(f))
           .toList();
-           final contacts = <Contact>[];
+          // final contacts = <Contact>[];
      // contacts = List();
+      contacts = [];
       tmp.forEach((t) {
         contacts.add(new Contact(contactName: t.contactName));
         if (t.homeNumber != null) {
           contacts.add(Contact(mobile: t.homeNumber));
         }
-        if (t.workNumber != null) {
+        else if (t.workNumber != null) {
           contacts.add(Contact(mobile: t.workNumber));
         }
-        if (t.mobile != null) {
+        else if (t.mobile != null) {
           contacts.add(Contact(mobile: t.mobile));
         }
       });
@@ -299,6 +301,7 @@ class JobDetailState extends State<JobDetail> {
               var contact = contacts
                   .where((element) => element.mobile != null)
                   .toList()[index];
+
               if (contact.contactName == null) {
                 return Divider(
                   color: Colors.grey,
@@ -321,6 +324,8 @@ class JobDetailState extends State<JobDetail> {
               return GestureDetector(
                 onTap: () async {
                   print('jjjjccccccxxxxssss');
+                  await Helper.openDialer(
+                      contact.mobile ?? '');
                   // if (contact.mobile != null) {
                   //   // call = FlutterPhoneState.startPhoneCall(contact.mobile);
                   //   // await call!.done;

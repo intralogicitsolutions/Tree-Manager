@@ -568,7 +568,8 @@ class DashboardState extends State<Dashboard>
                                                 EdgeInsets.only(bottom: 10.0),
                                             child: FittedBox(
                                               child: FloatingActionButton(
-                                                  heroTag: '${quote.jobId}',
+                                                  heroTag: '${quote.jobId}_${UniqueKey()}',
+                                                 // heroTag: '${quote.jobId}',
                                                   child: SvgPicture.asset(
                                                       'assets/images/view_job.svg'),
                                                   onPressed: () {

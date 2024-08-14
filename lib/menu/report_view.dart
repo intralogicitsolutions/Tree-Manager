@@ -487,6 +487,8 @@ class ReportViewState extends State<ReportView> {
                                       height: 50,
                                       child: FloatingActionButton(
                                         onPressed: () async {
+                                          await Helper.openDialer(
+                                              contact.mobile ?? '');
                   //                         if (contact.mobile != null) {
                   //                           // call = FlutterPhoneState
                   //                           //     .startPhoneCall(contact.mobile);

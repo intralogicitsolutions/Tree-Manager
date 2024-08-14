@@ -13,11 +13,11 @@ class Contact {
       this.mobile});
 
   Contact.fromJson(Map<String, dynamic> json) {
-    jobId = json['job_id'];
-    contactName = json['ContactName'];
-    homeNumber = json['HomeNumber'];
-    workNumber = json['WorkNumber'];
-    mobile = json['Mobile'];
+    jobId = json['job_id'] as String? ?? '';
+    contactName = json['ContactName'] as String? ?? '';
+    homeNumber = json['HomeNumber'] as String? ?? '';
+    workNumber = json['WorkNumber'] as String? ?? '';
+    mobile = json['Mobile'] as String? ?? '';
   }
 
   Map<String, dynamic> toJson() {

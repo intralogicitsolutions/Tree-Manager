@@ -37,13 +37,15 @@ class TreeAccessState extends State<TreeAccess> {
       }
     } catch (e) {}
     super.initState();
+    print('selected_list length---->${selected_list.length}');
+    print('selected length---->${selected.length}');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Tree Information", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Tree Information", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: Container(
           color: Colors.white,
@@ -127,7 +129,7 @@ class TreeAccessState extends State<TreeAccess> {
                     itemCount: 3,
                     itemBuilder: (context, index) {
                       var item = lists[index];
-                      var value = item['value'];
+                      var value = item['value']??'';
                       return GestureDetector(
                         child: Container(
                           height: 80,
@@ -157,10 +159,12 @@ class TreeAccessState extends State<TreeAccess> {
                         ),
                         onTap: () {
                           setState(() {
-                            if (selected_list.contains(value))
-                              selected_list.remove(value);
-                            else
-                              selected_list.add(value!);
+                         if (value.isNotEmpty) {
+                           if (selected_list.contains(value))
+                             selected_list.remove(value);
+                           else
+                             selected_list.add(value);
+                         }
                           });
                         },
                       );
@@ -179,10 +183,11 @@ class TreeAccessState extends State<TreeAccess> {
                           SvgPicture.asset('assets/images/continue_button.svg'),
                       onPressed: () {
                         ToastContext().init(context);
-
-                        if (selected.length != 0 && selected_list.length != 0) {
-                          Global.info!.access = selected_list.join(',');
-                          Global.info!.age = selected.join(',');
+                        if (Global.info != null && selected_list.isNotEmpty && selected.isNotEmpty) {
+                          // Global.info!.access = selected_list.join(',');
+                          // Global.info!.age = selected.join(',');
+                          Global.info?.age = selected_list.join(',');
+                          Global.info?.access = selected.join(',');
                           Navigator.pushNamed(context, 'work_required');
                         }
                         else

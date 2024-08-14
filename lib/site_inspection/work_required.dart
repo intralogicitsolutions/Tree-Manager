@@ -39,7 +39,7 @@ class WorkRequiredState extends State<WorkRequired> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Work Required", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Work Required", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
               child: Container(

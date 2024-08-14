@@ -22,7 +22,7 @@ class DamageOtherAState extends State<DamageOtherA> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: Helper.getAppBar(context,
-            title: "Damage", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+            title: "Damage", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         body: Container(
           color: Colors.white,

@@ -265,6 +265,7 @@ class Helper {
       bool backArrow = true,
       Widget? actions = null,
       bool showNotification = true,
+        bool visible = true,
       int counter = 0}) {
     return AppBar(
       leading: Visibility(
@@ -276,7 +277,14 @@ class Helper {
             ),
             onPressed: () {
               try {
-                if (Navigator.canPop(context))
+                if(!visible){
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    'quote_list', // Replace with your target route
+                        (route) => false, // Clear the entire navigation stack
+                  );
+                }
+               else if (Navigator.canPop(context))
                   Navigator.of(context).pop();
                 else
                   print('cant pop back');

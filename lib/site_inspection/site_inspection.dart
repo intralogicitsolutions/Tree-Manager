@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 // import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image/image.dart';
+import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -33,120 +34,176 @@ class SiteInspectionState extends State<SiteInspection> {
   static Job job = Global.job ?? Job();
   var contacts = <Contact>[];
   var date_string = '';
+  bool isLoading = false;
 
   @override
+  // void initState() {
+  //   getAllData('init');
+  //   super.initState();
+  //   setState(() {});
+  // }
   void initState() {
-    getAllData('init');
     super.initState();
-    setState(() {});
+    // setState(() {
+    //   isLoading = true;
+    // });
+   getAllData('init');
   }
 
-  void getAllData(String caller) {
-    print('called==>$caller');
-    Global.crewDetails = null;
-    Global.info = null;
-    Global.info = TreeInfo();
-    Global.fence = FenceInfo();
-    Global.substan = '';
-    Global.head = null;
-    Global.site_info_update = false;
-    Global.fence_info_update = false;
-    Global.costing_update = false;
-    Global.before_images = [];
-    Global.after_images = [];
-    Global.fence = null;
-    Global.standing_images = [];
-    Global.damage_images = [];
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('didChangeDependencies!'),
+  //         duration: Duration(seconds: 2), // Duration to show the SnackBar
+  //       ),
+  //     );
+  //   });
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  // }
 
-    Helper.get(
-            "nativeappservice/JobContactDetail?job_id=${Global.job?.jobId??""}", {})
-        .then((response) {
-      print(response.body);
-      var tmp = (jsonDecode(response.body) as List)
-          .map((f) => Contact.fromJson(f))
-          .toList();
-      contacts = [];
-      tmp.forEach((t) {
-        contacts.add(new Contact(contactName: t.contactName));
-        if (t.homeNumber != null) {
-          contacts.add(Contact(mobile: t.homeNumber));
-        }
-        if (t.workNumber != null) {
-          contacts.add(Contact(mobile: t.workNumber));
-        }
-        if (t.mobile != null) {
-          contacts.add(Contact(mobile: t.mobile));
-        }
-      });
+
+
+  Future<void> getAllData(String caller) async{
+    setState(() {
+      isLoading = true;
     });
+    try{
+      print('called==>$caller');
+      Global.crewDetails = null;
+      Global.info = null;
+      Global.info = TreeInfo();
+      Global.fence = FenceInfo();
+      Global.substan = '';
+      Global.head = null;
+      Global.site_info_update = false;
+      Global.fence_info_update = false;
+      Global.costing_update = false;
+      Global.before_images = [];
+      Global.after_images = [];
+      Global.fence = null;
+      Global.standing_images = [];
+      Global.damage_images = [];
 
-    //Helper.showProgress(context, 'Getting Job Detail',dismissable: false);
-    Helper.get(
-        "nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId??''}",
-        {}).then((response) {
-      // Helper.hideProgress();
-      setState(() {
-        print('inside state');
-        job = Job.fromJson(jsonDecode(response.body)[0]);
+      await Helper.get(
+          "nativeappservice/JobContactDetail?job_id=${Global.job?.jobId??""}", {})
+          .then((response) {
+        print(response.body);
+        var tmp = (jsonDecode(response.body) as List)
+            .map((f) => Contact.fromJson(f))
+            .toList();
+        contacts = [];
+        tmp.forEach((t) {
+          contacts.add(new Contact(contactName: t.contactName));
+          if (t.homeNumber != null) {
+            // print('homeNumber--->${t.homeNumber}');
+            contacts.add(Contact(mobile: t.homeNumber));
+          }
+          else if (t.workNumber != null) {
+            // print('workNumber--->${t.workNumber}');
+            contacts.add(Contact(mobile: t.workNumber));
+          }
+          else if (t.mobile != null) {
+            // print('mobile--->${t.mobile}');
+            contacts.add(Contact(mobile: t.mobile));
+          }
+        });
+      });
 
-        Global.job = job;
+      //Helper.showProgress(context, 'Getting Job Detail',dismissable: false);
+      await Helper.get(
+          "nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId??''}",
+          {}).then((response) {
+        // Helper.hideProgress();
+        setState(() {
+          print('inside state');
+          job = Job.fromJson(jsonDecode(response.body)[0]);
 
-        //Global.site_info_update = job.treeinfoExists == 'true';
+          Global.job = job;
 
-        if (job.costExists == 'true') {
-          Global.costing_update = true;
-          Helper.get(
-              "nativeappservice/contractorRateset?contractor_id=${Helper.user!.companyId}&process_id=${Helper.user!.companyId}",
-              {}).then((response) {
-            var json1 = json.decode(response.body);
-            print(json1[0].runtimeType);
-            var tmp = json1[0];
-            Global.rateSet = tmp["rateset_id"].toString();
-            Global.taxRate = tmp['tax_rate'];
+          //Global.site_info_update = job.treeinfoExists == 'true';
+
+          if (job.costExists == 'true') {
+            Global.costing_update = true;
             Helper.get(
-                "nativeappservice/contractorRateclass?contractor_id=${Helper.user!.companyId}&process_id=${Helper.user!.companyId}&rateset_id=${Global.rateSet}",
+                "nativeappservice/contractorRateset?contractor_id=${Helper.user?.companyId??''}&process_id=${Helper.user?.companyId??''}",
                 {}).then((response) {
-              List json2 = jsonDecode(response.body) as List;
-              print('classId ${json2.runtimeType}');
-              Global.normalClass = json2[0]["rateclass_id"];
-              Global.afterClass = json2[1]["rateclass_id"];
+              var json1 = json.decode(response.body);
+              print(json1[0].runtimeType);
+              var tmp = json1[0];
+              Global.rateSet = tmp["rateset_id"].toString();
+              Global.taxRate = tmp['tax_rate'];
+              Helper.get(
+                  "nativeappservice/contractorRateclass?contractor_id=${Helper.user?.companyId??''}&process_id=${Helper.user?.companyId??''}&rateset_id=${Global.rateSet}",
+                  {}).then((response) {
+                List json2 = jsonDecode(response.body) as List;
+                print('classId ${json2.runtimeType}');
+                Global.normalClass = json2[0]["rateclass_id"];
+                Global.afterClass = json2[1]["rateclass_id"];
+              }).catchError((error) {
+                print(error);
+              });
             }).catchError((error) {
               print(error);
             });
-          }).catchError((error) {
-            print(error);
-          });
-          print('rSET ${Global.rateSet}');
+            print('rSET ${Global.rateSet}');
 //        print(Global.taxRate.toString());
-          getCostHead();
-          getCostDetails();
-        } else
-          Global.costing_update = false;
-        print('tree info ==> ${job.treeinfoExists}');
-        if (job.treeinfoExists == 'true') {
-          Global.site_info_update = true;
-          getTreeInfo(job);
-        }
-        if (job.beforeImagesExists == 'true' || job.afterImagesExists == 'true')
-          getPhotos(job);
-        else
-          print('images failed');
+            getCostHead();
+            getCostDetails();
+          } else
+            Global.costing_update = false;
+          print('tree info ==> ${job.treeinfoExists}');
+          if (job.treeinfoExists == 'true') {
+            Global.site_info_update = true;
+            getTreeInfo(job);
+          }
+          if (job.beforeImagesExists == 'true' || job.afterImagesExists == 'true')
+            getPhotos(job);
+          else
+            print('images failed');
 
-        //fence info fetching
-        getFenceInfo(job);
-        getFencePhotos(job);
+          //fence info fetching
+          getFenceInfo(job);
+          getFencePhotos(job);
+        });
+        // Set loading to false once all data is fetched
+        setState(() {
+          isLoading = false;
+        });
+      }).catchError((error) {
+        print('error call');
+        //Helper.hideProgress();
+        setState(() {
+          isLoading = false;
+        });
+        print(error);
       });
-    }).catchError((error) {
-      print('error call');
-      //Helper.hideProgress();
-      print(error);
-    });
-    print('after call');
-    Helper.getNotificationCount();
+      print('after call');
+      Helper.getNotificationCount();
+    }catch(error) {
+      print('Error fetching data: $error');
+    } finally {
+      if(mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+
   }
 
   @override
   Widget build(BuildContext context) {
+    // if (isLoading) {
+    //   return Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // }
     var grids = [
       {
         "label": "RE-SCHEDULE",
@@ -203,8 +260,9 @@ class SiteInspectionState extends State<SiteInspection> {
         key: _scaffoldKey,
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         appBar: Helper.getAppBar(context,
-            title: 'Job #TM ${job.jobNo}', sub_title: ''),
-        body: Container(
+            title: 'Job #TM ${job.jobNo}', sub_title: '', visible: false),
+        body: isLoading ? Center(
+            child: CircularProgressIndicator()) : Container(
           decoration: BoxDecoration(color: Colors.white),
           width: size.width,
           height: size.height,
@@ -634,6 +692,8 @@ statusImage(Map<String, dynamic> item) {
               return GestureDetector(
                 onTap: () async {
                   print('jjjjccccccxxxxssss');
+                  await Helper.openDialer(
+                      contact.mobile ?? '');
                   // if (contact.mobile != null) {
                   //   // call = FlutterPhoneState.startPhoneCall(contact.mobile);
                   //   // await call!.done;
