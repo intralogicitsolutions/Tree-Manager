@@ -329,9 +329,7 @@ class AssetThumb2 extends StatefulWidget {
     this.url,
     this.quality = 100,
     this.spinner = const Center(
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+      child: CircularProgressIndicator(),
     ),
   }) : super(key: key);
 
