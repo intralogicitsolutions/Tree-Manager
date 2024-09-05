@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -16,7 +15,6 @@ class FenceHeight extends StatefulWidget {
 }
 
 class FenceHeightState extends State<FenceHeight> {
-  var _scrolCtrl = ScrollController();
   var selected = <String>[];
   List<Option> grids = Global.fence_height;
 
@@ -135,6 +133,6 @@ class FenceHeightState extends State<FenceHeight> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

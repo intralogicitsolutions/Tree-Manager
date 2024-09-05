@@ -1,6 +1,6 @@
 {
-    "name": "enviro_trees1",
-    "short_name": "enviro_trees1",
+    "name": "tree_manager",
+    "short_name": "tree_manager",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

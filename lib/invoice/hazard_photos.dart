@@ -30,7 +30,8 @@ class _HazardPhotosState extends State<HazardPhotos> {
                 child: IconButton(
                   icon: SvgPicture.asset(
                     "assets/images/ios-back-arrow.svg",
-                    color: Colors.blue,
+                   // color: Colors.blue,
+                    colorFilter: ColorFilter.mode(Colors.blue, BlendMode.srcIn),
                   ),
                   onPressed: () {
                     print("back pressed");

@@ -25,17 +25,17 @@ class Signature {
       this.staffName});
 
   Signature.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    siteHazardId = json['site_hazard_id'];
-    userId = json['user_id'];
-    signature = json['signature'];
-    owner = json['owner'];
-    createdBy = json['created_by'];
-    lastModifiedBy = json['last_modified_by'];
-    createdAt = json['created_at'];
-    lastUpdatedAt = json['last_updated_at'];
-    customStaffName = json['custom_staff_name'];
-    staffName = json['StaffName'];
+    id = json['id'] as String? ?? '';
+    siteHazardId = json['site_hazard_id'] as String? ?? '';
+    userId = json['user_id'] as String? ?? '';
+    signature = json['signature'] as String? ?? '';
+    owner = json['owner'] as String? ?? '';
+    createdBy = json['created_by'] as String? ?? '';
+    lastModifiedBy = json['last_modified_by'] as String? ?? '';
+    createdAt = json['created_at'] as String? ?? '';
+    lastUpdatedAt = json['last_updated_at'] as String? ?? '';
+    customStaffName = json['custom_staff_name'] as String? ?? '';
+    staffName = json['StaffName'] as String? ?? '';
   }
 
   Map<String, dynamic> toJson() {

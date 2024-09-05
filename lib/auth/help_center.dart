@@ -1,8 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
@@ -275,6 +272,6 @@ class HelpCenterState extends State<HelpCenter> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

@@ -1,14 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-// import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image/image.dart';
-import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -47,7 +40,7 @@ class SiteInspectionState extends State<SiteInspection> {
     // setState(() {
     //   isLoading = true;
     // });
-   getAllData('init');
+    getAllData('init');
   }
 
   // @override
@@ -67,13 +60,11 @@ class SiteInspectionState extends State<SiteInspection> {
   //   });
   // }
 
-
-
-  Future<void> getAllData(String caller) async{
+  Future<void> getAllData(String caller) async {
     setState(() {
       isLoading = true;
     });
-    try{
+    try {
       print('called==>$caller');
       Global.crewDetails = null;
       Global.info = null;
@@ -91,8 +82,8 @@ class SiteInspectionState extends State<SiteInspection> {
       Global.damage_images = [];
 
       await Helper.get(
-          "nativeappservice/JobContactDetail?job_id=${Global.job?.jobId??""}", {})
-          .then((response) {
+          "nativeappservice/JobContactDetail?job_id=${Global.job?.jobId ?? ""}",
+          {}).then((response) {
         print(response.body);
         var tmp = (jsonDecode(response.body) as List)
             .map((f) => Contact.fromJson(f))
@@ -103,21 +94,19 @@ class SiteInspectionState extends State<SiteInspection> {
           if (t.homeNumber != null) {
             // print('homeNumber--->${t.homeNumber}');
             contacts.add(Contact(mobile: t.homeNumber));
-          }
-          else if (t.workNumber != null) {
+          } else if (t.workNumber != null) {
             // print('workNumber--->${t.workNumber}');
             contacts.add(Contact(mobile: t.workNumber));
-          }
-          else if (t.mobile != null) {
+          } else if (t.mobile != null) {
             // print('mobile--->${t.mobile}');
             contacts.add(Contact(mobile: t.mobile));
           }
         });
       });
 
-      //Helper.showProgress(context, 'Getting Job Detail',dismissable: false);
+      //Helper.showProgress(context, 'Getting Job Detail',dismissible: false);
       await Helper.get(
-          "nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId??''}",
+          "nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId ?? ''}",
           {}).then((response) {
         // Helper.hideProgress();
         setState(() {
@@ -126,12 +115,12 @@ class SiteInspectionState extends State<SiteInspection> {
 
           Global.job = job;
 
-          //Global.site_info_update = job.treeinfoExists == 'true';
+
 
           if (job.costExists == 'true') {
             Global.costing_update = true;
             Helper.get(
-                "nativeappservice/contractorRateset?contractor_id=${Helper.user?.companyId??''}&process_id=${Helper.user?.companyId??''}",
+                "nativeappservice/contractorRateset?contractor_id=${Helper.user?.companyId ?? ''}&process_id=${Helper.user?.companyId ?? ''}",
                 {}).then((response) {
               var json1 = json.decode(response.body);
               print(json1[0].runtimeType);
@@ -139,7 +128,7 @@ class SiteInspectionState extends State<SiteInspection> {
               Global.rateSet = tmp["rateset_id"].toString();
               Global.taxRate = tmp['tax_rate'];
               Helper.get(
-                  "nativeappservice/contractorRateclass?contractor_id=${Helper.user?.companyId??''}&process_id=${Helper.user?.companyId??''}&rateset_id=${Global.rateSet}",
+                  "nativeappservice/contractorRateclass?contractor_id=${Helper.user?.companyId ?? ''}&process_id=${Helper.user?.companyId ?? ''}&rateset_id=${Global.rateSet}",
                   {}).then((response) {
                 List json2 = jsonDecode(response.body) as List;
                 print('classId ${json2.runtimeType}');
@@ -162,7 +151,8 @@ class SiteInspectionState extends State<SiteInspection> {
             Global.site_info_update = true;
             getTreeInfo(job);
           }
-          if (job.beforeImagesExists == 'true' || job.afterImagesExists == 'true')
+          if (job.beforeImagesExists == 'true' ||
+              job.afterImagesExists == 'true')
             getPhotos(job);
           else
             print('images failed');
@@ -185,16 +175,15 @@ class SiteInspectionState extends State<SiteInspection> {
       });
       print('after call');
       Helper.getNotificationCount();
-    }catch(error) {
+    } catch (error) {
       print('Error fetching data: $error');
     } finally {
-      if(mounted) {
+      if (mounted) {
         setState(() {
           isLoading = false;
         });
       }
     }
-
   }
 
   @override
@@ -260,285 +249,298 @@ class SiteInspectionState extends State<SiteInspection> {
         key: _scaffoldKey,
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         appBar: Helper.getAppBar(context,
-            title: 'Job #TM ${job.jobNo}', sub_title: '', visible: false),
-        body: isLoading ? Center(
-            child: CircularProgressIndicator()) : Container(
-          decoration: BoxDecoration(color: Colors.white),
-          width: size.width,
-          height: size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/phone.svg'),
-                              TextButton(
-                                  onPressed: () {
-                                    print('llll');
-                                    showContactDialog();
-                                  },
-                                  child: Text(
-                                    '${job.siteContactName}',
-                                    style: TextStyle(
-                                        color: Themer.textGreenColor,
-                                        fontSize: 18,
-                                        decoration: TextDecoration.underline),
-                                  ))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/location.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Container(
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      var action =
-                                          await Helper.showMultiActionModal(
-                                              context,
-                                              title: 'Site Address',
-                                              description: job.address ?? ' ',
-                                              negativeButtonText:
-                                                  'GET DIRECION',
-                                              negativeButtonimage:
-                                                  'get_direction.svg',
-                                              positiveButtonText: 'VIEW ON MAP',
-                                              positiveButtonimage:
-                                                  'view_on_map.svg');
-                                      if (action == false) {
-                                        Helper.openDirection(job.address ?? '');
-                                      } else if (action == true) {
-                                        Helper.openMap(job.address ?? '');
-                                      }
-                                    },
-                                    child: Text(
-                                      '${job.addressDisplay}',
-                                      style: TextStyle(
-                                          color: Themer.textGreenColor,
-                                          fontSize: 18,
-                                          decoration: TextDecoration.underline),
-                                    )),
-                              ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/work.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Container(
-                                child: GestureDetector(
-                                  child: Text(
-                                    job.jobDesc ?? ' ',
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Themer.textGreenColor,
-                                        fontSize: 18,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                  onTap: () {
-                                    Helper.showSingleActionModal(context,
-                                        title: 'Work Description',
-                                        description: job.jobDesc ?? ' ',
-                                        subTitle: 'Special Description',
-                                        subDescription: job.jobSpDesc ?? ' ');
-                                  },
-                                ),
-                              ))
-                            ],
-                          ),
-                          Visibility(
-                              visible: true,
-                              child: TextButton(
-                                  onPressed: null,
-                                  child: Text('Disabled Button')))
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //SizedBox(height: 50,),
-              //Spacer(),
-              Container(
+            title: 'Job #TM ${job.jobNo}', sub_title: '',),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Container(
                 decoration: BoxDecoration(color: Colors.white),
+                width: size.width,
+                height: size.height,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                    Expanded(
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Align(
-                            child: Text(
-                              'Schedule Visit',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold),
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    SvgPicture.asset('assets/images/phone.svg'),
+                                    TextButton(
+                                        onPressed: () {
+                                          print('llll');
+                                          showContactDialog();
+                                        },
+                                        child: Text(
+                                          '${job.siteContactName}',
+                                          style: TextStyle(
+                                              color: Themer.textGreenColor,
+                                              fontSize: 18,
+                                              decoration:
+                                                  TextDecoration.underline),
+                                        ))
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    SvgPicture.asset(
+                                        'assets/images/location.svg'),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                        child: Container(
+                                      child: GestureDetector(
+                                          onTap: () async {
+                                            var action = await Helper
+                                                .showMultiActionModal(context,
+                                                    title: 'Site Address',
+                                                    description:
+                                                        job.address ?? ' ',
+                                                    negativeButtonText:
+                                                        'GET DIRECION',
+                                                    negativeButtonimage:
+                                                        'get_direction.svg',
+                                                    positiveButtonText:
+                                                        'VIEW ON MAP',
+                                                    positiveButtonimage:
+                                                        'view_on_map.svg');
+                                            if (action == false) {
+                                              Helper.openDirection(
+                                                  job.address ?? '');
+                                            } else if (action == true) {
+                                              Helper.openMap(job.address ?? '');
+                                            }
+                                          },
+                                          child: Text(
+                                            '${job.addressDisplay}',
+                                            style: TextStyle(
+                                                color: Themer.textGreenColor,
+                                                fontSize: 18,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          )),
+                                    ))
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SvgPicture.asset('assets/images/work.svg'),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                        child: Container(
+                                      child: GestureDetector(
+                                        child: Text(
+                                          job.jobDesc ?? ' ',
+                                          maxLines: 5,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: Themer.textGreenColor,
+                                              fontSize: 18,
+                                              decoration:
+                                                  TextDecoration.underline),
+                                        ),
+                                        onTap: () {
+                                          Helper.showSingleActionModal(context,
+                                              title: 'Work Description',
+                                              description: job.jobDesc ?? ' ',
+                                              subTitle: 'Special Description',
+                                              subDescription:
+                                                  job.jobSpDesc ?? ' ');
+                                        },
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                                Visibility(
+                                    visible: true,
+                                    child: TextButton(
+                                        onPressed: null,
+                                        child: Text('Disabled Button')))
+                              ],
                             ),
-                          ),
-                          Align(
-                            child: RichText(
-                                text: TextSpan(
-                                    text: 'Inspection booked on',
-                                    style: TextStyle(color: Colors.black),
-                                    children: [
-                                  TextSpan(
-                                      text: ' $date_string',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))
-                                ])),
                           ),
                         ],
                       ),
                     ),
-                    GridView.count(
-                        shrinkWrap: true,
-                        childAspectRatio: 4 / 2.3,
-                        crossAxisCount: 2,
-                        children: List.generate(grids.length, (index) {
-                          var item = grids[index] as Map<String, Object?>;
-                          return GestureDetector(
-                            onTap: () async {
-                              String? goto = item['goto'] as String?;
-                              dynamic arguments = item['arguments'];
+                    //SizedBox(height: 50,),
+                    //Spacer(),
+                    Container(
+                      decoration: BoxDecoration(color: Colors.white),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Align(
+                                  child: Text(
+                                    'Schedule Visit',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 35,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Align(
+                                  child: RichText(
+                                      text: TextSpan(
+                                          text: 'Inspection booked on',
+                                          style: TextStyle(color: Colors.black),
+                                          children: [
+                                        TextSpan(
+                                            text: ' $date_string',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold))
+                                      ])),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GridView.count(
+                              shrinkWrap: true,
+                              childAspectRatio: 4 / 2.3,
+                              crossAxisCount: 2,
+                              children: List.generate(grids.length, (index) {
+                                var item = grids[index];
+                                return GestureDetector(
+                                  onTap: () async {
+                                    String? goto = item['goto'] as String?;
+                                    dynamic arguments = item['arguments'];
 
-                              switch (item['goto']) {
-                                case 'schedule_date':
-                                case 'before_photos':
-                                case 'number_of_tree':
-                                  await Navigator.pushNamed(context, goto!,
-                                      arguments: arguments);
-                                  break;
-                                case 'crew_configuration':
-                                  if (Global.job?.treeinfoExists == 'true' &&
-                                      Global.job?.beforeImagesExists ==
-                                          'true') {
-                                    if (job.jobStatus?.toLowerCase() ==
-                                            "cost submitted" ||
-                                        job.jobStatus?.toLowerCase() ==
-                                            "approve quote") {
-                                      print('fuck');
-                                      final sbar = SnackBar(
-                                          content: Text(
-                                              'Costing is already submitted.'));
+                                    switch (item['goto']) {
+                                      case 'schedule_date':
+                                      case 'before_photos':
+                                      case 'number_of_tree':
+                                        await Navigator.pushNamed(
+                                            context, goto!,
+                                            arguments: arguments);
+                                        break;
+                                      case 'crew_configuration':
+                                        if (Global.job?.treeinfoExists ==
+                                                'true' &&
+                                            Global.job?.beforeImagesExists ==
+                                                'true') {
+                                          if (job.jobStatus?.toLowerCase() ==
+                                                  "cost submitted" ||
+                                              job.jobStatus?.toLowerCase() ==
+                                                  "approve quote") {
+                                            print('fuck');
 
-                                      // ScaffoldMessenger.of(context)
-                                      //     .showSnackBar(sbar);
-                                    } else if (job.costExists == 'true') {
-                                      print('bitch');
-                                      await Navigator.pushNamed(
-                                          context, 'review_quote', arguments: {
-                                        'crew_details': Global.crewDetails
-                                      });
-                                    } else {
-                                      print('shit');
-                                      await Navigator.pushNamed(
-                                          context, item['goto'] as String,
-                                          arguments: item['arguments']);
+                                            // ScaffoldMessenger.of(context)
+                                            //     .showSnackBar(sbar);
+                                          } else if (job.costExists == 'true') {
+                                            print('bitch');
+                                            await Navigator.pushNamed(
+                                                context, 'review_quote',
+                                                arguments: {
+                                                  'crew_details':
+                                                      Global.crewDetails
+                                                });
+                                          } else {
+                                            print('shit');
+                                            await Navigator.pushNamed(
+                                                context, item['goto'] as String,
+                                                arguments: item['arguments']);
+                                          }
+                                        } else {
+                                          if (Global.job?.beforeImagesExists ==
+                                              'false') {
+                                            var action = await Helper
+                                                .showMultiActionModal(context,
+                                                    title:
+                                                        'Proceed to Site Photos?',
+                                                    description:
+                                                        'before images are not yet uploaded, would you like to do it now?',
+                                                    negativeButtonText: 'NO',
+                                                    negativeButtonimage:
+                                                        'reject.svg',
+                                                    positiveButtonText: 'YES',
+                                                    positiveButtonimage:
+                                                        'accept.svg');
+                                            if (action == true) {
+                                              await Navigator.pushNamed(
+                                                  context, 'before_photos',
+                                                  arguments: item['arguments']);
+                                            }
+                                          } else if (Global
+                                                  .job?.treeinfoExists ==
+                                              'false') {
+                                            var action = await Helper
+                                                .showMultiActionModal(context,
+                                                    title:
+                                                        'Proceed to Tree Info?',
+                                                    description:
+                                                        'Tree Info are not yet provided, would you like to do it now?',
+                                                    negativeButtonText: 'NO',
+                                                    negativeButtonimage:
+                                                        'reject.svg',
+                                                    positiveButtonText: 'YES',
+                                                    positiveButtonimage:
+                                                        'accept.svg');
+                                            if (action == true) {
+                                              await Navigator.pushNamed(
+                                                  context, 'number_of_tree',
+                                                  arguments: item['arguments']);
+                                            }
+                                          }
+                                        }
+                                        break;
+                                      default:
                                     }
-                                  } else {
-                                    if (Global.job?.beforeImagesExists ==
-                                        'false') {
-                                      var action =
-                                          await Helper.showMultiActionModal(
-                                              context,
-                                              title: 'Proceed to Site Photos?',
-                                              description:
-                                                  'before images are not yet uploaded, would you like to do it now?',
-                                              negativeButtonText: 'NO',
-                                              negativeButtonimage: 'reject.svg',
-                                              positiveButtonText: 'YES',
-                                              positiveButtonimage:
-                                                  'accept.svg');
-                                      if (action == true) {
-                                        await Navigator.pushNamed(
-                                            context, 'before_photos',
-                                            arguments: item['arguments']);
-                                      }
-                                    } else if (Global.job?.treeinfoExists ==
-                                        'false') {
-                                      var action =
-                                          await Helper.showMultiActionModal(
-                                              context,
-                                              title: 'Proceed to Tree Info?',
-                                              description:
-                                                  'Tree Info are not yet provided, would you like to do it now?',
-                                              negativeButtonText: 'NO',
-                                              negativeButtonimage: 'reject.svg',
-                                              positiveButtonText: 'YES',
-                                              positiveButtonimage:
-                                                  'accept.svg');
-                                      if (action == true) {
-                                        await Navigator.pushNamed(
-                                            context, 'number_of_tree',
-                                            arguments: item['arguments']);
-                                      }
-                                    }
-                                  }
-                                  break;
-                                default:
-                              }
-                              getAllData('await click');
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(1),
-                              child: Container(
-                                decoration:
-                                    BoxDecoration(color: Themer.textGreenColor),
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: SvgPicture.asset(
-                                        "assets/images/${statusImage(item)}",
-                                        fit: BoxFit.scaleDown,
+                                    getAllData('await click');
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.all(1),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Themer.textGreenColor),
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: SvgPicture.asset(
+                                              "assets/images/${statusImage(item)}",
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                          Text(
+                                            item['label'] as String,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      item['label'] as String,
-                                      style: TextStyle(color: Colors.white),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }))
+                                  ),
+                                );
+                              }))
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-        ));
+              ));
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   void getTreeInfo(Job job) {
@@ -549,6 +551,7 @@ class SiteInspectionState extends State<SiteInspection> {
         print(data.body);
         var json = jsonDecode(data.body) as List;
         var tmp = json.map((f) => TreeInfo.fromJson(f)).toList();
+        print('tree info data ==> ${data.body}');
         Global.info = tmp[0];
       } catch (e) {
         print('tree info exception');
@@ -579,7 +582,7 @@ class SiteInspectionState extends State<SiteInspection> {
   void getPhotos(Job job) {
     print('getting images');
     Helper.get(
-        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job?.jobAllocId}&job_id=${job?.jobId}",
+        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job.jobAllocId}&job_id=${job.jobId}",
         {}).then((data) {
       print(data.body);
       var images = (jsonDecode(data.body) as List)
@@ -615,7 +618,7 @@ class SiteInspectionState extends State<SiteInspection> {
     });
   }
 
-statusImage(Map<String, dynamic> item) {
+  statusImage(Map<String, dynamic> item) {
     //print(jsonEncode(item));
     if (item['flag'] == null || item['flag'] == 'false') {
       return item['icon'];
@@ -626,7 +629,7 @@ statusImage(Map<String, dynamic> item) {
 
   void getCostHead() {
     Helper.get(
-        "costformhead/getCostFormHeadByJobIdAllocId?job_alloc_id=${Global.job?.jobAllocId??''}&job_id=${Global.job?.jobId??''}",
+        "costformhead/getCostFormHeadByJobIdAllocId?job_alloc_id=${Global.job?.jobAllocId ?? ''}&job_id=${Global.job?.jobId ?? ''}",
         {}).then((data) {
       var json = jsonDecode(data.body) as List;
       Global.head = Head.fromJson(json[0]);
@@ -636,7 +639,7 @@ statusImage(Map<String, dynamic> item) {
 
   void getCostDetails() {
     Helper.get(
-        "costformhead/getCostFormDetailByJobIdAllocId?job_alloc_id=${Global.job?.jobAllocId??''}&job_id=${Global.job?.jobId??''}",
+        "costformhead/getCostFormDetailByJobIdAllocId?job_alloc_id=${Global.job?.jobAllocId ?? ''}&job_id=${Global.job?.jobId ?? ''}",
         {}).then((data) {
       Global.details = (jsonDecode(data.body) as List)
           .map((f) => Detail.fromJson(f))
@@ -662,7 +665,7 @@ statusImage(Map<String, dynamic> item) {
 
   // PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+     await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -684,7 +687,7 @@ statusImage(Map<String, dynamic> item) {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)
@@ -692,8 +695,7 @@ statusImage(Map<String, dynamic> item) {
               return GestureDetector(
                 onTap: () async {
                   print('jjjjccccccxxxxssss');
-                  await Helper.openDialer(
-                      contact.mobile ?? '');
+                  await Helper.openDialer(contact.mobile ?? '');
                   // if (contact.mobile != null) {
                   //   // call = FlutterPhoneState.startPhoneCall(contact.mobile);
                   //   // await call!.done;
@@ -777,9 +779,7 @@ statusImage(Map<String, dynamic> item) {
                                         child: FloatingActionButton(
                                           onPressed: () async {
                                             await CallHelper.setMessage(
-                                                context,
-                                                contact.mobile ?? ''
-                                            );
+                                                context, contact.mobile ?? '');
                                           },
                                           child: SvgPicture.asset(
                                             'assets/images/message.svg',

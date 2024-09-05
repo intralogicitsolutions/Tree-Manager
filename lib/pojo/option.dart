@@ -13,11 +13,11 @@ class Option {
       this.prefillText});
 
   Option.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    workflowStep = json['workflow_step'];
-    optionNo = json['option_no'];
-    caption = json['caption'];
-    prefillText = json['prefill_text'];
+    id = json['id'] as String? ?? '';
+    workflowStep = json['workflow_step'] as String? ?? '';
+    optionNo = json['option_no'] as String? ?? '';
+    caption = json['caption'] as String? ?? '';
+    prefillText = json['prefill_text'] as String? ?? '';
   }
 
   Map<String, dynamic> toJson() {

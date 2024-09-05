@@ -1,11 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
@@ -20,7 +14,7 @@ import 'package:tree_manager/pojo/hazard.dart';
 import 'package:tree_manager/pojo/network_image.dart';
 import 'package:tree_manager/pojo/option.dart';
 import 'package:tree_manager/pojo/signature.dart';
-import 'package:tree_manager/pojo/tree_info.dart';
+
 
 class Invoice extends StatefulWidget {
   @override
@@ -91,7 +85,7 @@ class InvoiceState extends State<Invoice> {
     Global.hzd_sel_other_staff = [];
     Global.hzd_sel_other_equip = [];
     Helper.get(
-            "nativeappservice/JobContactDetail?job_id=${Global.job!.jobId}", {})
+            "nativeappservice/JobContactDetail?job_id=${Global.job?.jobId??''}", {})
         .then((response) {
       print(response.body);
       var tmp = (jsonDecode(response.body) as List)
@@ -103,10 +97,10 @@ class InvoiceState extends State<Invoice> {
         if (t.homeNumber != null) {
           contacts.add(Contact(mobile: t.homeNumber));
         }
-        if (t.workNumber != null) {
+        else if (t.workNumber != null) {
           contacts.add(Contact(mobile: t.workNumber));
         }
-        if (t.mobile != null) {
+        else if (t.mobile != null) {
           contacts.add(Contact(mobile: t.mobile));
         }
       });
@@ -114,7 +108,7 @@ class InvoiceState extends State<Invoice> {
 
     //Helper.showProgress(context, 'Getting Job Detail',dismissable: false);
     Helper.get(
-        "nativeappservice/jobdetailInfo?job_alloc_id=${Global.job!.jobAllocId}",
+        "nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId??''}",
         {}).then((response) {
       // Helper.hideProgress();
       setState(() {
@@ -126,6 +120,7 @@ class InvoiceState extends State<Invoice> {
         Global.job = job;
         Global.site_hazard_update = job.siteHazardFormExists == 'true';
 
+        // print('job data==>${response.body}');
         if (job.beforeImagesExists == 'true' || job.afterImagesExists == 'true')
           getPhotos(job);
         else
@@ -186,6 +181,18 @@ class InvoiceState extends State<Invoice> {
       }
     ];
     Size size = MediaQuery.of(context).size;
+    // try {
+    //   var date = job.schedDate?.split("T")[0];
+    //   var time = job.schedDate?.split("T")[1];
+    //   print('date-->${date}');
+    //   print('time-->${time}');
+    //   var date_split = date!.split("-");
+    //   var time_split = time!.split(":");
+    //   print(date_split);
+    //   print(time_split);
+    //   date_string =
+    //       "${date_split[2]}th ${Helper.intToMonth(int.parse(date_split[1]))} ${date_split[0]} at ${job.schedTime ?? '0:0AM'}";
+    // } catch (e) {}
     try {
       var date = job.schedDate?.split("T")[0];
       var time = job.schedDate?.split("T")[1];
@@ -194,7 +201,7 @@ class InvoiceState extends State<Invoice> {
       print(date_split);
       print(time_split);
       date_string =
-          "${date_split[2]}th ${Helper.intToMonth(int.parse(date_split[1]))} ${date_split[0]} at ${job.schedTime ?? '0:0AM'}";
+      "${date_split[2]}th ${Helper.intToMonth(int.parse(date_split[1]))} ${date_split[0]} at ${job.schedTime ?? '0:0AM'}";
     } catch (e) {}
     return Scaffold(
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
@@ -208,103 +215,105 @@ class InvoiceState extends State<Invoice> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/phone.svg'),
-                              TextButton(
-                                  onPressed: () {
-                                    showContactDialog();
-                                  },
-                                  child: Text(
-                                    '${job.siteContactName}',
-                                    style: TextStyle(
-                                        color: Themer.textGreenColor,
-                                        fontSize: 18,
-                                        decoration: TextDecoration.underline),
-                                  ))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/location.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Container(
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      var action =
-                                          await Helper.showMultiActionModal(
-                                              context,
-                                              title: 'Site Address',
-                                              description: job.address ?? ' ',
-                                              negativeButtonText:
-                                                  'GET DIRECION',
-                                              negativeButtonimage:
-                                                  'get_direction.svg',
-                                              positiveButtonText: 'VIEW ON MAP',
-                                              positiveButtonimage:
-                                                  'view_on_map.svg');
-                                      if (action == true) {
-                                        Helper.openDirection(job.address??'');
-                                      } else if (action == false) {
-                                        Helper.openMap(job.address??'');
-                                      }
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                SvgPicture.asset('assets/images/phone.svg'),
+                                TextButton(
+                                    onPressed: () {
+                                      showContactDialog();
                                     },
                                     child: Text(
-                                      '${job.addressDisplay}',
+                                      '${job.siteContactName}',
                                       style: TextStyle(
                                           color: Themer.textGreenColor,
                                           fontSize: 18,
                                           decoration: TextDecoration.underline),
-                                    )),
-                              ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/work.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Container(
-                                child: GestureDetector(
-                                  child: Text(
-                                    job.jobDesc ?? ' ',
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Themer.textGreenColor,
-                                        fontSize: 18,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                  onTap: () {
-                                    Helper.showSingleActionModal(context,
-                                        title: 'Work Description',
-                                        description: job.jobDesc ?? ' ',
-                                        subTitle: 'Special Description',
-                                        subDescription: job.jobSpDesc ?? ' ');
-                                  },
+                                    ))
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                SvgPicture.asset('assets/images/location.svg'),
+                                SizedBox(
+                                  width: 10,
                                 ),
-                              ))
-                            ],
-                          )
-                        ],
+                                Flexible(
+                                    child: Container(
+                                  child: GestureDetector(
+                                      onTap: () async {
+                                        var action =
+                                            await Helper.showMultiActionModal(
+                                                context,
+                                                title: 'Site Address',
+                                                description: job.address ?? ' ',
+                                                negativeButtonText:
+                                                    'GET DIRECION',
+                                                negativeButtonimage:
+                                                    'get_direction.svg',
+                                                positiveButtonText: 'VIEW ON MAP',
+                                                positiveButtonimage:
+                                                    'view_on_map.svg');
+                                        if (action == true) {
+                                          Helper.openDirection(job.address??'');
+                                        } else if (action == false) {
+                                          Helper.openMap(job.address??'');
+                                        }
+                                      },
+                                      child: Text(
+                                        '${job.addressDisplay}',
+                                        style: TextStyle(
+                                            color: Themer.textGreenColor,
+                                            fontSize: 18,
+                                            decoration: TextDecoration.underline),
+                                      )),
+                                ))
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SvgPicture.asset('assets/images/work.svg'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Flexible(
+                                    child: Container(
+                                  child: GestureDetector(
+                                    child: Text(
+                                      job.jobDesc ?? ' ',
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Themer.textGreenColor,
+                                          fontSize: 18,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                    onTap: () {
+                                      Helper.showSingleActionModal(context,
+                                          title: 'Work Description',
+                                          description: job.jobDesc ?? ' ',
+                                          subTitle: 'Special Description',
+                                          subDescription: job.jobSpDesc ?? ' ');
+                                    },
+                                  ),
+                                ))
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -316,7 +325,7 @@ class InvoiceState extends State<Invoice> {
                       onPressed: () {
                         Navigator.pushNamed(context, 'pdf_viewer', arguments: {
                           "url":
-                              'generate/CostingReport?job_id=${Global.job!.jobId}&job_alloc_id=${Global.job!.jobAllocId}',
+                              'generate/CostingReport?job_id=${Global.job?.jobId??''}&job_alloc_id=${Global.job?.jobAllocId??''}',
                           'title': 'Review Quote'
                         });
                       },
@@ -324,7 +333,8 @@ class InvoiceState extends State<Invoice> {
                         Helper.countryCode == "UK"
                             ? 'assets/images/pound_symbol_white.svg'
                             : 'assets/images/Dollar-Quote.svg',
-                        color: Themer.gridItemColor,
+                        //color: Themer.gridItemColor,
+                        colorFilter: ColorFilter.mode(Themer.gridItemColor, BlendMode.srcIn),
                         height: 20,
                       ),
                       label: Text(
@@ -374,11 +384,11 @@ class InvoiceState extends State<Invoice> {
                         childAspectRatio: 4 / 2.5,
                         crossAxisCount: 2,
                         children: List.generate(grids.length, (index) {
-                          var item = grids[index] as Map<String, Object?>;
+                          var item = grids[index];
                           return GestureDetector(
                             onTap: () async {
                               String goto = item['goto'] as String? ?? ''; // Handle null case
-                          Map<String, Object?> arguments = item['arguments'] as Map<String, Object?>? ?? {};
+                         // Map<String, Object?> arguments = item['arguments'] as Map<String, Object?>? ?? {};
                               if (item['action'] == 'route') {
                                 if (goto == 'hazard_photos') {
                                   await Navigator.pushNamed(
@@ -483,7 +493,7 @@ class InvoiceState extends State<Invoice> {
                                       ),
                                     ),
                                     Text(
-                                      item['label'] as String ?? '',
+                                      item['label'] as String,
                                       style: TextStyle(color: Colors.white),
                                     )
                                   ],
@@ -501,7 +511,7 @@ class InvoiceState extends State<Invoice> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context,setState);
   }
 
   void getPhotos(Job job) {
@@ -510,7 +520,7 @@ class InvoiceState extends State<Invoice> {
     Global.hazard_images = [];
     print('getting images');
     Helper.get(
-        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job?.jobAllocId}&job_id=${job?.jobId}",
+        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job.jobAllocId}&job_id=${job.jobId}",
         {}).then((data) {
       print(data.body);
       var images = (jsonDecode(data.body) as List)
@@ -520,7 +530,7 @@ class InvoiceState extends State<Invoice> {
       images.forEach((f) {
         if (f.imgType == '1') Global.before_images!.add(f);
         if (f.imgType == '2') Global.after_images!.add(f);
-        if (f.imgType == '3') Global.hazard_images.add(f);
+        if (f.imgType == '3') Global.hazard_images!.add(f);
       });
     }).catchError((onError) {
       print(onError.toString());
@@ -538,7 +548,7 @@ class InvoiceState extends State<Invoice> {
 
   //PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+    await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -560,7 +570,7 @@ class InvoiceState extends State<Invoice> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)
@@ -646,7 +656,7 @@ class InvoiceState extends State<Invoice> {
                                     SizedBox(
                                       width: 10,
                                     ),
-                                    if (Global.job!.callDialogVersion == "2")
+                                    // if (Global.job!.callDialogVersion == "2")
                                       Container(
                                         height: 50,
                                         width: 50,
@@ -701,13 +711,13 @@ class InvoiceState extends State<Invoice> {
 
   getPreloads() {
     Helper.get(
-        'nativeappservice/chkSignOff?job_id=${Global.job!.jobId}&job_alloc_id=${Global.job!.jobAllocId}&process_id=${Helper.user!.processId}',
+        'nativeappservice/chkSignOff?job_id=${Global.job?.jobId??''}&job_alloc_id=${Global.job?.jobAllocId??''}&process_id=${Helper.user?.processId??''}',
         {}).then((data) {
       Global.signRequired = jsonDecode(data.body)['signOffRequired'] == 'true';
     });
 
     Helper.get(
-        'nativeappservice/chkInvoice?job_id=${Global.job!.jobId}&job_alloc_id=${Global.job!.jobAllocId}&process_id=${Helper.user!.processId}',
+        'nativeappservice/chkInvoice?job_id=${Global.job?.jobId??''}&job_alloc_id=${Global.job?.jobAllocId??''}&process_id=${Helper.user?.processId??''}',
         {}).then((data) {
       Global.invoiceAllowed = jsonDecode(data.body)['invoiceAllowed'] == 'true';
     });
@@ -753,11 +763,12 @@ class InvoiceState extends State<Invoice> {
       var json = (jsonDecode(data.body) as List)
           .map((e) => Hazard.fromJson(e))
           .toList();
-      if (json.length > 0 && json.first != null) {
+     // if (json.length > 0 && json.first != null) {
+      if (json.length > 0 && json.first != '') {
         Global.hazard = json.first;
 
         var hzd = json.first;
-        if (hzd != null) {
+        if (hzd != '') {
           await Helper.get(
               'jobsitehazardsignature/getSignatureBySiteHazardId?site_hazard_id=${hzd.id}',
               {}).then((value) {
@@ -779,61 +790,70 @@ class InvoiceState extends State<Invoice> {
         Global.sel_t_color = Themer.gridItemColor;
         Global.sel_j_color = Themer.gridItemColor;
 
-        hzd.otherControl1?.split(',')?.forEach((element) {
-          Global.sel_w_other_ctrl.add(Option(caption: element));
+        hzd.otherControl1?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_w_other_ctrl?.add(Option(caption: element));
         });
 
-        hzd.otherControl2?.split(',')?.forEach((element) {
-          Global.sel_j_other_ctrl.add(Option(caption: element));
+        hzd.otherControl2?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_j_other_ctrl?.add(Option(caption: element));
         });
 
-        hzd.otherControl3?.split(',')?.forEach((element) {
-          Global.sel_t_other_ctrl.add(Option(caption: element));
+        hzd.otherControl3?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_t_other_ctrl?.add(Option(caption: element));
         });
 
-        hzd.otherControl4?.split(',')?.forEach((element) {
-          Global.sel_m_other_ctrl.add(Option(caption: element));
+        hzd.otherControl4?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_m_other_ctrl?.add(Option(caption: element));
         });
 
-        hzd.otherHazard1?.split(',')?.forEach((element) {
-          Global.sel_w_other_task.add(Option(caption: element));
+        hzd.otherHazard1?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_w_other_task?.add(Option(caption: element));
         });
 
-        hzd.otherHazard2?.split(',')?.forEach((element) {
-          Global.sel_j_other_task.add(Option(caption: element));
+        hzd.otherHazard2?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_j_other_task?.add(Option(caption: element));
         });
 
-        hzd.otherHazard3?.split(',')?.forEach((element) {
-          Global.sel_t_other_task.add(Option(caption: element));
+        hzd.otherHazard3?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_t_other_task?.add(Option(caption: element));
         });
 
-        hzd.otherHazard4?.split(',')?.forEach((element) {
-          Global.sel_m_other_task.add(Option(caption: element));
+        hzd.otherHazard4?.split(',').forEach((element) {
+          if(element != '')
+          Global.sel_m_other_task?.add(Option(caption: element));
         });
 
         Global.hzd_sel_answr = [];
-        hzd.questionnaire?.split(',')?.forEach((element) {
-          Global.hzd_sel_answr.add(element);
+        hzd.questionnaire?.split(',').forEach((element) {
+          Global.hzd_sel_answr?.add(element);
         });
       }
     });
 
     Helper.get(
-        'nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId}&job_alloc_id=${Global.job?.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${Global.job?.jobAllocId??''}&process_id=${Helper.user?.processId??''}',
         {}).then((value) {
       Global.hzd_staffs = (jsonDecode(value.body) as List)
           .map((e) => Staff.fromJson(e))
           .toList();
       if (Global.hazard != null) {
         Global.hzd_sel_staff = [];
-        Global.hazard!.otherStaffDetails?.split(',')?.forEach((value) {
+        Global.hazard!.otherStaffDetails?.split(',').forEach((value) {
           if (value != 'null')
-            Global.hzd_sel_staff.add(getStaff(Global.hzd_staffs, value));
+            Global.hzd_sel_staff?.add(getStaff(Global.hzd_staffs!, value));
         });
-        Global.hzd_sel_staff = Global.hzd_sel_staff.toSet().toList();
+        Global.hzd_sel_staff = Global.hzd_sel_staff?.toSet().toList();
 
         Global.hzd_sel_other_staff = [];
-        Global.hazard!.customStaffName?.split(',')?.forEach((element) {
+        Global.hazard?.customStaffName?.split(',').forEach((element) {
+          if(element != ''){
           var stf = Staff(firstName: element, lastName: '');
           stf.rev_checked = true;
           stf.checked = true;
@@ -842,15 +862,16 @@ class InvoiceState extends State<Invoice> {
           var sign = Global.signs!.firstWhere(
               (element) => element.signature!.contains('_${stf.firstName}'));
           stf.sign_id = sign.id!;
-          stf.created_at = sign.createdAt!;
-          Global.hzd_sel_other_staff.add(stf);
+          stf.created_at = sign.createdAt;
+          Global.hzd_sel_other_staff?.add(stf);}
         });
+        print('staff name ==> ${Global.hazard?.customStaffName}');
       }
     });
     //return;
 
     Helper.get(
-        'nativeappservice/getAllEquipmentForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${Global.job?.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/getAllEquipmentForSHF?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${Global.job?.jobAllocId??''}&process_id=${Helper.user?.processId??''}',
         {}).then((value) {
       Global.hzd_equips = (jsonDecode(value.body) as List)
           .map((e) => Equip.fromJson(e))
@@ -860,18 +881,19 @@ class InvoiceState extends State<Invoice> {
         Global.hzd_sel_equip = [];
         Global.hazard!.equipment!.split(',').forEach((value) {
           if (value != 'null')
-            Global.hzd_sel_equip.add(getEquip(Global.hzd_equips, value));
+            Global.hzd_sel_equip?.add(getEquip(Global.hzd_equips, value));
         });
       }
     });
 
-    if (Global.hzd_qstn == null)
+    // if (Global.hzd_qstn == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=SHF%20Questions',
           {}).then((value) {
         Global.hzd_qstn = (jsonDecode(value.body) as List)
             .map((e) => Option.fromJson(e))
             .toList();
+        print('hzd_qstn data == ${value.body}');
         if (Global.hazard != null) {
           Global.hzd_sel_answr =
               Global.hazard!.questionnaire!.split(',').toList();
@@ -885,7 +907,7 @@ class InvoiceState extends State<Invoice> {
       Global.hzd_task = [];
       for (var i = 0; i < 10; i++) {
         if (json.containsKey("Label$i")) {
-          Global.hzd_task.add(Task(
+          Global.hzd_task?.add(Task(
               label: json["Label$i"],
               value: json["Value$i"],
               caption: json["Label$i"]));
@@ -893,18 +915,24 @@ class InvoiceState extends State<Invoice> {
       }
       if (Global.hazard != null) {
         Global.hzd_sel_task = [];
-        Global.hazard!.task!.split(',').asMap().forEach((key, value) {
-          Global.hzd_sel_task.add(getTask(Global.hzd_task, value));
+        Global.hazard?.task!.split(',').asMap().forEach((key, value) {
+          Global.hzd_sel_task?.add(getTask(Global.hzd_task!, value));
+          // Task? task = getTask(Global.hzd_task!, value);
+          // if(task != null){
+          //   Global.hzd_sel_task?.add(task);
+          // }
+
         });
 
         Global.hzd_sel_other_task = [];
-        Global.hazard!.taskOther!.split(',').forEach((element) {
-          Global.hzd_sel_other_task.add(Task(label: element, caption: element));
+        Global.hazard?.taskOther!.split(',').forEach((element) {
+          if(element != '')
+          Global.hzd_sel_other_task?.add(Task(label: element, caption: element));
         });
       }
     });
 
-    if (Global.w_task.length == 0)
+    if (Global.w_task?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Weather%20Hazards',
           {}).then((value) {
@@ -913,7 +941,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.w_rate.length == 0)
+    if (Global.w_rate?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Weather%20Risk',
           {}).then((value) {
@@ -922,7 +950,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.w_ctrl.length == 0)
+    if (Global.w_ctrl?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Weather%20Control',
           {}).then((value) {
@@ -932,7 +960,7 @@ class InvoiceState extends State<Invoice> {
       });
 
     ////
-    if (Global.j_task.length == 0)
+    if (Global.j_task?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Job%20Site%20Hazards',
           {}).then((value) {
@@ -941,7 +969,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.j_rate.length == 0)
+    if (Global.j_rate?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Job%20Site%20Risk',
           {}).then((value) {
@@ -950,7 +978,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.j_ctrl.length == 0)
+    if (Global.j_ctrl?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Job%20Site%20Control',
           {}).then((value) {
@@ -960,7 +988,7 @@ class InvoiceState extends State<Invoice> {
       });
 
     ////
-    if (Global.t_task.length == 0)
+    if (Global.t_task?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Tree%20Hazards',
           {}).then((value) {
@@ -969,7 +997,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.t_rate.length == 0)
+    if (Global.t_rate?.length == 0)
       Helper.get('nativeappservice/loadOptionDetails?workflow_step=Tree%20Risk',
           {}).then((value) {
         Global.t_rate = (jsonDecode(value.body) as List)
@@ -977,7 +1005,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.t_ctrl.length == 0)
+    if (Global.t_ctrl?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Tree%20Control',
           {}).then((value) {
@@ -987,7 +1015,7 @@ class InvoiceState extends State<Invoice> {
       });
 
     ////
-    if (Global.m_task.length == 0)
+    if (Global.m_task?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Manual%20Tasks%20Hazards',
           {}).then((value) {
@@ -996,7 +1024,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.m_rate.length == 0)
+    if (Global.m_rate?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Manual%20Tasks%20Risk',
           {}).then((value) {
@@ -1005,7 +1033,7 @@ class InvoiceState extends State<Invoice> {
             .toList();
       });
 
-    if (Global.m_ctrl.length == 0)
+    if (Global.m_ctrl?.length == 0)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Manual%20Tasks%20Control',
           {}).then((value) {
@@ -1046,28 +1074,31 @@ class InvoiceState extends State<Invoice> {
   }
 
   Task getTask(List<Task> tasks, String id) {
-    return tasks.firstWhere((element) => element.value == id);
+    return tasks.firstWhere((element) => element.value == id,);
   }
+  // Task? getTask(List<Task> tasks, String id) {
+  //   return tasks.firstWhere((element) => element.value == id,orElse: () => Task(),);
+  // }
 
   Equip getEquip(List<Equip> staffs, String id) {
     print("getEquip $id");
     return staffs.firstWhere((element) => element.headItemId == id);
   }
 
-  Staff getStaff(List<Staff> staffs, String id) {
-    staffs.forEach((element) {
+  Staff getStaff(List<Staff>? staffs, String? id) {
+    staffs?.forEach((element) {
       print('staff=${element.id} == ${id}');
     });
-    var stf = staffs.firstWhere((element) => element.id == id);
+    var stf = staffs?.firstWhere((element) => element.id == id);
     stf?.checked = true;
     stf?.rev_checked = true;
     stf?.signed = true;
     stf?.uploaded = true;
     var sign = Global.signs!
         .firstWhere((element) => element.signature!.contains('_${id}'));
-    stf?.created_at = sign.createdAt!;
+    stf?.created_at = sign.createdAt;
     stf?.sign_id = sign.id!;
-    return stf;
+    return stf!;
   }
 
   void showGateDialog({String? title, String? msg, Function? call}) {

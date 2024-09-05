@@ -1,26 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
-import 'package:background_locator/background_locator.dart';
-import 'package:background_locator/location_dto.dart';
-import 'package:background_locator/settings/android_settings.dart';
-import 'package:background_locator/settings/ios_settings.dart';
-import 'package:background_locator/settings/locator_settings.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:background_locator/background_locator.dart';
+// import 'package:background_locator/location_dto.dart';
+// import 'package:background_locator/settings/android_settings.dart';
+// import 'package:background_locator/settings/ios_settings.dart';
+// import 'package:background_locator/settings/locator_settings.dart';
+// import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
-//import 'package:get_version/get_version.dart';
+// import 'package:pushy_flutter/pushy_flutter.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:intl/intl.dart';
-// import 'package:location_permissions/location_permissions.dart';
-// import 'package:permission_handler/permission_handler.dart';
-import 'package:pushy_flutter/pushy_flutter.dart';
-import 'package:store_redirect/store_redirect.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
@@ -30,7 +25,9 @@ import 'package:tree_manager/pojo/dash_search.dart';
 import 'package:tree_manager/pojo/dashboard.dart';
 import 'package:tree_manager/pojo/notification.dart' as Noti;
 import 'package:tree_manager/pojo/option.dart';
-//import 'package:trust_fall/trust_fall.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../pojo/locationDto.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -50,15 +47,77 @@ class DashboardState extends State<Dashboard>
   late AnimationController _animationController;
   late Animation _animation;
 
+
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     // Initialize Firebase Messaging
+//     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+//
+//     // Request permissions on iOS
+//     _firebaseMessaging.requestPermission();
+//
+//     // Set the default notification icon (for Android)
+//     // Note: This is typically set in AndroidManifest.xml or the notification payload itself.
+//     // For custom icons, you need to place your icon in the 'res/drawable' directory.
+//     // Firebase doesn't directly manage this through code like Pushy.
+//
+//     // Handle foreground messages
+//     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+//       print('Received foreground notification: ${message.data}');
+//       // Handle the notification data and display it in the app as needed
+//     });
+//
+//     // Handle background/terminated notification clicks
+//     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+//       print('Notification clicked: ${message.data}');
+//       // Handle the notification click, navigate, or perform other actions
+//     });
+//
+//     // For background message handling when the app is completely killed, implement a background message handler
+//     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+//
+//     // Initialize your other components as before
+//     Helper.counter = CounterBloc(initialCount: 0);
+//     _animationController =
+//         AnimationController(vsync: this, duration: Duration(seconds: 2));
+//     _animationController.repeat(reverse: true);
+//     _animation = Tween(begin: 2.0, end: 8.0).animate(_animationController)
+//       ..addListener(() {
+//         setState(() {});
+//       });
+//
+//     Future.delayed(Duration.zero, () {
+//       checkForUpdate();
+//     });
+//     Global.job = null;
+//     getDashboard();
+//     getCommentPreloads();
+//
+//     // Uncomment if needed
+//     // Timer.periodic(Duration(seconds: 30), (timer) {
+//     //   Helper.getNotificationCount();
+//     // });
+//
+//     setState(() {});
+//   }
+//
+// // Background message handler (to handle messages when the app is in the background)
+//   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//     print("Handling a background message: ${message.messageId}");
+//     // Process the message as needed
+//   }
+
   @override
   void initState() {
     //WidgetsBinding.instance.addObserver(this);
-    Pushy.listen();
-    Pushy.toggleNotifications(true);
-    Pushy.requestStoragePermission();
-    Pushy.setNotificationIcon('ic_launcher');
-    pushyRegister();
-    listenNotification();
+    // Pushy.listen();
+    // Pushy.toggleNotifications(true);
+    // Pushy.requestStoragePermission();
+    //Pushy.setNotificationIcon('ic_launcher');
+    // pushyRegister();
+    // listenNotification();
     Helper.counter = CounterBloc(initialCount: 0);
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 2));
@@ -88,7 +147,7 @@ class DashboardState extends State<Dashboard>
   }
 
   var filterCtrl = TextEditingController();
-  List<DashSearch> dashSearch = [];
+  List<DashSearch>? dashSearch = [];
 
   @override
   Widget build(BuildContext context) {
@@ -196,17 +255,16 @@ class DashboardState extends State<Dashboard>
                                   onPressed: () {
                                     setState(() {
                                       filterCtrl.clear();
-                                      dashSearch.clear();
+                                      dashSearch?.clear();
                                     });
                                   })),
                           controller: filterCtrl,
                           onChanged: (text) {
                             if (text == '' ||
-                                text == null ||
                                 text.length == 0) {
                               setState(() {
                                 filterCtrl.clear();
-                                dashSearch.clear();
+                                dashSearch?.clear();
                               });
                             } else {
                               searchDash(text);
@@ -387,7 +445,7 @@ class DashboardState extends State<Dashboard>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   void getCommentPreloads() {
@@ -527,12 +585,12 @@ class DashboardState extends State<Dashboard>
                   ],
                 ),
               )
-            : dashSearch.length != 0
+            : dashSearch?.length != 0
                 ? ListView.builder(
                     shrinkWrap: true,
-                    itemCount: dashSearch == null ? 0 : dashSearch.length,
+                    itemCount: dashSearch == null ? 0 : dashSearch?.length,
                     itemBuilder: (context, index) {
-                      var quote = dashSearch[index];
+                      var quote = dashSearch![index];
                       return Container(
                         color: index % 2 == 0
                             ? Themer.listEvenColor
@@ -640,7 +698,7 @@ class DashboardState extends State<Dashboard>
   Future<bool> checkIfRealDevice() async {
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   final androidInfo = await deviceInfo.androidInfo;
-  return !androidInfo.isPhysicalDevice!; // This is a simple check
+  return !androidInfo.isPhysicalDevice; // This is a simple check
 }
 
   void checkForUpdate() {
@@ -704,11 +762,34 @@ class DashboardState extends State<Dashboard>
                               exit(0);
                             },
                             child: Text('Exit')),
+                        // TextButton(
+                        //     onPressed: () {
+                        //       StoreRedirect.redirect(iOSAppId: '1500781878');
+                        //     },
+                        //     child: Text('Update')),
+                        // TextButton(
+                        //   onPressed: () async {
+                        //     const url = 'https://apps.apple.com/app/id1500781878'; // Replace with your iOS app's store link
+                        //     if (await canLaunch(url)) {
+                        //       await launch(url, forceSafariVC: false, forceWebView: false);
+                        //     } else {
+                        //       throw 'Could not launch $url';
+                        //     }
+                        //   },
+                        //   child: Text('Update'),
+                        // )
                         TextButton(
-                            onPressed: () {
-                              StoreRedirect.redirect(iOSAppId: '1500781878');
-                            },
-                            child: Text('Update')),
+                          onPressed: () async {
+                            final url = Uri.parse('https://apps.apple.com/app/id1500781878'); // Replace with your iOS app's store link
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          child: Text('Update'),
+                        )
+
                       ],
                     ),
                   ));
@@ -720,184 +801,360 @@ class DashboardState extends State<Dashboard>
   }
 
   //new
-  static void callback(LocationDto locationDto) async {
-    print('lat2=${locationDto.latitude} long2=${locationDto.longitude}');
+  // static void callback(LocationDto locationDto) async {
+  //   print('lat2=${locationDto.latitude} long2=${locationDto.longitude}');
+  //   if (Global.previousLocation == null ||
+  //       Helper.getDistance(locationDto) > 50) {
+  //     Global.previousLocation = locationDto;
+  //     Helper.makeUser().then((user) {
+  //       print("user from location=${user!.toJson()}");
+  //       Helper.post(
+  //               'GeoLocation/Create',
+  //               {
+  //                 'id': null,
+  //                 'company_id': user.companyId.toString(),
+  //                 'user_id': user.id,
+  //                 'process_id': user.processId.toString(),
+  //                 'location1_value': locationDto.latitude.toString(),
+  //                 'location2_value': locationDto.longitude.toString(),
+  //                 'created_by': user.id,
+  //                 'created_at':
+  //                     "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+  //                 'status': '1'
+  //               },
+  //               is_json: true)
+  //           .then((value) {
+  //         print(value.body);
+  //       });
+  //       // Helper.post2('http://bigopay.in/tm/gps', {'lat':locationDto.latitude.toString(),'long':locationDto.longitude.toString()});
+  //     });
+  //   } else {
+  //     print('distance is less than 5 mtr');
+  //   }
+  // }
+
+  void locationCallback(Position position) async {
+    print('lat2=${position.latitude} long2=${position.longitude}');
+    var locationDto = LocationDto(
+      latitude: position.latitude,
+      longitude: position.longitude,
+    );
+
     if (Global.previousLocation == null ||
         Helper.getDistance(locationDto) > 50) {
-      Global.previousLocation = locationDto;
+      Global.previousLocation = LocationDto(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
       Helper.makeUser().then((user) {
-        print("user from location=${user!.toJson()}");
+        // print("user from location=${user.toJson()}");
         Helper.post(
-                'GeoLocation/Create',
-                {
-                  'id': null,
-                  'company_id': user.companyId.toString(),
-                  'user_id': user.id,
-                  'process_id': user.processId.toString(),
-                  'location1_value': locationDto.latitude.toString(),
-                  'location2_value': locationDto.longitude.toString(),
-                  'created_by': user.id,
-                  'created_at':
-                      "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
-                  'status': '1'
-                },
-                is_json: true)
-            .then((value) {
+          'GeoLocation/Create',
+          {
+            'id': null,
+            'company_id': user?.companyId.toString(),
+            'user_id': user?.id,
+            'process_id': user?.processId.toString(),
+            'location1_value': position.latitude.toString(),
+            'location2_value': position.longitude.toString(),
+            'created_by': user?.id,
+            'created_at': "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+            'status': '1'
+          },
+          is_json: true,
+        ).then((value) {
           print(value.body);
         });
-        // Helper.post2('http://bigopay.in/tm/gps', {'lat':locationDto.latitude.toString(),'long':locationDto.longitude.toString()});
       });
     } else {
-      print('distance is less than 5 mtr');
+      print('distance is less than 50 m');
     }
   }
+
 
   void _checkLocationPermission(double interval) async {
     debugPrint("Print the log");
-    // final access = await LocationPermissions().checkPermissionStatus();
-    // switch (access) {
-    //   case PermissionStatus.unknown:
-    //   case PermissionStatus.denied:
-    //   case PermissionStatus.restricted:
-    //     final permission = await LocationPermissions().requestPermissions(
-    //       permissionLevel: LocationPermissionLevel.locationAlways,
-    //     );
-    //     if (permission == PermissionStatus.granted) {
-    //       startLocationService(interval);
-    //     } else {
-    //       // show error
-    //     }
-    //     break;
-    //   case PermissionStatus.granted:
-    //     startLocationService(interval);
-    //     break;
-    // }
-    // print("dssdsd $access");
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+      startLocationService(interval);
+    } else {
+      // Show error or prompt to request permission again
+      print("Location permission not granted");
+    }
   }
+
 
   Future<void> startLocationService(double interval) async {
-    if (Global.locationRunning == false) {
-      await BackgroundLocator.initialize();
-      if (await BackgroundLocator.isRegisterLocationUpdate()) {
-        await BackgroundLocator.unRegisterLocationUpdate();
-      }
-      BackgroundLocator.registerLocationUpdate(
-        callback,
-        autoStop: false,
-        iosSettings: IOSSettings(
-          showsBackgroundLocationIndicator: true,
-          accuracy: LocationAccuracy.HIGH,
-          distanceFilter: distance,
-        ),
-        androidSettings: AndroidSettings(
-            androidNotificationSettings: AndroidNotificationSettings(
-              notificationMsg: 'tap to open',
-              notificationTitle: 'Background Location Service Is Active',
-              notificationIcon: '@mipmap/ic_launcher',
-            ),
-            accuracy: LocationAccuracy.HIGH,
-            wakeLockTime: 20,
-            distanceFilter: distance,
-            interval: (interval * 60).toInt()),
-      );
-      Global.locationRunning = true;
-    } else {
-      print("location already running in bg");
-    }
-  }
-
-  Future pushyRegister() async {
-    try {
-      // Register the device for push notifications
-      String deviceToken = await Pushy.register();
-      int deviceId = 0;
-      Helper.get(
-          'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
-          {}).then((value) {
-        var json = jsonDecode(value.body);
-        try {
-          deviceId = int.parse(json['deviceId'].toString());
-        } catch (e) {
-          deviceId = 0;
-        }
-
-        if (json['ValueExists'] != 'true') {
-          var post = {
-            "id": null,
-            "user_id": Helper.user?.id,
-            "company_id": Helper.user?.companyId,
-            "process_id": Helper.user?.processId.toString(),
-            "token": deviceToken,
-            "device_id": deviceId + 1,
-            "created_by": Helper.user!.id,
-            "created_at":
-                "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
-            "last_modified_by": null,
-            "last_modified_at": null
-          };
-
-          Helper.post('UserNotifications/Create', post, is_json: true)
-              .then((value) {});
-        }
+    if (!Global.locationRunning) {
+      // Start periodic location updates
+      Timer.periodic(Duration(minutes: interval.toInt()), (Timer timer) async {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        locationCallback(position);
       });
 
-      // Print token to console/logcat
-      print('Device token: $deviceToken');
-
-      // Optionally send the token to your backend server via an HTTP GET request
-      // ...
-    } on PlatformException catch (error) {
-      // Display an alert with the error message
-      print("pushy platform error ${error.message}");
+      Global.locationRunning = true;
+      print("Location service started");
+    } else {
+      print("Location service is already running");
     }
   }
 
-  void listenNotification() {
-    print('Notification got');
+// void _checkLocationPermission(double interval) async {
+  //   debugPrint("Print the log");
+  //   // final access = await LocationPermissions().checkPermissionStatus();
+  //   // switch (access) {
+  //   //   case PermissionStatus.unknown:
+  //   //   case PermissionStatus.denied:
+  //   //   case PermissionStatus.restricted:
+  //   //     final permission = await LocationPermissions().requestPermissions(
+  //   //       permissionLevel: LocationPermissionLevel.locationAlways,
+  //   //     );
+  //   //     if (permission == PermissionStatus.granted) {
+  //   //       startLocationService(interval);
+  //   //     } else {
+  //   //       // show error
+  //   //     }
+  //   //     break;
+  //   //   case PermissionStatus.granted:
+  //   //     startLocationService(interval);
+  //   //     break;
+  //   // }
+  //   // print("dssdsd $access");
+  // }
 
-    // Listen for push notifications
-    Pushy.setNotificationListener((Map<String, dynamic> data) {
-      // Print notification payload data
-      print('Received notification: $data');
+  // Future<void> startLocationService(double interval) async {
+  //   if (Global.locationRunning == false) {
+  //     await BackgroundLocator.initialize();
+  //     if (await BackgroundLocator.isRegisterLocationUpdate()) {
+  //       await BackgroundLocator.unRegisterLocationUpdate();
+  //     }
+  //     BackgroundLocator.registerLocationUpdate(
+  //       callback,
+  //       autoStop: false,
+  //       iosSettings: IOSSettings(
+  //         showsBackgroundLocationIndicator: true,
+  //         accuracy: LocationAccuracy.HIGH,
+  //         distanceFilter: distance,
+  //       ),
+  //       androidSettings: AndroidSettings(
+  //           androidNotificationSettings: AndroidNotificationSettings(
+  //             notificationMsg: 'tap to open',
+  //             notificationTitle: 'Background Location Service Is Active',
+  //             notificationIcon: '@mipmap/ic_launcher',
+  //           ),
+  //           accuracy: LocationAccuracy.HIGH,
+  //           wakeLockTime: 20,
+  //           distanceFilter: distance,
+  //           interval: (interval * 60).toInt()),
+  //     );
+  //     Global.locationRunning = true;
+  //   } else {
+  //     print("location already running in bg");
+  //   }
+  // }
 
-      // Clear iOS app badge number
-      Pushy.clearBadge();
-    });
 
-    // Listen for notification click
-    Pushy.setNotificationClickListener((Map<String, dynamic> data) {
-      print('Notification clicked');
 
-      // Print notification payload data
-      print('Notification click: $data');
 
-      // Extract notification messsage
-      String message = data['message'] ?? 'Hello World!';
 
-      var noti = Noti.Notification.fromJson(data);
-      Global.noti = noti;
-      print('noti=${Global.noti}');
-      Navigator.pushNamed(context, 'notification_data');
 
-      // Display an alert with the "message" payload value
-      // showDialog(
-      //     context: context,
-      //     builder: (BuildContext context) {
-      //       return AlertDialog(
-      //           title: Text('Notification click'),
-      //           content: Text(message),
-      //           actions: [
-      //             TextButton(
-      //                 child: Text('OK'),
-      //                 onPressed: () {
-      //                   Navigator.of(context, rootNavigator: true)
-      //                       .pop('dialog');
-      //                 })
-      //           ]);
-      //     });
 
-      // Clear iOS app badge number
-      Pushy.clearBadge();
-    });
-  }
+  // Future pushyRegister() async {
+  //   try {
+  //     // Register the device for push notifications
+  //     String deviceToken = await Pushy.register();
+  //     int deviceId = 0;
+  //     Helper.get(
+  //         'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
+  //         {}).then((value) {
+  //       var json = jsonDecode(value.body);
+  //       try {
+  //         deviceId = int.parse(json['deviceId'].toString());
+  //       } catch (e) {
+  //         deviceId = 0;
+  //       }
+  //
+  //       if (json['ValueExists'] != 'true') {
+  //         var post = {
+  //           "id": null,
+  //           "user_id": Helper.user?.id,
+  //           "company_id": Helper.user?.companyId,
+  //           "process_id": Helper.user?.processId.toString(),
+  //           "token": deviceToken,
+  //           "device_id": deviceId + 1,
+  //           "created_by": Helper.user!.id,
+  //           "created_at":
+  //               "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+  //           "last_modified_by": null,
+  //           "last_modified_at": null
+  //         };
+  //
+  //         Helper.post('UserNotifications/Create', post, is_json: true)
+  //             .then((value) {});
+  //       }
+  //     });
+  //
+  //     // Print token to console/logcat
+  //     print('Device token: $deviceToken');
+  //
+  //     // Optionally send the token to your backend server via an HTTP GET request
+  //     // ...
+  //   } on PlatformException catch (error) {
+  //     // Display an alert with the error message
+  //     print("pushy platform error ${error.message}");
+  //   }
+  // }
+
+
+
+
+
+  // Future<void> pushyRegister() async {
+  //   try {
+  //     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  //
+  //     // Get the device token
+  //     String? deviceToken = await _firebaseMessaging.getToken();
+  //     if (deviceToken != null) {
+  //       int deviceId = 0;
+  //
+  //       // Send token to your backend and handle response
+  //       Helper.get(
+  //         'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
+  //         {},
+  //       ).then((value) {
+  //         var json = jsonDecode(value.body);
+  //         try {
+  //           deviceId = int.parse(json['deviceId'].toString());
+  //         } catch (e) {
+  //           deviceId = 0;
+  //         }
+  //
+  //         if (json['ValueExists'] != 'true') {
+  //           var post = {
+  //             "id": null,
+  //             "user_id": Helper.user?.id,
+  //             "company_id": Helper.user?.companyId,
+  //             "process_id": Helper.user?.processId.toString(),
+  //             "token": deviceToken,
+  //             "device_id": deviceId + 1,
+  //             "created_by": Helper.user!.id,
+  //             "created_at":
+  //             "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+  //             "last_modified_by": null,
+  //             "last_modified_at": null
+  //           };
+  //
+  //           Helper.post('UserNotifications/Create', post, is_json: true)
+  //               .then((value) {});
+  //         }
+  //       });
+  //
+  //       // Print token to console/logcat
+  //       print('Device token: $deviceToken');
+  //
+  //       // Optionally send the token to your backend server via an HTTP GET request
+  //       // ...
+  //     } else {
+  //       print('Failed to get device token');
+  //     }
+  //   } catch (error) {
+  //     // Display an alert with the error message
+  //     print("Firebase registration error: $error");
+  //   }
+  // }
+
+
+
+
+  // void listenNotification() {
+  //   print('Notification got');
+  //
+  //   // Listen for push notifications
+  //   Pushy.setNotificationListener((Map<String, dynamic> data) {
+  //     // Print notification payload data
+  //     print('Received notification: $data');
+  //
+  //     // Clear iOS app badge number
+  //     Pushy.clearBadge();
+  //   });
+  //
+  //   // Listen for notification click
+  //   Pushy.setNotificationClickListener((Map<String, dynamic> data) {
+  //     print('Notification clicked');
+  //
+  //     // Print notification payload data
+  //     print('Notification click: $data');
+  //
+  //     // Extract notification messsage
+  //     //String message = data['message'] ?? 'Hello World!';
+  //
+  //     var noti = Noti.Notification.fromJson(data);
+  //     Global.noti = noti;
+  //     print('noti=${Global.noti}');
+  //     Navigator.pushNamed(context, 'notification_data');
+  //
+  //     // Display an alert with the "message" payload value
+  //     // showDialog(
+  //     //     context: context,
+  //     //     builder: (BuildContext context) {
+  //     //       return AlertDialog(
+  //     //           title: Text('Notification click'),
+  //     //           content: Text(message),
+  //     //           actions: [
+  //     //             TextButton(
+  //     //                 child: Text('OK'),
+  //     //                 onPressed: () {
+  //     //                   Navigator.of(context, rootNavigator: true)
+  //     //                       .pop('dialog');
+  //     //                 })
+  //     //           ]);
+  //     //     });
+  //
+  //     // Clear iOS app badge number
+  //     Pushy.clearBadge();
+  //   });
+  // }
+
+
+
+
+  // void listenNotification(BuildContext context) {
+  //   print('Notification listener initialized');
+  //
+  //   // Listen for foreground messages
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     print('Received foreground notification: ${message.data}');
+  //
+  //     // Handle notification data
+  //     // Example: Display a toast or an alert
+  //     String messageContent = message.data['message'] ?? 'Hello World!';
+  //
+  //     var noti = Noti.Notification.fromJson(message.data);
+  //     Global.noti = noti;
+  //     print('noti=${Global.noti}');
+  //     Navigator.pushNamed(context, 'notification_data');
+  //   });
+  //
+  //   // Handle background/terminated message clicks
+  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     print('Notification clicked: ${message.data}');
+  //
+  //     // Handle notification click
+  //     String messageContent = message.data['message'] ?? 'Hello World!';
+  //
+  //     var noti = Noti.Notification.fromJson(message.data);
+  //     Global.noti = noti;
+  //     print('noti=${Global.noti}');
+  //     Navigator.pushNamed(context, 'notification_data');
+  //   });
+  // }
+
 }

@@ -20,7 +20,7 @@ class QuoteList extends StatefulWidget {
 class _QuoteListState extends State<QuoteList>
     with SingleTickerProviderStateMixin {
   var counter = 10;
-  List<Job> quotes = [];
+  List<Job>? quotes = [];
   List<Job> filtered = [];
   bool is_fetching = false;
   late AnimationController _animationController;
@@ -83,9 +83,9 @@ class _QuoteListState extends State<QuoteList>
         quotes = (json.decode(response.body) as List)
             .map((f) => Job.fromJson(f))
             .toList();
-
+        print('job data 1==>> ${response.body}');
         filtered.clear();
-        filtered.addAll(quotes);
+        filtered.addAll(quotes!);
         print("type=${quotes.runtimeType}");
       }
     }).catchError((error) {
@@ -119,19 +119,19 @@ class _QuoteListState extends State<QuoteList>
                         onPressed: () {
                           setState(() {
                             filterCtrl.clear();
-                            filtered.addAll(quotes);
+                            filtered.addAll(quotes!);
                           });
                         })),
                 controller: filterCtrl,
                 onChanged: (text) {
-                  if (text == '' || text == null || text.length == 0) {
+                  if (text == '' || text.length == 0) {
                     print('len zer');
                     // ignore: deprecated_member_use
                     filtered = [];
-                    filtered.addAll(quotes);
+                    filtered.addAll(quotes!);
                   } else {
                     filtered.clear();
-                    quotes.forEach((job) {
+                    quotes?.forEach((job) {
                       if (job.jobDesc!.toLowerCase().contains(text.toLowerCase()) ||
                           job.address!.toLowerCase().contains(text.toLowerCase()) ||
                           job.jobNo!.toLowerCase().contains(text.toLowerCase()) ||
@@ -200,7 +200,7 @@ class _QuoteListState extends State<QuoteList>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }
 

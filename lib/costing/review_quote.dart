@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -201,7 +199,7 @@ class ReviewQuoteState extends State<ReviewQuote> {
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       appBar: Helper.getAppBar(context,
-          title: "Review Quote", sub_title: 'Job TM# ${Global.job?.jobNo}'),
+          title: "Review Quote", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
@@ -561,6 +559,6 @@ class ReviewQuoteState extends State<ReviewQuote> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

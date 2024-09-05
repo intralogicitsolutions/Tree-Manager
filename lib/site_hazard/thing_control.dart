@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -32,24 +30,24 @@ class ThingControlState extends State<ThingControl> {
         args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
         switch (args!['index']) {
           case 0:
-            selected = Global.sel_w_ctrl;
-            grids = Global.w_ctrl;
-            selectedOther = Global.sel_w_other_ctrl ?? [];
+            selected = Global.sel_w_ctrl!;
+            grids = Global.w_ctrl!;
+            selectedOther = Global.sel_w_other_ctrl!;
             break;
           case 1:
-            selected = Global.sel_j_ctrl;
-            grids = Global.j_ctrl;
-            selectedOther = Global.sel_j_other_ctrl ?? [];
+            selected = Global.sel_j_ctrl!;
+            grids = Global.j_ctrl!;
+            selectedOther = Global.sel_j_other_ctrl!;
             break;
           case 2:
-            selected = Global.sel_t_ctrl;
-            grids = Global.t_ctrl;
-            selectedOther = Global.sel_t_other_ctrl ?? [];
+            selected = Global.sel_t_ctrl!;
+            grids = Global.t_ctrl!;
+            selectedOther = Global.sel_t_other_ctrl!;
             break;
           case 3:
-            selected = Global.sel_m_ctrl;
-            grids = Global.m_ctrl;
-            selectedOther = Global.sel_m_other_ctrl ?? [];
+            selected = Global.sel_m_ctrl!;
+            grids = Global.m_ctrl!;
+            selectedOther = Global.sel_m_other_ctrl!;
             break;
           default:
         }
@@ -68,7 +66,7 @@ class ThingControlState extends State<ThingControl> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: data!['ctrl_title'], sub_title: 'Job TM# ${Global.job?.jobNo}'),
+          title: data?['ctrl_title']??'', sub_title: 'Job TM# ${Global.job?.jobNo}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
         child: Container(
@@ -81,7 +79,7 @@ class ThingControlState extends State<ThingControl> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        data!['ctrl_sub_title'],
+                        data?['ctrl_sub_title']??'',
                         style: TextStyle(fontSize: 20),
                       ),
                       Text(
@@ -110,7 +108,7 @@ class ThingControlState extends State<ThingControl> {
                             crossAxisCount: 2,
                             children: List.generate(grids.length, (index) {
                               var item = grids[index];
-                              var value = item.id;
+                             // var value = item.id;
                               return GestureDetector(
                                 child: Container(
                                   margin: EdgeInsets.all(0.5),
@@ -281,6 +279,6 @@ class ThingControlState extends State<ThingControl> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

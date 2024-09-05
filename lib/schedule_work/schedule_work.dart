@@ -1,11 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
@@ -201,7 +195,9 @@ class ScheduleWorkState extends State<ScheduleWork> {
                                 Helper.countryCode == "UK"
                                     ? 'assets/images/pound_symbol.svg'
                                     : 'assets/images/dollar-symbol_black.svg',
-                                color: Themer.gridItemColor,
+                                //color: Themer.gridItemColor,
+                                colorFilter: ColorFilter.mode(Themer.gridItemColor, BlendMode.srcIn),
+
                                 height: 20,
                               ),
                               label: Text(
@@ -227,7 +223,9 @@ class ScheduleWorkState extends State<ScheduleWork> {
                                 Helper.countryCode == "UK"
                                     ? 'assets/images/pound_symbol.svg'
                                     : 'assets/images/dollar-symbol_black.svg',
-                                color: Themer.gridItemColor,
+                                //color: Themer.gridItemColor,
+                                colorFilter: ColorFilter.mode(Themer.gridItemColor, BlendMode.srcIn),
+
                                 height: 20,
                               ),
                               label: Text(
@@ -345,7 +343,7 @@ class ScheduleWorkState extends State<ScheduleWork> {
   }
 
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+     await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -367,7 +365,7 @@ class ScheduleWorkState extends State<ScheduleWork> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)
@@ -486,6 +484,6 @@ class ScheduleWorkState extends State<ScheduleWork> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -44,7 +42,7 @@ class DamageOtherBState extends State<DamageOtherB> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Helper.getAppBar(context,
-          title: "Damage(Other)", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Damage(Other)", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
         child: Container(
@@ -121,8 +119,8 @@ class DamageOtherBState extends State<DamageOtherB> {
                         ToastContext().init(context);
                         print('Selected items: ${selected.length}');
                         //change code this selected.length by default 1
-                        if (selected.length != 0 && selected.length != 0) {
-                          Global.info!.other = selected.join(',');
+                        if (selected.length != 0) {
+                          Global.info?.other = selected.join(',');
                           var updated = Global.site_info_update == true
                               ? await Helper.updateTreeInfo(context)
                               : await Helper.setTreeInfo(context);
@@ -147,13 +145,20 @@ class DamageOtherBState extends State<DamageOtherB> {
                                   //Navigator.pushNamedAndRemoveUntil(context,'site_inspection',ModalRoute.withName('number_of_tree'));
                                   Navigator.pushReplacementNamed(
                                       context, 'site_inspection');
+                                  print('Navigator.pushReplacementNamed Error----------:::::>}');
                                 } catch (e) {
+                                  print('Navigator.pushReplacementNamed Error---->}');
                                   Navigator.pushNamed(
                                       context, 'site_inspection');
                                 }
                               }
                             } else {
-                              Navigator.pushNamed(context, 'site_inspection');
+                              print('Navigator.pushReplacementNamed Error::::;::;----------:::::>}');
+                              // Navigator.pushNamedAndRemoveUntil(context, 'site_inspection',
+                              //       (Route<dynamic> route) => route.settings.name == 'dashboard' || route.settings.name == 'quote_list', // Keep only specific routes
+                              // );
+                              Navigator.popUntil(context,
+                                  ModalRoute.withName('site_inspection'));
                             }
                           }
                         } else
@@ -178,6 +183,6 @@ class DamageOtherBState extends State<DamageOtherB> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

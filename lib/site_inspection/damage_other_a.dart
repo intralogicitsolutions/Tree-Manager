@@ -130,6 +130,6 @@ class DamageOtherAState extends State<DamageOtherA> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

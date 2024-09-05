@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -70,7 +69,7 @@ class PaymentListState extends State<PaymentList> {
                 child: TextField(
                   controller: filterCtrl,
                   onChanged: (text) {
-                    if (text == '' || text == null || text.length == 0) {
+                    if (text == '' || text.length == 0) {
                       print('len zer');
                       filtered = [];
                       filtered!.addAll(quotes!);
@@ -289,11 +288,14 @@ class PaymentListState extends State<PaymentList> {
                                                                   'SEND',
                                                               positiveButtonimage:
                                                                   'send_button.svg');
-                                                          if (action != null) {
-                                                            print(action);
-                                                            emailInvoie(
-                                                                quote, action);
-                                                          }
+                                                          // if (action != null) {
+                                                          //   print(action);
+                                                          //   emailInvoie(
+                                                          //       quote, action);
+                                                          // }
+                                                          print(action);
+                                                          emailInvoie(
+                                                                    quote, action);
                                                         }),
                                                   )),
                                               Text(
@@ -325,8 +327,8 @@ class PaymentListState extends State<PaymentList> {
     Helper.showProgress(context, 'Requesting Update');
     var post = {
       "id": null,
-      "job_id": "${job?.jobId}",
-      "job_alloc_id": "${job?.jobAllocId}",
+      "job_id": "${job.jobId}",
+      "job_alloc_id": "${job.jobAllocId}",
       "visit_type": "3",
       "sched_date": "${DateFormat("yyyy-MM-dd").format(DateTime.now())}",
       "sched_note": "Requesting payment update",
@@ -396,6 +398,6 @@ class PaymentListState extends State<PaymentList> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
-import 'package:tree_manager/pojo/CrewDetail.dart';
 import 'package:tree_manager/pojo/other_item.dart';
 
 class ManualOther extends StatefulWidget {
@@ -234,6 +233,6 @@ class ManualOtherState extends State<ManualOther> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

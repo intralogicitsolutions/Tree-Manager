@@ -159,7 +159,8 @@ class NotificationListState extends State<NotificationList> {
                                 padding: const EdgeInsets.only(right: 10),
                                 child: SvgPicture.asset(
                                   'assets/images/${getDashBoardIcon(quote)}',
-                                  color: Themer.gridItemColor,
+                                  //color: Themer.gridItemColor,
+                                  colorFilter: ColorFilter.mode(Themer.gridItemColor, BlendMode.srcIn),
                                   height: 25,
                                 ),
                               ),
@@ -210,7 +211,7 @@ class NotificationListState extends State<NotificationList> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   String getDashBoardIcon(Noti.Notification job) {

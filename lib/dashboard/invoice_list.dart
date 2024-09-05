@@ -11,7 +11,6 @@ import 'package:tree_manager/pojo/Task.dart';
 import 'package:tree_manager/pojo/equip.dart';
 import 'package:tree_manager/pojo/network_image.dart';
 import 'package:tree_manager/pojo/option.dart';
-import 'package:tree_manager/pojo/tree_info.dart';
 
 class InvoiceList extends StatefulWidget {
   @override
@@ -23,7 +22,7 @@ class InvoiceList extends StatefulWidget {
 class InvoiceState extends State<InvoiceList>
     with SingleTickerProviderStateMixin {
   var counter = 10;
-  List<Job> quotes = [];
+  List<Job>? quotes = [];
   bool is_fetching = false;
 
   late AnimationController _animationController;
@@ -52,7 +51,7 @@ class InvoiceState extends State<InvoiceList>
 
   void getJobs() {
     Helper.get(
-        "nativeappservice/jobinfoInvoice?contractor_id=${Helper.user?.companyId}&process_id=1",
+        "nativeappservice/jobinfoInvoice?contractor_id=${Helper.user?.companyId??''}&process_id=1",
         {}).then((response) {
       setState(() {
         is_fetching = false;
@@ -60,8 +59,10 @@ class InvoiceState extends State<InvoiceList>
       quotes = (json.decode(response.body) as List)
           .map((f) => Job.fromJson(f))
           .toList();
+
+      print('job data ===>>> ${response.body}');
       filtered.clear();
-      filtered.addAll(quotes);
+      filtered.addAll(quotes!);
 
       print("type=${quotes.runtimeType}");
     }).catchError((error) {
@@ -94,19 +95,19 @@ class InvoiceState extends State<InvoiceList>
                         onPressed: () {
                           setState(() {
                             filterCtrl.clear();
-                            filtered.addAll(quotes);
+                            filtered.addAll(quotes!);
                           });
                         })),
                 controller: filterCtrl,
                 onChanged: (text) {
-                  if (text == '' || text == null || text.length == 0) {
+                  if (text == '' || text.length == 0) {
                     print('len zer');
                     filtered = [];
-                    filtered.addAll(quotes);
+                    filtered.addAll(quotes!);
                   } else {
                     print('non zero');
                     filtered = [];
-                    quotes.forEach((job) {
+                    quotes?.forEach((job) {
                       if (job.address!
                               .toLowerCase()
                               .contains(text.toLowerCase()) ||
@@ -176,7 +177,7 @@ class InvoiceState extends State<InvoiceList>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }
 
@@ -207,7 +208,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
     // date_string =
     //     "${date_split[2]}th ${Helper.intToMonth(int.parse(date_split[1]))} ${time?.toLowerCase()}";
     // print(date_split);
-    print("${widget.quote.toJson()}");
+    print("job data --->${widget.quote.toJson()}");
     super.initState();
   }
 
@@ -262,7 +263,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                    heroTag: 'photo_${widget.quote.jobId}',
+                                    heroTag: 'photo_${widget.quote.jobId}_${UniqueKey()}',
                                     //heroTag: '${widget.quote.jobId}',
                                     child: SvgPicture.asset(
                                         'assets/images/${actionIcon(widget.quote)}'),
@@ -285,7 +286,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                    heroTag: 'location_${widget.quote.jobId}',
+                                    heroTag: 'location_${widget.quote.jobId}_${UniqueKey()}',
                                     //heroTag: '${widget.quote.jobId}_2',
                                     child: SvgPicture.asset(
                                         'assets/images/location_button_2x.svg'),
@@ -432,7 +433,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
         "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job.jobAllocId}&job_id=${job.jobId}",
         {}).then((data) async {
       Helper.hideProgress();
-      print(data.body);
+      print('data---->${data.body}');
       var images = (jsonDecode(data.body) as List)
           .map((f) => NetworkPhoto.fromJson(f))
           .toList();
@@ -442,7 +443,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
       images.forEach((f) {
         if (f.imgType == '1') Global.before_images!.add(f);
         if (f.imgType == '2') Global.after_images!.add(f);
-        if (f.imgType == '3') Global.hazard_images.add(f);
+        if (f.imgType == '3') Global.hazard_images!.add(f);
       });
       await Navigator.pushNamed(context, 'hazard_photos');
     }).catchError((onError) {
@@ -454,13 +455,13 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
   void getAllData(Job job) {
     Helper.showProgress(context, 'Caching dependencies..');
     Helper.get(
-        'nativeappservice/chkSignOff?job_id=${job.jobId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/chkSignOff?job_id=${job.jobId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId??''}',
         {}).then((data) {
       Global.signRequired = jsonDecode(data.body)['signOffRequired'] == 'true';
     });
 
     Helper.get(
-        'nativeappservice/chkInvoice?job_id=${job.jobId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/chkInvoice?job_id=${job.jobId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId??''}',
         {}).then((data) {
       Global.invoiceAllowed = jsonDecode(data.body)['invoiceAllowed'] == 'true';
     });
@@ -474,13 +475,13 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
     Helper.get(
-        'nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId??''}',
         {}).then((value) {
       Global.hzd_staffs = (jsonDecode(value.body) as List)
           .map((e) => Staff.fromJson(e))
           .toList();
       Helper.get(
-          'nativeappservice/getAllEquipmentForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
+          'nativeappservice/getAllEquipmentForSHF?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId??''}',
           {}).then((value) {
         Helper.hideProgress();
         Global.hzd_equips = (jsonDecode(value.body) as List)
@@ -505,13 +506,13 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
       });
 
     Helper.get(
-        'nativeappservice/getAllTasksForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/getAllTasksForSHF?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId??''}',
         {}).then((value) {
       var json = (jsonDecode(value.body) as List)[0] as Map<String, dynamic>;
       Global.hzd_task = [];
       for (var i = 0; i < 10; i++) {
         if (json.containsKey("Label$i")) {
-          Global.hzd_task.add(Task(
+          Global.hzd_task?.add(Task(
             label: json["Label$i"],
             value: json["Value$i"],
             caption: json["Label$i"],

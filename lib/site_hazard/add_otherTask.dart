@@ -1,13 +1,8 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
-import 'package:tree_manager/pojo/Staff.dart';
 import 'package:tree_manager/pojo/Task.dart';
 
 class AddOtherTask extends StatefulWidget {
@@ -116,7 +111,7 @@ class AddOtherTaskState extends State<AddOtherTask> {
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       appBar: Helper.getAppBar(context,
-          title: "Hazard identified", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Hazard identified", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
@@ -188,7 +183,7 @@ class AddOtherTaskState extends State<AddOtherTask> {
                           ),
                         ),
                         Text(
-                          args!['label'],
+                          args?['label']??'',
                           style: TextStyle(
                               fontSize: 20,
                               fontFamily: 'OpenSans',
@@ -249,6 +244,6 @@ class AddOtherTaskState extends State<AddOtherTask> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

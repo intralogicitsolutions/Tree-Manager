@@ -3,12 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'dialog/splashscreen.dart';
 import 'package:flutter/foundation.dart'
-    show debugDefaultTargetPlatformOverride;
-import 'package:flutter/services.dart';
-import 'package:pushy_flutter/pushy_flutter.dart';
+    show debugDefaultTargetPlatformOverride, kDebugMode;
 
 void main() {
-  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  if (kDebugMode) {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+  }
   // CatcherOptions debugOptions = CatcherOptions(PageReportMode(), [
   //   ConsoleHandler(
   //       enableApplicationParameters: true,

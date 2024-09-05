@@ -132,6 +132,6 @@ class DamageCheckState extends State<DamageCheck> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

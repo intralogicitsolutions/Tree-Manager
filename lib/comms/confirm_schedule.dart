@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -19,16 +17,17 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
   var hour;
   var minute;
   var am_pm;
+  Map<String, dynamic>? args;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    var args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    date = args['date'];
-    hour = args['hour'];
-    minute = args['minute'];
-    am_pm = args['am_pm'];
+     args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    date = args!['date'];
+    hour = args!['hour'];
+    minute = args!['minute'];
+    am_pm = args!['am_pm'];
 
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
@@ -102,7 +101,7 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
                                   ),
                                   onPressed: () async {
                                     try {
-                                      print('goto==>${args['goto']}');
+                                      print('goto==>${args!['goto']}');
                                       Helper.showProgress(
                                           context, 'Scheduling....');
                                       var post = {
@@ -110,7 +109,7 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
                                         "job_id": "${Global.job?.jobId??''}",
                                         "job_alloc_id":
                                             "${Global.job?.jobAllocId??''}",
-                                        "visit_type": "${args['visit_type']}",
+                                        "visit_type": "${args!['visit_type']}",
                                         "sched_date":
                                             "${date?.year??''}-${date?.month??''}-${date?.day??''}",
                                         "sched_note": null,
@@ -139,12 +138,14 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
                                         "emailaddress": null,
                                         "source": "2",
                                         "message_received": null,
-                                        "message_flow": "${args['msg_flow']}",
+                                        "message_flow": "${args!['msg_flow']}",
                                         "comm_recipient":
-                                            "${args['comm_reci']}",
+                                            "${args!['comm_reci']}",
                                         "comm_recipient_subcatg": null,
                                         "version": await Helper.getAppVersion()
                                       };
+                                      print('id--------${Helper.user?.id}');
+                                      // print('date1-->${date?.year??''}-${date?.month??''}-${date?.day??''}');
                                       Helper.post("JobSchedule/CreateWithNewID",
                                               post,
                                               is_json: true)
@@ -153,10 +154,15 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
                                             Global.job?.jobAllocId??'');
                                         Helper.hideProgress();
                                         try {
-                                          if (args.containsKey('goto') &&
-                                              args['goto'] != null) {
+
+                                          if (args!.containsKey('goto') &&
+                                              args!['goto'] != null) {
                                             Navigator.pushNamed(
-                                                context, args['goto']);
+                                                context, args!['goto']);
+                                            // Navigator.popUntil(context,
+                                            //     ModalRoute.withName(args['goto']));
+                                            // Navigator.popUntil(context,
+                                            //     ModalRoute.withName('site_inspection'));
                                           } else {
                                             Navigator.pop(context);
                                             Navigator.pop(context);
@@ -164,7 +170,7 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
                                           }
                                         } catch (e) {
                                           Navigator.pushNamed(
-                                              context, args['goto']);
+                                              context, args!['goto']);
                                         }
                                       }).catchError((onError) {
                                         Helper.hideProgress();
@@ -221,6 +227,6 @@ class ConfirmScheduleState extends State<ConfirmSchedule> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -50,7 +48,7 @@ class CommentBoxState extends State<CommentBox> {
     return Scaffold(
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         appBar: Helper.getAppBar(context,
-            title: args?['title']??'', sub_title: 'Job TM# ${Global.job!.jobNo}'),
+            title: args?['title']??'', sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -156,7 +154,6 @@ class CommentBoxState extends State<CommentBox> {
                             } else {
                               msg_ctrl.text = (option?[2].prefillText??"");
                             }
-
                           }
                           },
                         style: OutlinedButton.styleFrom(
@@ -172,62 +169,65 @@ class CommentBoxState extends State<CommentBox> {
                     ],
                   ),
                   Align(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Container(
-                                height: 60.0,
-                                width: 60.0,
-                                margin: EdgeInsets.only(bottom: 10.0, top: 30),
-                                child: FittedBox(
-                                  child: FloatingActionButton(
-                                      heroTag: 'dialog_action_2',
-                                      child: SvgPicture.asset(
-                                        "assets/images/$positiveButtonimage",
-                                        height: 60,
-                                        width: 60,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(msg_ctrl.text);
-                                      }),
-                                )),
-                            Text(
-                              "$positiveButtonText",
-                              style: TextStyle(color: Themer.textGreenColor),
-                            )
-                          ],
-                        ),
-                        if (negativeButtonText != null)
+                    child: SingleChildScrollView(
+                      //scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
                           Column(
                             children: <Widget>[
                               Container(
                                   height: 60.0,
                                   width: 60.0,
-                                  margin:
-                                      EdgeInsets.only(bottom: 10.0, top: 30),
+                                  margin: EdgeInsets.only(bottom: 10.0, top: 30),
                                   child: FittedBox(
                                     child: FloatingActionButton(
-                                        heroTag: 'dialog_action_1',
+                                        heroTag: 'dialog_action_2',
                                         child: SvgPicture.asset(
-                                          "assets/images/$negativeButtonimage",
+                                          "assets/images/$positiveButtonimage",
                                           height: 60,
                                           width: 60,
                                         ),
                                         onPressed: () {
                                           Navigator.of(context)
-                                              .pop({'text': msg_ctrl.text});
+                                              .pop(msg_ctrl.text);
                                         }),
                                   )),
                               Text(
-                                "$negativeButtonText",
+                                "$positiveButtonText",
                                 style: TextStyle(color: Themer.textGreenColor),
                               )
                             ],
-                          )
-                      ],
+                          ),
+                          if (negativeButtonText != null)
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                    height: 60.0,
+                                    width: 60.0,
+                                    margin:
+                                        EdgeInsets.only(bottom: 10.0, top: 30),
+                                    child: FittedBox(
+                                      child: FloatingActionButton(
+                                          heroTag: 'dialog_action_1',
+                                          child: SvgPicture.asset(
+                                            "assets/images/$negativeButtonimage",
+                                            height: 60,
+                                            width: 60,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop({'text': msg_ctrl.text});
+                                          }),
+                                    )),
+                                Text(
+                                  "$negativeButtonText",
+                                  style: TextStyle(color: Themer.textGreenColor),
+                                )
+                              ],
+                            )
+                        ],
+                      ),
                     ),
                     alignment: Alignment.bottomCenter,
                   ),
@@ -239,6 +239,6 @@ class CommentBoxState extends State<CommentBox> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

@@ -1,9 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-// import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
@@ -12,7 +8,6 @@ import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/Job.dart';
 import 'package:tree_manager/pojo/contact.dart';
 
-import '../pojo/Job_Mock.dart';
 
 class ScheduleList extends StatefulWidget {
   @override
@@ -25,7 +20,7 @@ class ScheduleList extends StatefulWidget {
 class ScheduleState extends State<ScheduleList>
     with SingleTickerProviderStateMixin {
   var counter = 10;
-  List<Job> quotes = [];
+  List<Job>? quotes = [];
   bool is_fetching = false;
 
   late AnimationController _animationController;
@@ -55,7 +50,7 @@ class ScheduleState extends State<ScheduleList>
           .map((f) => Job.fromJson(f))
           .toList();
       filtered.clear();
-      filtered.addAll(quotes);
+      filtered.addAll(quotes!);
 
       print("type=${quotes.runtimeType}");
     }).catchError((error) {
@@ -101,19 +96,19 @@ class ScheduleState extends State<ScheduleList>
                           onPressed: () {
                             setState(() {
                               filterCtrl.clear();
-                              filtered.addAll(quotes);
+                              filtered.addAll(quotes!);
                             });
                           })),
                   controller: filterCtrl,
                   onChanged: (text) {
-                    if (text == '' || text == null || text.length == 0) {
+                    if (text == '' || text.length == 0) {
                       print('len zer');
                       filtered = [];
-                      filtered.addAll(quotes);
+                      filtered.addAll(quotes!);
                     } else {
                       print('non zero');
                       filtered = [];
-                      quotes.forEach((job) {
+                      quotes?.forEach((job) {
                         if (job.jobDesc!
                                 .toLowerCase()
                                 .contains(text.toLowerCase()) ||
@@ -151,7 +146,7 @@ class ScheduleState extends State<ScheduleList>
                       ),
                     )
                   : Flexible(
-                      child: quotes.length != 0
+                      child: quotes?.length != 0
                           ? ListView.builder(
                               itemCount: quotes == null ? 0 : filtered.length,
                               itemBuilder: (context, index) {
@@ -192,7 +187,7 @@ class ScheduleState extends State<ScheduleList>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }
 
@@ -330,7 +325,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
 
   //PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+    await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -352,7 +347,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)

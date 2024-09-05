@@ -23,11 +23,14 @@ class _CrewConfigurationState extends State<CrewConfiguration>{
   @override
   void initState() {
 
-    Helper.get("nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId}", {})
+    Helper.get("nativeappservice/jobdetailInfo?job_alloc_id=${Global.job?.jobAllocId??''}", {})
         .then((response){
       List json2=jsonDecode(response.body);
       Global.job=Job.fromJson(json2[0]);
-    }).catchError((error)=> print(error));
+    }).catchError((error) {
+      print(error);
+      return null; // Explicitly return null
+    });
 
     super.initState();
   }
@@ -133,6 +136,6 @@ var loaded=false;
 
   void bottomClick(int index) {
     
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

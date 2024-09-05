@@ -1,15 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:image/image.dart' as img;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:intl/intl.dart';
-import 'package:multiple_images_picker/multiple_images_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-// import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -30,7 +25,7 @@ class AfterPhotoState extends State<AfterPhoto>
    List<XFile> assets = <XFile>[];
   //List<NetworkPhoto>? images;
    List<NetworkPhoto> images = [];
-  String _error = 'No Error Dectected';
+ // String _error = 'No Error Dectected';
 
   bool initialPopup = false;
 
@@ -39,7 +34,7 @@ class AfterPhotoState extends State<AfterPhoto>
     print('initing after photos');
     if (Global.after_images != null) {
       images = [];
-      if (Global.after_images!.length > 0) images?.addAll(Global.after_images as Iterable<NetworkPhoto>);
+      if (Global.after_images!.length > 0) images.addAll(Global.after_images as Iterable<NetworkPhoto>);
     } else
       images = [];
     super.initState();
@@ -47,6 +42,7 @@ class AfterPhotoState extends State<AfterPhoto>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     // var args=ModalRoute.of(context)?.settings.arguments as Map<String,dynamic>;
     if (Global.job?.siteHazardFormExists == 'true' ||
@@ -124,8 +120,10 @@ class AfterPhotoState extends State<AfterPhoto>
                                               desc: '  ');
                                           if (action == true)
                                             loadAssets();
-                                          else
+                                          else if(action == false)
                                             getImage(ImageSource.camera);
+                                          // else
+                                          //   getImage(ImageSource.camera);
                                                                                 } else {
                                           Toast.show(
                                             'Complete Site Hazard and Comeback to upload.',
@@ -238,7 +236,7 @@ class AfterPhotoState extends State<AfterPhoto>
                       url: (asset == null && !item.camera!)
                           ? Helper.BASE_URL + item.imgPath!
                           : null,
-                      fromFile: item.fromFile!,
+                      fromFile: item.fromFile,
                       width: 150,
                       height: 120,
                     ),
@@ -289,7 +287,7 @@ class AfterPhotoState extends State<AfterPhoto>
         });
   }
 
-  File? _image;
+  //File? _image;
 
   // Future getImage(ImgSource source) async {
   //   var image = await ImagePickerGC.pickImage(
@@ -332,7 +330,7 @@ class AfterPhotoState extends State<AfterPhoto>
 
          // Call setState to update the UI
          setState(() {
-           _image = file; // Update any state variables as needed
+          // _image = file; // Update any state variables as needed
          });
        }
      } catch (e) {
@@ -420,7 +418,7 @@ class AfterPhotoState extends State<AfterPhoto>
          tmp.camera = false;
          images.add(tmp);
        });
-       _error = error;
+       //_error = error;
      });
    }
 
@@ -428,7 +426,7 @@ class AfterPhotoState extends State<AfterPhoto>
     if (image.fromFile != null) {
       setState(() {
         assets.remove(image.fromFile);
-        images?.removeAt(index);
+        images.removeAt(index);
       });
     } else {
       var action = await showDeleteConfirmation();
@@ -450,7 +448,7 @@ class AfterPhotoState extends State<AfterPhoto>
               var json = jsonDecode(data.body);
               if (json['response'] == 'success') {
                 setState(() {
-                  images?.removeAt(index);
+                  images.removeAt(index);
                   //assets.remove(image.localImage);
                 });
               }
@@ -466,25 +464,27 @@ class AfterPhotoState extends State<AfterPhoto>
   }
 
   Future<void> loadedMinimum({required bool upload}) async {
-    if (images!.length < 3) {
+    if (images.length < 3) {
       var action = await showMinimumWarning(
           title: '', desc: 'Please load at least 3 photos.');
-      if (action == true)
-        loadAssets();
-      else
-        getImage(ImageSource.camera);
+      if (action == true){
+        loadAssets();}
+      else if(action == false){
+        getImage(ImageSource.camera);}
+      // else
+      //   getImage(ImageSource.camera);
         } else if (upload) {
       update();
     }
   }
 
   void update() {
-    images?.asMap().forEach((index, it) async {
+    images.asMap().forEach((index, it) async {
       if (it.id == null) {
         it.imgName =
         "AFTER_Image_${DateFormat('yyMMddHHmmssS').format(DateTime.now())}_$index.jpg";
         it.imgPath =
-        "${Global.job?.jobId}/${Global.job?.jobAllocId}/${it.imgName}.jpg";
+        "${Global.job?.jobId??''}/${Global.job?.jobAllocId??''}/${it.imgName}.jpg";
       }
       var url = '';
       var post = {
@@ -549,7 +549,7 @@ class AfterPhotoState extends State<AfterPhoto>
                 .then((data) async {
               var json = jsonDecode(data.body);
               if (json['status'] == 1) {
-                if (index == images!.length - 1) {
+                if (index == images.length - 1) {
                   await Helper.updateNotificationStatus(Global.job!.jobAllocId??'');
                   Helper.hideProgress();
                   var action = await showPhotoLoaded();
@@ -566,7 +566,7 @@ class AfterPhotoState extends State<AfterPhoto>
               Helper.hideProgress();
             });
           } else {
-            if (index == images!.length - 1) {
+            if (index == images.length - 1) {
               var action = await showPhotoLoaded();
               if (action == true) {
                 Navigator.pushReplacementNamed(context, 'accident');
@@ -606,17 +606,18 @@ class AfterPhotoState extends State<AfterPhoto>
   }
 
   Future<bool?> showMinimumWarning({String? title, String? desc}) async {
-    return (await Helper.showMultiActionModal(context,
+    final result = await Helper.showMultiActionModal(context,
         title: title,
         description: desc,
         negativeButtonText: 'CAMERA',
         negativeButtonimage: 'camera_button.svg',
         positiveButtonText: 'GALLERY',
-        positiveButtonimage: 'gallery_button.svg'));
+        positiveButtonimage: 'gallery_button.svg');
+    return result ?? null;
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   @override

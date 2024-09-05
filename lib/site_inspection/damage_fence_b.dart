@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
@@ -115,7 +113,7 @@ class DamageFenceBState extends State<DamageFenceB> {
                           ToastContext().init(context);
                           print('Selected items: ${selected.length}');
                           //change code this selected.length by default 1
-                          if (selected.length != 1) {
+                          if (selected.length != 0) {
                             Global.info?.fence = selected.join(',');
                             Global.fence?.value4 = selected.join(',');
                             saveFenceData();
@@ -145,7 +143,7 @@ class DamageFenceBState extends State<DamageFenceB> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   Future<void> saveFenceData() async {

@@ -1,8 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -21,27 +18,27 @@ class ReviewStaffState extends State<ReviewStaff> {
   Map<String, dynamic>? args;
   @override
   void initState() {
-    //getStaffs();
+    // getStaffs();
     Future.delayed(Duration.zero, () {
       args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       setState(() {
         filtered = [];
-        filtered.addAll(args!['selected']);
+        filtered?.addAll(args!['selected']);
         if (Global.hzd_sel_other_staff != null)
-          filtered.addAll(Global.hzd_sel_other_staff);
-        filtered = filtered.toSet().toList();
+          filtered?.addAll(Global.hzd_sel_other_staff!);
+        filtered = filtered?.toSet().toList();
 
         selected = [];
         if (Global.hzd_sel_other_staff != null)
-          selected.addAll(Global.hzd_sel_other_staff);
+          selected.addAll(Global.hzd_sel_other_staff!);
         selected.addAll(args!['selected']);
         selected = selected.toSet().toList();
-
         selectedStaff.addAll(selected);
         if (Global.hzd_sel_other_staff != null)
-          selectedStaff.addAll(Global.hzd_sel_other_staff);
+          selectedStaff.addAll(Global.hzd_sel_other_staff!);
         selectedStaff = selectedStaff.toSet().toList();
         print('sel sta len=${selected.length}');
+        print('filter length = ${filtered?.length}');
       });
     });
 
@@ -49,9 +46,8 @@ class ReviewStaffState extends State<ReviewStaff> {
     setState(() {});
   }
 
-  
   var filter_ctrl = TextEditingController();
-  List<Staff> filtered = [];
+  List<Staff>? filtered = [];
   var selected = <Staff>[];
   var selectedStaff = <Staff>[];
 
@@ -65,17 +61,17 @@ class ReviewStaffState extends State<ReviewStaff> {
           );
         },
         shrinkWrap: true,
-        itemCount: filtered.length,
+        itemCount: filtered!.length,
         scrollDirection: Axis.vertical,
         physics: ScrollPhysics(),
         itemBuilder: (context, index) {
-          var item = filtered[index];
+          var item = filtered?[index];
           return GestureDetector(
             child: Container(
               margin: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
               padding: EdgeInsets.fromLTRB(30, 10, 5, 5),
               decoration: BoxDecoration(
-                color: containsThis(item, index)
+                color: containsThis(item!, index)
                     ? Themer.textGreenColor
                     : Colors.white,
                 //border: Border.all(color: Themer.textGreenColor, width: 1)
@@ -107,8 +103,8 @@ class ReviewStaffState extends State<ReviewStaff> {
             onTap: () {
               if (containsThis(item, index)) {
                 selectedStaff.remove(item);
-                filtered.clear();
-                filtered.addAll(selected);
+                filtered?.clear();
+                filtered?.addAll(selected);
               } else
                 selectedStaff.add(item);
               setState(() {});
@@ -163,14 +159,14 @@ class ReviewStaffState extends State<ReviewStaff> {
                                   if (text == '') {
                                     print('len zer');
                                     filtered = [];
-                                    filtered.addAll(selected);
+                                    filtered?.addAll(selected);
                                   } else {
                                     print('non zero');
                                     filtered = [];
                                     selected.forEach((job) {
                                       if (job.firstName!.contains(text) ||
                                           job.lastName!.contains(text))
-                                        filtered.add(job);
+                                        filtered?.add(job);
                                     });
                                   }
                                   setState(() {});
@@ -182,6 +178,7 @@ class ReviewStaffState extends State<ReviewStaff> {
                                         icon: SvgPicture.asset(
                                             'assets/images/add_small.svg'),
                                         onPressed: () {
+                                          print('filter_ctr_text_length---->${filter_ctrl.text.length}');
                                           if (filter_ctrl.text.length != 0) {
                                             var stf = Staff(
                                                 firstName: filter_ctrl.text,
@@ -191,8 +188,8 @@ class ReviewStaffState extends State<ReviewStaff> {
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
                                               selected.add(stf);
-                                              filtered.clear();
-                                              filtered.addAll(selected);
+                                              filtered?.clear();
+                                              filtered?.addAll(selected);
                                               selectedStaff.add(stf);
                                             });
                                           }
@@ -210,7 +207,8 @@ class ReviewStaffState extends State<ReviewStaff> {
                               height: 10,
                             ),
                             Global.hzd_staffs != null
-                                ? Container(
+                                ?
+                            Container(
                                     height: MediaQuery.of(context).size.height *
                                         0.50,
                                     child: Scrollbar(child: makeReviewList()),
@@ -284,7 +282,7 @@ class ReviewStaffState extends State<ReviewStaff> {
                                         .where((element) => element.id == null)
                                         .toList();
 
-                                    Global.hzd_sel_staff.forEach((element) {
+                                    Global.hzd_sel_staff?.forEach((element) {
                                       print("sel staff=${element.firstName}");
                                     });
                                     if (args!['from_review'] == true) {
@@ -338,7 +336,7 @@ class ReviewStaffState extends State<ReviewStaff> {
   void getStaffs() {
     selected = [];
     Helper.get(
-        "nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId}&job_alloc_id=${Global.job!.jobAllocId}&process_id=${Helper.user?.processId}",
+        "nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${Global.job!.jobAllocId}&process_id=${Helper.user?.processId??''}",
         {}).then((data) {
       Global.hzd_staffs = (jsonDecode(data.body) as List)
           .map((f) => Staff.fromJson(f))
@@ -348,6 +346,6 @@ class ReviewStaffState extends State<ReviewStaff> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

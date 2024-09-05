@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -19,12 +17,14 @@ class TotalAmount extends StatefulWidget {
 
 class TotalAmountState extends State<TotalAmount> {
   List<CrewDetail> crewDetails = [];
+
   @override
   void initState() {
     print('tax rate= ${Global.taxRate}');
     Future.delayed(Duration.zero, () {
       setState(() {
-         crewDetails = ModalRoute.of(context)?.settings.arguments as List<CrewDetail> ?? [];
+        crewDetails =
+            ModalRoute.of(context)?.settings.arguments as List<CrewDetail>;
         getContractorDetails();
         calcTotal();
         getApprovalLimit();
@@ -38,6 +38,7 @@ class TotalAmountState extends State<TotalAmount> {
   var approval_limit = -1.0;
   String? name;
   String? mobile;
+
   double calcTotal() {
     total = 0.0;
     crewDetails.forEach((f) {
@@ -54,7 +55,8 @@ class TotalAmountState extends State<TotalAmount> {
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       appBar: Helper.getAppBar(context,
-          title: "Job Costing", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Job Costing",
+          sub_title: 'Job TM# ${Global.job?.jobNo ?? ''}'),
       body: Stack(
         children: <Widget>[
           Center(
@@ -225,12 +227,12 @@ class TotalAmountState extends State<TotalAmount> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   void getApprovalLimit() {
     Helper.get(
-        "nativeappservice/getApprovalLimitDetails?wpcompanyId=${Global.job!.wpcompanyid}&reqId=${Global.job?.reqid}",
+        "nativeappservice/getApprovalLimitDetails?wpcompanyId=${Global.job?.wpcompanyid??''}&reqId=${Global.job?.reqid??''}",
         {}).then((data) {
       var json = jsonDecode(data.body);
       try {
@@ -244,14 +246,14 @@ class TotalAmountState extends State<TotalAmount> {
   Future<void> createSchedule() async {
     var post = {
       "id": null,
-      "job_id": "${Global.job?.jobId}",
-      "job_alloc_id": "${Global.job?.jobAllocId}",
+      "job_id": "${Global.job?.jobId??''}",
+      "job_alloc_id": "${Global.job?.jobAllocId??''}",
       "visit_type": "3",
       "sched_date": "${DateFormat('yyyy-MM-dd').format(DateTime.now())}",
       "sched_note": null,
-      "process_id": "${Helper.user?.processId}",
-      "owner": "${Helper.user?.id}",
-      "created_by": "${Helper.user?.id}",
+      "process_id": "${Helper.user?.processId??''}",
+      "owner": "${Helper.user?.id??''}",
+      "created_by": "${Helper.user?.id??''}",
       "last_modified_by": null,
       "created_at":
           "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}",
@@ -292,41 +294,41 @@ class TotalAmountState extends State<TotalAmount> {
     print('tax=$tax  total=$total  rate=${Global.taxRate}');
     //return;
     var head = {
-      "id": "${Global.head?.id??''}",
+      "id": "${Global.head?.id ?? ''}",
       "rate_set_id": "${Global.rateSet}",
-      "job_id": "${Global.job?.jobId??''}",
-      "job_alloc_id": "${Global.job?.jobAllocId??''}",
-      "cost_refno": "${Global.head!.costRefno??''}",
+      "job_id": "${Global.job?.jobId ?? ''}",
+      "job_alloc_id": "${Global.job?.jobAllocId ?? ''}",
+      "cost_refno": "${Global.head!.costRefno ?? ''}",
       "sub_total": "$total",
       "tax_rate": "${Global.taxRate}",
       "tp_tax_total": "$tax",
       "tp_grand_total": "${total + tax}",
-      "process_id": "${Global.head?.processId??''}",
-      "job_manager": "${Global.head?.jobManager??''}",
-      "job_contact": "${Global.head?.jobContact??''}",
-      "job_notes": "${Global.head?.jobNotes??''}",
-      "wp_pm_notes": "${Global.head?.wpPmNotes??''}",
-      "wp_pm_substantiation": "${Global.head?.wpPmSubstantiation??''}",
+      "process_id": "${Global.head?.processId ?? ''}",
+      "job_manager": "${Global.head?.jobManager ?? ''}",
+      "job_contact": "${Global.head?.jobContact ?? ''}",
+      "job_notes": "${Global.head?.jobNotes ?? ''}",
+      "wp_pm_notes": "${Global.head?.wpPmNotes ?? ''}",
+      "wp_pm_substantiation": "${Global.head?.wpPmSubstantiation ?? ''}",
       "tp_job_substantiation": "${Global.substan}",
-      "wp_grand_total": "${Global.head?.wpGrandTotal??''}",
-      "wp_tax_total": "${Global.head?.wpTaxTotal??''}",
-      "date": "${Global.head?.date??''}",
-      "wp_rate_set_id": "${Global.head?.wpRateSetId??''}",
-      "quote_date": "${Global.head?.quoteDate??''}",
-      "quote_no": "${Global.head?.quoteNo??''}",
-      "wp_sub_total": "${Global.head?.wpSubTotal??''}",
-      "tp_invoice_no": "${Global.head?.tpInvoiceNo??''}",
-      "source": "${Global.head?.source??''}",
+      "wp_grand_total": "${Global.head?.wpGrandTotal ?? ''}",
+      "wp_tax_total": "${Global.head?.wpTaxTotal ?? ''}",
+      "date": "${Global.head?.date ?? ''}",
+      "wp_rate_set_id": "${Global.head?.wpRateSetId ?? ''}",
+      "quote_date": "${Global.head?.quoteDate ?? ''}",
+      "quote_no": "${Global.head?.quoteNo ?? ''}",
+      "wp_sub_total": "${Global.head?.wpSubTotal ?? ''}",
+      "tp_invoice_no": "${Global.head?.tpInvoiceNo ?? ''}",
+      "source": "${Global.head?.source ?? ''}",
       "status": "$status",
-      "rebate_total": "${Global.head?.rebateTotal??''}",
-      "mark_complete": "${Global.head?.markComplete??''}",
-      "tp_pay_dt": "${Global.head?.tpPayDt??''}",
-      "Upload_by": "${Helper.user?.id??''}",
-      "tp_invoice_dt": "${Global.head?.tpInvoiceDt??''}",
-      "owner": "${Helper.user?.id??''}",
-      "created_by": "${Helper.user?.id??''}",
-      "last_modified_by": "${Helper.user?.id??''}",
-      "created_at": "${Global.head?.createdAt??''}",
+      "rebate_total": "${Global.head?.rebateTotal ?? ''}",
+      "mark_complete": "${Global.head?.markComplete ?? ''}",
+      "tp_pay_dt": "${Global.head?.tpPayDt ?? ''}",
+      "Upload_by": "${Helper.user?.id ?? ''}",
+      "tp_invoice_dt": "${Global.head?.tpInvoiceDt ?? ''}",
+      "owner": "${Helper.user?.id ?? ''}",
+      "created_by": "${Helper.user?.id ?? ''}",
+      "last_modified_by": "${Helper.user?.id ?? ''}",
+      "created_at": "${Global.head?.createdAt ?? ''}",
       "last_updated_at":
           "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}"
     };
@@ -334,35 +336,35 @@ class TotalAmountState extends State<TotalAmount> {
     Helper.put("costformhead/Edit", head, is_json: true).then((data) {
       Helper.hideProgress();
       print('update head==>${data.body}');
-      var json = jsonDecode(data.body);
+     // var json = jsonDecode(data.body);
       var dets = crewDetails.where((test) => test.detail != null).toList();
       if (dets.length > 0) Helper.showProgress(context, 'Updating Details');
       dets.asMap().forEach((index, it) async {
         var detail = {
-          "id": "${it.detail?.id??''}",
-          "head_id": "${it.detail?.headId??''}",
-          "job_id": "${it.detail?.jobId??''}",
-          "job_alloc_id": "${it.detail?.jobAllocId??''}",
-          "cost_refno": "${Global.head?.costRefno??''}",
+          "id": "${it.detail?.id ?? ''}",
+          "head_id": "${it.detail?.headId ?? ''}",
+          "job_id": "${it.detail?.jobId ?? ''}",
+          "job_alloc_id": "${it.detail?.jobAllocId ?? ''}",
+          "cost_refno": "${Global.head?.costRefno ?? ''}",
           "item_desc": "${it.detail?.itemDesc ?? " "}",
-          "item_id": "${it.detail?.itemId??''}",
+          "item_id": "${it.detail?.itemId ?? ''}",
           "item_qty": "${it.count}",
           "item_hrs": "${it.hour}",
           "item_price": "${it.hourlyRate}",
           "item_total":
               "${it.count * it.hour * double.parse(it.hourlyRate.toString())}",
           "item_rate": "${it.rateClass}",
-          "quote_inc": "${it.detail?.quoteInc??''}",
-          "entry_point": "${it.detail?.entryPoint??''}",
-          "wp_qty": "${it.detail?.wpQty??''}",
-          "wp_desc": "${it.detail?.wpDesc??''}",
-          "wp_rate": "${it.detail?.wpRate??''}",
-          "wp_hrs": "${it.detail?.wpHrs??''}",
-          "wp_total": "${it.detail?.wpTotal??''}",
-          "process_id": "${Helper.user?.processId??''}",
-          "owner": "${Helper.user?.id??''}",
-          "created_by": "${Helper.user?.id??''}",
-          "last_modifies_by": "${Helper.user?.id??''}}",
+          "quote_inc": "${it.detail?.quoteInc ?? ''}",
+          "entry_point": "${it.detail?.entryPoint ?? ''}",
+          "wp_qty": "${it.detail?.wpQty ?? ''}",
+          "wp_desc": "${it.detail?.wpDesc ?? ''}",
+          "wp_rate": "${it.detail?.wpRate ?? ''}",
+          "wp_hrs": "${it.detail?.wpHrs ?? ''}",
+          "wp_total": "${it.detail?.wpTotal ?? ''}",
+          "process_id": "${Helper.user?.processId ?? ''}",
+          "owner": "${Helper.user?.id ?? ''}",
+          "created_by": "${Helper.user?.id ?? ''}",
+          "last_modifies_by": "${Helper.user?.id ?? ''}}",
           "created_at":
               "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}",
           "last_updated_at":
@@ -375,7 +377,7 @@ class TotalAmountState extends State<TotalAmount> {
           print('update detail==>${data.body}');
         });
       });
-      createDetail(status, Global.head?.id??'');
+      createDetail(status, Global.head?.id ?? '');
     });
   }
 
@@ -389,8 +391,8 @@ class TotalAmountState extends State<TotalAmount> {
       var head = {
         "id": null,
         "rate_set_id": "${Global.rateSet}",
-        "job_id": "${Global.job?.jobId??''}",
-        "job_alloc_id": "${Global.job?.jobAllocId??''}",
+        "job_id": "${Global.job?.jobId ?? ''}",
+        "job_alloc_id": "${Global.job?.jobAllocId ?? ''}",
         "cost_refno": null,
         "sub_total": "$total",
         "tax_rate": "${Global.taxRate}",
@@ -416,10 +418,10 @@ class TotalAmountState extends State<TotalAmount> {
         "rebate_total": null,
         "mark_complete": null,
         "tp_pay_dt": null,
-        "Upload_by": "${Helper.user?.id??''}",
+        "Upload_by": "${Helper.user?.id ?? ''}",
         "tp_invoice_dt": null,
-        "owner": "${Helper.user?.id??''}",
-        "created_by": "${Helper.user?.id??''}",
+        "owner": "${Helper.user?.id ?? ''}",
+        "created_by": "${Helper.user?.id ?? ''}",
         "last_modified_by": null,
         "created_at": "${dateTime}",
         "last_updated_at": null
@@ -438,48 +440,110 @@ class TotalAmountState extends State<TotalAmount> {
     }
   }
 
-  void createDetail(int status, String headId) {
+  // void createDetail(int status, String headId) {
+  //   var dets = crewDetails.where((test) => test.detail == null).toList();
+  //
+  //   if (dets.length > 0) Helper.showProgress(context, 'Creating Detail');
+  //   dets.asMap().forEach((index, it) async {
+  //     var detail = {
+  //       "id": null,
+  //       "head_id": "$headId",
+  //       "job_id": "${Global.job?.jobId ?? ''}",
+  //       "job_alloc_id": "${Global.job?.jobAllocId ?? ''}",
+  //       "cost_refno": null,
+  //       "item_desc": " ",
+  //       "item_id": "${it.itemId}",
+  //       "item_qty": "${it.count}",
+  //       "item_hrs": "${it.hour}",
+  //       "item_price": "${it.hourlyRate}",
+  //       "item_total":
+  //           "${it.count * it.hour * double.parse(it.hourlyRate.toString())}",
+  //       "item_rate": "${it.rateClass}",
+  //       "quote_inc": "1",
+  //       "entry_point": "1",
+  //       "wp_qty": null,
+  //       "wp_desc": null,
+  //       "wp_rate": null,
+  //       "wp_hrs": null,
+  //       "wp_total": null,
+  //       "process_id": "${Helper.user?.processId ?? ''}",
+  //       "owner": "${Helper.user?.id ?? ''}",
+  //       "created_by": "${Helper.user?.id ?? ''}",
+  //       "last_modifies_by": "",
+  //       "created_at":
+  //           "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}",
+  //       "last_updated_at": ""
+  //     };
+  //     await Helper.post("costformdetail/CreateWithNewID", detail, is_json: true)
+  //         .then((data) {
+  //       if (index == dets.length - 1) Helper.hideProgress();
+  //       print('create detail ==> $detail \n ${data.body}');
+  //     });
+  //   });
+  //   updateHeadStatus(status);
+  // }
+
+  void createDetail(int status, String headId) async {
     var dets = crewDetails.where((test) => test.detail == null).toList();
 
-    if (dets.length > 0) Helper.showProgress(context, 'Creating Detail');
-    dets.asMap().forEach((index, it) async {
-      var detail = {
-        "id": null,
-        "head_id": "$headId",
-        "job_id": "${Global.job?.jobId??''}",
-        "job_alloc_id": "${Global.job?.jobAllocId??''}",
-        "cost_refno": null,
-        "item_desc": " ",
-        "item_id": "${it.itemId}",
-        "item_qty": "${it.count}",
-        "item_hrs": "${it.hour}",
-        "item_price": "${it.hourlyRate}",
-        "item_total":
-            "${it.count * it.hour * double.parse(it.hourlyRate.toString())}",
-        "item_rate": "${it.rateClass}",
-        "quote_inc": "1",
-        "entry_point": "1",
-        "wp_qty": null,
-        "wp_desc": null,
-        "wp_rate": null,
-        "wp_hrs": null,
-        "wp_total": null,
-        "process_id": "${Helper.user?.processId??''}",
-        "owner": "${Helper.user?.id??''}",
-        "created_by": "${Helper.user?.id??''}",
-        "last_modifies_by": "",
-        "created_at":
-            "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}",
-        "last_updated_at": ""
-      };
-      await Helper.post("costformdetail/CreateWithNewID", detail, is_json: true)
-          .then((data) {
-        if (index == dets.length - 1) Helper.hideProgress();
-        print('create detail ==> $detail \n ${data.body}');
-      });
-    });
+    if (dets.isNotEmpty) {
+      Helper.showProgress(context, 'Creating Detail');
+    }
+
+    try {
+      for (var index = 0; index < dets.length; index++) {
+        var it = dets[index];
+        var detail = {
+          "id": null,
+          "head_id": "$headId",
+          "job_id": "${Global.job?.jobId ?? ''}",
+          "job_alloc_id": "${Global.job?.jobAllocId ?? ''}",
+          "cost_refno": null,
+          "item_desc": " ",
+          "item_id": "${it.itemId}",
+          "item_qty": "${it.count}",
+          "item_hrs": "${it.hour}",
+          "item_price": "${it.hourlyRate}",
+          "item_total":
+          "${it.count * it.hour * double.parse(it.hourlyRate.toString())}",
+          "item_rate": "${it.rateClass}",
+          "quote_inc": "1",
+          "entry_point": "1",
+          "wp_qty": null,
+          "wp_desc": null,
+          "wp_rate": null,
+          "wp_hrs": null,
+          "wp_total": null,
+          "process_id": "${Helper.user?.processId ?? ''}",
+          "owner": "${Helper.user?.id ?? ''}",
+          "created_by": "${Helper.user?.id ?? ''}",
+          "last_modifies_by": "",
+          "created_at":
+          "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}",
+          "last_updated_at": ""
+        };
+
+        try {
+          var response = await Helper.post("costformdetail/CreateWithNewID", detail, is_json: true);
+          print('create detail ==> $detail \n ${response.body}');
+        } catch (e) {
+          print('Error creating detail: $e');
+        }
+
+        if (index == dets.length - 1) {
+          Helper.hideProgress();
+        }
+      }
+    } finally {
+      // Ensure progress is hidden even if there is an error
+      if (dets.isNotEmpty) {
+        Helper.hideProgress();
+      }
+    }
+
     updateHeadStatus(status);
   }
+
 
   void updateHeadStatus(int status) {
     if (status == 4) {
@@ -500,7 +564,7 @@ class TotalAmountState extends State<TotalAmount> {
     //status =4 save
     Helper.showProgress(context, 'Updaing Head Status');
     Helper.get(
-        "nativeappservice/updateCostFormHeadStatus?job_alloc_id=${Global.job?.jobAllocId}&job_id=${Global.job?.jobId}&status=$status",
+        "nativeappservice/updateCostFormHeadStatus?job_alloc_id=${Global.job?.jobAllocId??''}&job_id=${Global.job?.jobId??''}&status=$status",
         {}).then((data) async {
       Helper.hideProgress();
       print('update head status==>${data.body}');
@@ -508,7 +572,7 @@ class TotalAmountState extends State<TotalAmount> {
       if (json['success'] == 1) {
         switch (status) {
           case 1:
-            await Helper.updateNotificationStatus(Global.job!.jobAllocId??'');
+            await Helper.updateNotificationStatus(Global.job?.jobAllocId ?? '');
             await Helper.showSingleActionModal(
               context,
               title: 'Costing Info',
@@ -523,7 +587,7 @@ class TotalAmountState extends State<TotalAmount> {
             }
             break;
           case 2:
-            await Helper.updateNotificationStatus(Global.job!.jobAllocId??'');
+            await Helper.updateNotificationStatus(Global.job!.jobAllocId ?? '');
             await Helper.showSingleActionModal(
               context,
               title: 'Costing Approved',
@@ -540,15 +604,15 @@ class TotalAmountState extends State<TotalAmount> {
             if (action!) {
               var sched = {
                 "id": null,
-                "job_id": "${Global.job?.jobId??''}",
-                "job_alloc_id": "${Global.job?.jobAllocId??''}",
+                "job_id": "${Global.job?.jobId ?? ''}",
+                "job_alloc_id": "${Global.job?.jobAllocId ?? ''}",
                 "visit_type": "3",
                 "sched_date":
                     "${DateFormat('yyyy-MM-dd').format(DateTime.now())}",
                 "sched_note": null,
-                "process_id": "${Helper.user?.id??''}",
-                "owner": "${Helper.user?.id??''}",
-                "created_by": "${Helper.user?.id??''}",
+                "process_id": "${Helper.user?.id ?? ''}",
+                "owner": "${Helper.user?.id ?? ''}",
+                "created_by": "${Helper.user?.id ?? ''}",
                 "last_modified_by": null,
                 "created_at":
                     "${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}",
@@ -600,7 +664,9 @@ class TotalAmountState extends State<TotalAmount> {
             );
             try {
               print('trying this');
-              Navigator.pushReplacementNamed(context, 'site_inspection');
+              // Navigator.pushReplacementNamed(context, 'site_inspection');
+              Navigator.popUntil(context,
+                  ModalRoute.withName('site_inspection'));
             } catch (e) {
               print('this is $e');
               Navigator.of(context).pushNamedAndRemoveUntil(
@@ -619,7 +685,7 @@ class TotalAmountState extends State<TotalAmount> {
     var id;
     Helper.showProgress(context, 'Getting Head Id');
     await Helper.get(
-        "costformhead/getLastInsertedId?job_id=${Global.job?.jobId??''}&job_alloc_id=${Global.job?.jobAllocId??''}",
+        "costformhead/getLastInsertedId?job_id=${Global.job?.jobId ?? ''}&job_alloc_id=${Global.job?.jobAllocId ?? ''}",
         {}).then((data) {
       Helper.hideProgress();
       id = data.body;
@@ -632,7 +698,7 @@ class TotalAmountState extends State<TotalAmount> {
 
   void getContractorDetails() {
     Helper.get(
-        "nativeappservice/getJobManagerAndContactNoForApp?user_id=${Helper.user?.id??''}",
+        "nativeappservice/getJobManagerAndContactNoForApp?user_id=${Helper.user?.id ?? ''}",
         {}).then((data) {
       var json = jsonDecode(data.body) as List;
       mobile = json[0]['mobile'];

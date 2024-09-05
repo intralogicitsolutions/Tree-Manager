@@ -2,12 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 import 'package:cached_network_image/cached_network_image.dart';
-//import 'package:esys_flutter_share/esys_flutter_share.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
-//import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -106,8 +102,14 @@ class ImageViewerState extends State<ImageViewer> {
                         final tempDir = await getTemporaryDirectory();
                         final tempFile = File('${tempDir.path}/temp_image.png');
                         await tempFile.writeAsBytes(bytes!);
-                        await Share.shareFiles(
-                          [tempFile.path],
+                        final XFile xFile = XFile(tempFile.path);
+                        // await Share.shareFiles(
+                        //   [tempFile.path],
+                        //   text: 'My optional text.',
+                        // );
+                        //await Share.share('My optional text: ${tempFile.path}');
+                        await Share.shareXFiles(
+                          [xFile],
                           text: 'My optional text.',
                         );
                       }catch (e) {
@@ -201,7 +203,7 @@ class ImageViewerState extends State<ImageViewer> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   Future<void> saveImage(Uint8List bytes, String name) async {

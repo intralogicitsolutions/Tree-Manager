@@ -29,7 +29,7 @@ class _ManualEquipState extends State<ManualEquip> {
   }
 
   void _initializeData() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       rateClass = args?['rate_class'] ?? Global.selectedRateClass ?? Global.normalClass;
       Global.sub_equips = null;
@@ -298,6 +298,6 @@ class _ManualEquipState extends State<ManualEquip> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

@@ -1,8 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -20,11 +17,11 @@ class EquipSelection extends StatefulWidget {
 class EquipSelectionState extends State<EquipSelection> {
   @override
   void initState() {
-    //getStaffs();
+    // getStaffs();
     filtered = [];
     filtered!.addAll(Global.hzd_equips);
     print(jsonEncode(filtered));
-    selected = Global.hzd_sel_equip ?? [];
+    selected = Global.hzd_sel_equip!;
     super.initState();
   }
 
@@ -42,7 +39,7 @@ class EquipSelectionState extends State<EquipSelection> {
           );
         },
         shrinkWrap: true,
-        itemCount: Global.hzd_equips != null ? filtered!.length : 0,
+        itemCount: filtered?.length ?? 0,
         scrollDirection: Axis.vertical,
         physics: ScrollPhysics(),
         itemBuilder: (context, index) {
@@ -188,12 +185,13 @@ class EquipSelectionState extends State<EquipSelection> {
                             fontFamily: 'OpenSans',
                           ),
                         ),
-                        Global.hzd_equips != null
-                            ? Container(
+                        // Global.hzd_equips != null
+                        //     ?
+                        Container(
                                 child: makeReviewList(),
                                 height: size.height * 0.50,
                               )
-                            : Center(child: CircularProgressIndicator()),
+                           // : Center(child: CircularProgressIndicator()),
                       ],
                     ),
                     Row(
@@ -210,6 +208,7 @@ class EquipSelectionState extends State<EquipSelection> {
                                 child: SvgPicture.asset(
                                     'assets/images/continue_button.svg'),
                                 onPressed: () async {
+                                  ToastContext().init(context);
                                   if (selected.length > 0) {
                                     Global.hzd_sel_equip = selected;
                                     if (args!.containsKey('from_review') &&
@@ -259,7 +258,7 @@ class EquipSelectionState extends State<EquipSelection> {
   void getStaffs() {
     selected = [];
     Helper.get(
-        "nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId}&job_alloc_id=${Global.job!.jobAllocId}&process_id=${Helper.user?.processId}",
+        "nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId??''}&job_alloc_id=${Global.job?.jobAllocId??''}&process_id=${Helper.user?.processId??''}",
         {}).then((data) {
       Global.hzd_equips = (jsonDecode(data.body) as List)
           .map((f) => Equip.fromJson(f))
@@ -269,6 +268,6 @@ class EquipSelectionState extends State<EquipSelection> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

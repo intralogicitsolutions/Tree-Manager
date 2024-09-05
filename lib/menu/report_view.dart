@@ -1,11 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-// import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
@@ -51,10 +45,10 @@ class ReportViewState extends State<ReportView> {
         if (t.homeNumber != null) {
           contacts.add(Contact(mobile: t.homeNumber));
         }
-        if (t.workNumber != null) {
+        else if (t.workNumber != null) {
           contacts.add(Contact(mobile: t.workNumber));
         }
-        if (t.mobile != null) {
+        else if (t.mobile != null) {
           contacts.add(Contact(mobile: t.mobile));
         }
       });
@@ -248,9 +242,10 @@ class ReportViewState extends State<ReportView> {
                     ),
                     InkWell(
                       onTap: () {
-                        if (Global.flow != null) {
-                          Navigator.pushNamed(context, 'work_flow');
-                        }
+                        // if (Global.flow != null) {
+                        //   Navigator.pushNamed(context, 'work_flow');
+                        // }
+                        Navigator.pushNamed(context, 'work_flow');
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -358,13 +353,13 @@ class ReportViewState extends State<ReportView> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   void getPhotos(Job job) {
     print('getting images');
     Helper.get(
-        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job?.jobAllocId}&job_id=${job?.jobId}",
+        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job.jobAllocId}&job_id=${job.jobId}",
         {}).then((data) {
       print(data.body);
       var images = (jsonDecode(data.body) as List)
@@ -394,7 +389,7 @@ class ReportViewState extends State<ReportView> {
 
   //PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+     await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -416,7 +411,7 @@ class ReportViewState extends State<ReportView> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)

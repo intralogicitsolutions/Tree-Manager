@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -17,6 +16,7 @@ class Login extends StatefulWidget {
 class LoginState extends State<Login> {
   var u_ctrl = TextEditingController();
   var p_ctrl = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     // u_ctrl.text = "Divakar";
@@ -30,7 +30,7 @@ class LoginState extends State<Login> {
           ),
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: (){
+            onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
             },
             child: Stack(
@@ -45,120 +45,136 @@ class LoginState extends State<Login> {
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: Align(
-                          child: Image.asset(Helper.AppImage),
-                          alignment: Alignment.center,
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).viewInsets.bottom,
                         ),
-                      ),
-                      Form(
+                        child: IntrinsicHeight(
                           child: Column(
-                        children: <Widget>[
-                          TextField(
-                            controller: u_ctrl,
-                            decoration: InputDecoration(
-                                prefixIcon: SvgPicture.asset(
-                                  'assets/images/Person-Username.svg',
-                                  fit: BoxFit.scaleDown,
-                                ),
-                                hintText: 'Username'),
-                            style: TextStyle(fontSize: 25),
-                          ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          TextField(
-                            controller: p_ctrl,
-                            decoration: InputDecoration(
-                              prefixIcon: SvgPicture.asset(
-                                'assets/images/Password-Lock.svg',
-                                fit: BoxFit.scaleDown,
-                              ),
-                              hintText: 'Password',
-                            ),
-                            style: TextStyle(fontSize: 25),
-                          ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          MaterialButton(
-                            minWidth: size.width,
-                            onPressed: () {
-                              Helper.bottom_nav_selected=0;
-                              Helper.showProgress(context, 'Authenticating...');
-                              Helper.get(
-                                  "nativeappservice/validateLogin?username=${u_ctrl.text.toString()}&password=${p_ctrl.text.toString()}",
-                                  {}).then((response) {
-                                Helper.hideProgress();
-                                var json =
-                                    jsonDecode(response.body) as List<dynamic>;
-                                if (json.length == 1) {
-                                  Helper.setUser(json[0]);
-                                  print(Helper.user?.userName);
-                                  Navigator.pushReplacementNamed(
-                                      context, 'dashboard');
-                                } else {
-                                  Helper.showSingleActionModal(context,
-                                      title: 'OOPS',
-                                      description:
-                                          'Invalid Username/Password. Try Again.');
-                                }
-                                print(json.runtimeType);
-                              }).catchError((error) {
-                                Helper.hideProgress();
-                                print(error);
-                              });
-                            },
-                            padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
-                            color: Themer.textGreenColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0)),
-                            child: Text(
-                              'SIGN IN >',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            // mainAxisAlignment: MainAxisAlignment.center, // Centers content vertically
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                              // mainAxisAlignment: MainAxisAlignment.center, // Centers content vertically
+                              // crossAxisAlignment: CrossAxisAlignment.center, // Centers content horizontally
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Text(
-                                "Can't sign in?",
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, 'forgot_password');
-                                },
-                                child: Text(
-                                  "Forgot Password",
-                                  maxLines: 1,
+                              Padding(
+                                padding: EdgeInsets.only(top: 0),
+                                child: Align(
+                                  child: Image.asset(Helper.AppImage),
+                                  alignment: Alignment.center,
                                 ),
-                              )
+                              ),
+                              Form(
+                                  child: Column(
+                                children: <Widget>[
+                                  TextField(
+                                    controller: u_ctrl,
+                                    decoration: InputDecoration(
+                                        prefixIcon: SvgPicture.asset(
+                                          'assets/images/Person-Username.svg',
+                                          fit: BoxFit.scaleDown,
+                                        ),
+                                        hintText: 'Username'),
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+                                  SizedBox(
+                                    height: 30.0,
+                                  ),
+                                  TextField(
+                                    controller: p_ctrl,
+                                    decoration: InputDecoration(
+                                      prefixIcon: SvgPicture.asset(
+                                        'assets/images/Password-Lock.svg',
+                                        fit: BoxFit.scaleDown,
+                                      ),
+                                      hintText: 'Password',
+                                    ),
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+                                  SizedBox(
+                                    height: 30.0,
+                                  ),
+                                  MaterialButton(
+                                    minWidth: size.width,
+                                    onPressed: () {
+                                      Helper.bottom_nav_selected = 0;
+                                      Helper.showProgress(context, 'Authenticating...');
+                                      Helper.get(
+                                          "nativeappservice/validateLogin?username=${u_ctrl.text.toString()}&password=${p_ctrl.text.toString()}",
+                                          {}).then((response) {
+                                        Helper.hideProgress();
+                                        var json =
+                                            jsonDecode(response.body) as List<dynamic>;
+                                        if (json.length == 1) {
+                                          Helper.setUser(json[0]);
+                                          print(Helper.user?.userName);
+                                          Navigator.pushReplacementNamed(
+                                              context, 'dashboard');
+                                        } else {
+                                          Helper.showSingleActionModal(context,
+                                              title: 'OOPS',
+                                              description:
+                                                  'Invalid Username/Password. Try Again.');
+                                        }
+                                        print(json.runtimeType);
+                                      }).catchError((error) {
+                                        Helper.hideProgress();
+                                        print(error);
+                                      });
+                                    },
+                                    padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
+                                    color: Themer.textGreenColor,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0)),
+                                    child: Text(
+                                      'SIGN IN >',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 30.0,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Can't sign in?",
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                              context, 'forgot_password');
+                                        },
+                                        child: Text(
+                                          "Forgot Password",
+                                          maxLines: 1,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 30.0,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: TextButton.icon(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, 'help_center');
+                                      },
+                                      icon: SvgPicture.asset(
+                                          'assets/images/HelpCenter.svg'),
+                                      label: Text("Help Center"),
+                                    ),
+                                  )
+                                ],
+                              ))
                             ],
                           ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                Navigator.pushNamed(context, 'help_center');
-                              },
-                              icon: SvgPicture.asset(
-                                  'assets/images/HelpCenter.svg'),
-                              label: Text("Help Center"),
-                            ),
-                          )
-                        ],
-                      ))
-                    ],
+                        ),
+                      ),
+                    ),
                   ),
                 )
               ],
@@ -168,7 +184,6 @@ class LoginState extends State<Login> {
   }
 
   void bottomClick(int index) {
-    
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

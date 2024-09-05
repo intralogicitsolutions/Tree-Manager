@@ -1,9 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
@@ -21,7 +17,7 @@ class SignOff extends StatefulWidget {
 
 class SignOffState extends State<SignOff> {
   final _sign = GlobalKey<SignatureState>();
-  ByteData _img = ByteData(0);
+  //ByteData _img = ByteData(0);
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +151,6 @@ class SignOffState extends State<SignOff> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

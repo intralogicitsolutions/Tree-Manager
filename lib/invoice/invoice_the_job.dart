@@ -113,6 +113,6 @@ class InvoiceTheJobState extends State<InvoiceTheJob> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

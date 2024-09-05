@@ -14,14 +14,14 @@ class CallHelper {
     if (data != null) {
       var post = {
         "id": null,
-        "job_id": "${Global.job?.jobId}",
-        "job_alloc_id": "${Global.job?.jobAllocId}",
+        "job_id": "${Global.job?.jobId??''}",
+        "job_alloc_id": "${Global.job?.jobAllocId??''}",
         "visit_type": null,
         "sched_date": null,
         "sched_note": "$data",
-        "process_id": "${Helper.user?.processId}",
-        "owner": "${Helper.user?.id}",
-        "created_by": "${Helper.user?.id}",
+        "process_id": "${Helper.user?.processId??''}",
+        "owner": "${Helper.user?.id??''}",
+        "created_by": "${Helper.user?.id??''}",
         "last_modified_by": null,
         "created_at":
             "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",

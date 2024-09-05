@@ -1,16 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:image/image.dart' as img;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:intl/intl.dart';
-import 'package:multiple_images_picker/multiple_images_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-//import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
@@ -29,22 +24,19 @@ class DamagedState extends State<Damaged>
   List<XFile> assets = <XFile>[];
  // List<NetworkPhoto>? images;
   List<NetworkPhoto> images = [];
-  String _error = 'No Error Dectected';
   bool initialPopup = false;
 
   @override
   void initState() {
     print('initing after photos');
-    if (Global.damage_images != null) {
-      images = [];
-      if (Global.damage_images.length > 0) images?.addAll(Global.damage_images);
-    } else
-      images = [];
-    super.initState();
+    images = [];
+    if (Global.damage_images.length > 0) images.addAll(Global.damage_images);
+      super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     // var args=ModalRoute.of(context)?.settings.arguments as Map<String,dynamic>;
     WidgetsBinding.instance.addPostFrameCallback((Duration d) {
@@ -244,7 +236,7 @@ class DamagedState extends State<Damaged>
                         if (msg != null) {
                           setState(() {
                             item.imgDescription = msg as String?;
-                            images![index] = item;
+                            images[index] = item;
                           });
                         }
                       },
@@ -259,7 +251,6 @@ class DamagedState extends State<Damaged>
         });
   }
 
-  File? _image;
 
   //
   Future<void> getImage(ImageSource source) async {
@@ -278,11 +269,11 @@ class DamagedState extends State<Damaged>
         var tmp = NetworkPhoto();
         tmp.fromFile = file;
         tmp.camera = source == ImageSource.camera;
-        images?.add(tmp);
+        images.add(tmp);
 
         // Call setState to update the UI
         setState(() {
-          _image = file; // Update any state variables as needed
+// Update any state variables as needed
         });
       }
     } catch (e) {
@@ -371,7 +362,6 @@ class DamagedState extends State<Damaged>
         tmp.camera = false;
         images.add(tmp);
       });
-      _error = error;
     });
   }
 
@@ -379,7 +369,7 @@ class DamagedState extends State<Damaged>
     if (image.fromFile != null) {
       setState(() {
         //assets.remove(image.localImage);
-        images?.removeAt(index);
+        images.removeAt(index);
       });
     } else {
       var action = await showDeleteConfirmation();
@@ -401,7 +391,7 @@ class DamagedState extends State<Damaged>
               var json = jsonDecode(data.body);
               if (json['response'] == 'success') {
                 setState(() {
-                  images?.removeAt(index);
+                  images.removeAt(index);
                   //assets.remove(image.localImage);
                 });
               }
@@ -417,7 +407,7 @@ class DamagedState extends State<Damaged>
   }
 
   Future<void> loadedMinimum({bool? upload}) async {
-    if (images!.length < 2) {
+    if (images.length < 2) {
       var action = await showMinimumWarning(
           title: '', desc: 'Please load at least 2 photos.');
       if (action == true)
@@ -430,7 +420,7 @@ class DamagedState extends State<Damaged>
   }
 
   void update() {
-    images!.asMap().forEach((index, it) async {
+    images.asMap().forEach((index, it) async {
       if (it.id == null) {
         it.imgName =
         "Damaged_Fence_${DateFormat('yyMMddHHmmssS').format(DateTime.now())}_$index.jpg";
@@ -500,7 +490,7 @@ class DamagedState extends State<Damaged>
                 .then((data) async {
               var json = jsonDecode(data.body);
               if (json['status'] == 1) {
-                if (index == images!.length - 1) {
+                if (index == images.length - 1) {
                   Helper.hideProgress();
                   await showPhotoLoaded();
                   Navigator.pushReplacementNamed(context, 'damage_roof_a');
@@ -510,7 +500,7 @@ class DamagedState extends State<Damaged>
               Helper.hideProgress();
             });
           } else {
-            if (index == images!.length - 1) {
+            if (index == images.length - 1) {
               Helper.hideProgress();
               await showPhotoLoaded();
               Navigator.pushReplacementNamed(context, 'damage_roof_a');
@@ -552,7 +542,7 @@ class DamagedState extends State<Damaged>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   @override

@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:background_locator/location_dto.dart';
+// import 'package:background_locator/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-//import 'package:get_version/get_version.dart';
-// import 'package:package_info_plus/package_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:maps_launcher/maps_launcher.dart';
@@ -108,6 +106,8 @@ import 'package:tree_manager/site_inspection/work_required.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' show sin, cos, sqrt, atan2;
 import 'package:vector_math/vector_math.dart' as vector;
+
+import '../pojo/locationDto.dart';
 
 class Helper {
   // Country Declaration
@@ -273,7 +273,8 @@ class Helper {
           child: IconButton(
             icon: SvgPicture.asset(
               "assets/images/ios-back-arrow.svg",
-              color: Colors.blue,
+             // color: Colors.blue,
+              colorFilter: ColorFilter.mode(Colors.blue, BlendMode.srcIn),
             ),
             onPressed: () {
               try {
@@ -384,7 +385,8 @@ class Helper {
           icon: SvgPicture.asset('assets/images/round-home-24px.svg'),
           activeIcon: SvgPicture.asset(
             'assets/images/round-home-24px.svg',
-            color: Themer.textGreenColor,
+            //color: Themer.textGreenColor,
+            colorFilter: ColorFilter.mode(Themer.textGreenColor, BlendMode.srcIn),
           ),
           label: 'Home',
         ),
@@ -392,71 +394,112 @@ class Helper {
             icon: SvgPicture.asset('assets/images/round-work-24px.svg'),
             activeIcon: SvgPicture.asset(
               'assets/images/round-work-24px.svg',
-              color: Themer.textGreenColor,
+              //color: Themer.textGreenColor,
+              colorFilter: ColorFilter.mode(Themer.textGreenColor, BlendMode.srcIn),
             ),
             label: 'Jobs'),
         BottomNavigationBarItem(
             icon: SvgPicture.asset('assets/images/edit_tm.svg'),
             activeIcon: SvgPicture.asset(
               'assets/images/edit_tm.svg',
-              color: Themer.textGreenColor,
+              //color: Themer.textGreenColor,
+              colorFilter: ColorFilter.mode(Themer.textGreenColor, BlendMode.srcIn),
             ),
             label: 'Notes'),
         BottomNavigationBarItem(
             icon: SvgPicture.asset('assets/images/round-send-24px.svg'),
             activeIcon: SvgPicture.asset(
               'assets/images/round-send-24px.svg',
-              color: Themer.textGreenColor,
+              //color: Themer.textGreenColor,
+              colorFilter: ColorFilter.mode(Themer.textGreenColor, BlendMode.srcIn),
             ),
             label: 'Comms'),
         BottomNavigationBarItem(
             icon: SvgPicture.asset('assets/images/more_horiz-24px.svg'),
             activeIcon: SvgPicture.asset(
               'assets/images/more_horiz-24px.svg',
-              color: Themer.textGreenColor,
+              //color: Themer.textGreenColor,
+              colorFilter: ColorFilter.mode(Themer.textGreenColor, BlendMode.srcIn),
             ),
             label: 'More')
       ],
     );
   }
 
-  static bottomClickAction(int index, BuildContext context) {
-    ModalRoute.of(context)?.setState(() {
-      if (index == Helper.bottom_nav_selected && 1 == 2)
-        return;
-      else {
-        Helper.bottom_nav_selected = index;
-        switch (index) {
-          case 0:
-            Navigator.pushNamedAndRemoveUntil(
-                context, 'dashboard', ModalRoute.withName('dashboard'));
-            break;
-          case 1:
-            Navigator.pushNamedAndRemoveUntil(
-                context, 'job_list', ModalRoute.withName('dashboard'));
-            break;
-          case 2:
-            if (Global.job != null) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, 'notes', ModalRoute.withName('dashboard'));
-            }
-            break;
-          case 3:
-            if (Global.job != null) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, 'chats', ModalRoute.withName('dashboard'),
-                  arguments: {'update': true});
-            }
+  // static bottomClickAction(int index, BuildContext context) {
+  //   ModalRoute.of(context)?.setState(() {
+  //     if (index == Helper.bottom_nav_selected && 1 == 2)
+  //       return;
+  //     else {
+  //       Helper.bottom_nav_selected = index;
+  //       switch (index) {
+  //         case 0:
+  //           Navigator.pushNamedAndRemoveUntil(
+  //               context, 'dashboard', ModalRoute.withName('dashboard'));
+  //           break;
+  //         case 1:
+  //           Navigator.pushNamedAndRemoveUntil(
+  //               context, 'job_list', ModalRoute.withName('dashboard'));
+  //           break;
+  //         case 2:
+  //           if (Global.job != null) {
+  //             Navigator.pushNamedAndRemoveUntil(
+  //                 context, 'notes', ModalRoute.withName('dashboard'));
+  //           }
+  //           break;
+  //         case 3:
+  //           if (Global.job != null) {
+  //             Navigator.pushNamedAndRemoveUntil(
+  //                 context, 'chats', ModalRoute.withName('dashboard'),
+  //                 arguments: {'update': true});
+  //           }
+  //
+  //           break;
+  //         case 4:
+  //           Navigator.pushNamedAndRemoveUntil(
+  //               context, 'more', ModalRoute.withName('dashboard'));
+  //           break;
+  //         default:
+  //       }
+  //     }
+  //   });
+  // }
+  static void bottomClickAction(
+      int index, BuildContext context, Function updateState) {
+    if (index == bottom_nav_selected && 1 == 2) return;
 
-            break;
-          case 4:
-            Navigator.pushNamedAndRemoveUntil(
-                context, 'more', ModalRoute.withName('dashboard'));
-            break;
-          default:
-        }
-      }
+    updateState(() {
+      bottom_nav_selected = index;
     });
+
+    switch (index) {
+      case 0:
+        Navigator.pushNamedAndRemoveUntil(
+            context, 'dashboard', ModalRoute.withName('dashboard'));
+        break;
+      case 1:
+        Navigator.pushNamedAndRemoveUntil(
+            context, 'job_list', ModalRoute.withName('dashboard'));
+        break;
+      case 2:
+        if (Global.job != null) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'notes', ModalRoute.withName('dashboard'));
+        }
+        break;
+      case 3:
+        if (Global.job != null) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'chats', ModalRoute.withName('dashboard'),
+              arguments: {'update': true});
+        }
+        break;
+      case 4:
+        Navigator.pushNamedAndRemoveUntil(
+            context, 'more', ModalRoute.withName('dashboard'));
+        break;
+      default:
+    }
   }
 
   static String getRateClassName(String rateClass) {
@@ -474,8 +517,8 @@ class Helper {
         "workOperationsInfo/CreateWithNewID", Global.info!.toJson(),
         is_json: true);
     print('data--->${data}');
-    Global.job!.treeinfoExists = 'true';
-    await Helper.updateNotificationStatus(Global.job!.jobAllocId??'');
+    Global.job?.treeinfoExists = 'true';
+    await Helper.updateNotificationStatus(Global.job?.jobAllocId??'');
     hideProgress();
     var json = jsonDecode(data.body);
     print('json data--->${json}');
@@ -486,7 +529,7 @@ class Helper {
     showProgress(context, 'Saving Tree Info');
     var data = await put("WorkOperationsInfo/Edit", Global.info!.toJson(),
         is_json: true);
-    Global.job!.treeinfoExists = 'true';
+    Global.job?.treeinfoExists = 'true';
     hideProgress();
     var json = jsonDecode(data.body);
     return json['success'] == 1;
@@ -710,6 +753,7 @@ static Future<bool?> showMultiActionModal(
     var client = http.Client();
     var tmp_url = BASE_URL + url + Uri.https("", "", query).query;
     Uri uri = Uri.parse(tmp_url);
+    // print('temp_url=====>${tmp_url}');
     //print(tmp_url);
     var data = await client.get(uri, headers: {
       'Content-Type': 'application/json',
@@ -746,6 +790,7 @@ static Future<bool?> showMultiActionModal(
     var data = is_json
         ? await client.post(uri , headers: headers, body: json.encode(body))
         : await client.post(uri , headers: headers, body: body);
+    print('data==>${data.body}');
     return data;
   }
 
@@ -883,19 +928,19 @@ static Future<bool?> showMultiActionModal(
     switch (no) {
       case 0:
         return "th";
-        break;
+        //break;
       case 0:
         return "th";
-        break;
+        //break;
       case 0:
         return "th";
-        break;
+       // break;
       case 0:
         return "th";
-        break;
+       // break;
       default:
         return "th";
-        break;
+        //break;
     }
   }
 

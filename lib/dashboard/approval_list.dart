@@ -18,7 +18,7 @@ class ApprovalList extends StatefulWidget {
 class ApprovalState extends State<ApprovalList>
     with SingleTickerProviderStateMixin {
   var counter = 10;
-   List<Job> quotes = [];
+   List<Job>? quotes = [];
   bool is_fetching = false;
   final filterCtrl = TextEditingController();
 
@@ -57,7 +57,7 @@ class ApprovalState extends State<ApprovalList>
           .map((f) => Job.fromJson(f))
           .toList();
       filtered.clear();
-      filtered.addAll(quotes);
+      filtered.addAll(quotes!);
 
       print("type=${quotes.runtimeType}");
     }).catchError((error) {
@@ -95,19 +95,19 @@ class ApprovalState extends State<ApprovalList>
                           onPressed: () {
                             setState(() {
                               filterCtrl.clear();
-                              filtered.addAll(quotes);
+                              filtered.addAll(quotes!);
                             });
                           })),
                   controller: filterCtrl,
                   onChanged: (text) {
-                    if (text == '' || text == null || text.length == 0) {
+                    if (text == '' || text.length == 0) {
                       print('len zer');
                       filtered = [];
-                      filtered.addAll(quotes);
+                      filtered.addAll(quotes!);
                     } else {
                       print('non zero');
                       filtered.clear();
-                      quotes.forEach((job) {
+                      quotes?.forEach((job) {
                         if (job.address!
                                 .toLowerCase()
                                 .contains(text.toLowerCase()) ||
@@ -136,7 +136,7 @@ class ApprovalState extends State<ApprovalList>
                       ),
                     )
                   : Flexible(
-                      child: quotes.length != 0
+                      child: quotes?.length != 0
                           ? ListView.builder(
                               itemCount: quotes == null ? 0 : filtered.length,
                               itemBuilder: (context, index) {
@@ -180,7 +180,7 @@ class ApprovalState extends State<ApprovalList>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }
 
@@ -257,7 +257,7 @@ class _ApprovalListItemState extends State<ApprovalListItem> {
                     SizedBox(
                       width: 15,
                     ),
-                    Flexible(child: Text('Quoted on ' + date_string ?? '   ')),
+                    Flexible(child: Text('Quoted on ' + date_string)),
                   ],
                 ),
                 Row(
@@ -285,15 +285,15 @@ class _ApprovalListItemState extends State<ApprovalListItem> {
                                     if (msg != null) {
                                       var post = {
                                         "id": null,
-                                        "job_id": "${Global.job?.jobId}",
+                                        "job_id": "${Global.job?.jobId??''}",
                                         "job_alloc_id":
-                                            "${Global.job?.jobAllocId}",
+                                            "${Global.job?.jobAllocId??''}",
                                         "visit_type": null,
                                         "sched_date": null,
                                         "sched_note": "${msg}",
-                                        "process_id": "${Helper.user!.id}",
-                                        "owner": "${Helper.user!.id}",
-                                        "created_by": "${Helper.user!.id}",
+                                        "process_id": "${Helper.user?.id??''}",
+                                        "owner": "${Helper.user?.id??''}",
+                                        "created_by": "${Helper.user?.id??''}",
                                         "last_modified_by": null,
                                         "created_at":
                                             "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",

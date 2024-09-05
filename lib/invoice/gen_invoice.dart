@@ -1,8 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -32,7 +29,7 @@ class GenInvoiceState extends State<GenInvoice> {
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       appBar: Helper.getAppBar(context,
-          title: "Invoice", sub_title: 'Job TM# ${Global.job?.jobNo}'),
+          title: "Invoice", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       body: Stack(
         children: <Widget>[
           Center(
@@ -159,7 +156,7 @@ class GenInvoiceState extends State<GenInvoice> {
                                           } else {
                                             await Helper
                                                 .updateNotificationStatus(
-                                                    Global.job!.jobAllocId??'');
+                                                    Global.job?.jobAllocId??'');
                                             await Helper.showSingleActionModal(
                                                 context,
                                                 title: 'Thank You',
@@ -228,20 +225,20 @@ class GenInvoiceState extends State<GenInvoice> {
         "params": {
           'tp_invoice_no': (() {
             if (invoiceDetail[0]['tp_invoice_no'] == null)
-              return Global.job!.jobId;
+              return Global.job?.jobId??'';
             else
               return invoiceDetail[0]['tp_invoice_no'].toString();
           }()),
-          'job_id': Global.job!.jobId,
-          'job_alloc_id': Global.job!.jobAllocId
+          'job_id': Global.job?.jobId??'',
+          'job_alloc_id': Global.job?.jobAllocId??''
         }
       };
       await Helper.post('costformhead/updateTpInvoiceNo', post, is_json: true)
           .then((value) {});
       var post2 = {
         "params": {
-          'job_id': Global.job!.jobId,
-          'job_alloc_id': Global.job!.jobAllocId,
+          'job_id': Global.job?.jobId??'',
+          'job_alloc_id': Global.job?.jobAllocId??'',
           'inv_status': '1',
           'invDate': "${DateFormat("yyyy-MM-dd").format(DateTime.now())}",
           'source ': '2'
@@ -254,9 +251,9 @@ class GenInvoiceState extends State<GenInvoice> {
 
   void createSignRecord() {
     var sign = {
-      "job_id": "${Global.job?.jobId}",
-      "job_alloc_id": "${Global.job?.jobAllocId}",
-      "company_id": "${Helper.user?.companyId}",
+      "job_id": "${Global.job?.jobId??''}",
+      "job_alloc_id": "${Global.job?.jobAllocId??''}",
+      "company_id": "${Helper.user?.companyId??''}",
       "upload_type": 0,
       "upload_type_detail": 0,
       "inc_quote": 1,
@@ -264,14 +261,14 @@ class GenInvoiceState extends State<GenInvoice> {
       "hide": 2,
       "file_name": "CSO_Sign.jpg",
       "file_description": '10041',
-      "process_id": "${Helper.user?.processId}",
+      "process_id": "${Helper.user?.processId??''}",
       "docComment": null,
       "file_path":
-          "${Global.job?.jobId}/${Global.job?.jobAllocId}/CSO_Sign.jpg",
-      "UploadedBy": "${Helper.user?.id}",
+          "${Global.job?.jobId??''}/${Global.job?.jobAllocId??''}/CSO_Sign.jpg",
+      "UploadedBy": "${Helper.user?.id??''}",
       "created_at":
           "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
-      "upload_by": "${Helper.user?.id}",
+      "upload_by": "${Helper.user?.id??''}",
       "upload_at":
           "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
       "file_size": 0,
@@ -285,13 +282,13 @@ class GenInvoiceState extends State<GenInvoice> {
   void saveSignFile() {
     var signFile = {
       "imgPath": "data:image/jpeg;base64,${Global.base64Sign}",
-      "jobId": "${Global.job?.jobId}",
-      "jobAllocId": "${Global.job?.jobAllocId}",
+      "jobId": "${Global.job?.jobId??''}",
+      "jobAllocId": "${Global.job?.jobAllocId??''}",
       "imgName": "CSO_Sign"
     };
     Helper.post('uploadimages/uploadAppDoc', signFile, is_json: true)
         .then((value) async {
-      await Helper.updateNotificationStatus(Global.job!.jobAllocId??'');
+      await Helper.updateNotificationStatus(Global.job?.jobAllocId??'');
       await Helper.showSingleActionModal(context,
           title: 'Thank You',
           description:
@@ -303,7 +300,7 @@ class GenInvoiceState extends State<GenInvoice> {
 
   getSubTotal() {
     Helper.get(
-        'nativeappservice/getTPCostforInvoice?job_alloc_id=${Global.job?.jobAllocId}',
+        'nativeappservice/getTPCostforInvoice?job_alloc_id=${Global.job?.jobAllocId??''}',
         {}).then((value) {
       var json = jsonDecode(value.body) as List;
       if (json.length > 0) {
@@ -315,6 +312,6 @@ class GenInvoiceState extends State<GenInvoice> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

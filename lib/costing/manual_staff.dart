@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tree_manager/comms/call_status.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
@@ -63,7 +62,7 @@ class ManualStaffState extends State<ManualStaff> {
         Global.staffs = (jsonDecode(data.body) as List)
             .map((f) => OtherItem.fromJson(f))
             .toList();
-        filtered = List.from(Global.staffs);
+        filtered = List.from(Global.staffs!);
         setState(() {});
       } catch (e) {
         print("Error parsing JSON: $e");
@@ -80,7 +79,7 @@ class ManualStaffState extends State<ManualStaff> {
 
   void _updateFilteredItems(String text) {
     setState(() {
-      filtered = Global.staffs.where((item) => item.itemName!.contains(text)).toList();
+      filtered = Global.staffs!.where((item) => item.itemName!.contains(text)).toList();
     });
   }
 
@@ -275,6 +274,6 @@ class ManualStaffState extends State<ManualStaff> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

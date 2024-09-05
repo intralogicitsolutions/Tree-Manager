@@ -1,14 +1,8 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
-import 'package:tree_manager/pojo/Staff.dart';
-import 'package:tree_manager/pojo/Task.dart';
 import 'package:tree_manager/pojo/option.dart';
 
 class AddOthers extends StatefulWidget {
@@ -188,7 +182,7 @@ class AddOthersState extends State<AddOthers> {
                           ),
                         ),
                         Text(
-                          args!['label'],
+                          args?['label']??'',
                           style: TextStyle(
                               fontSize: 20,
                               fontFamily: 'OpenSans',
@@ -249,6 +243,6 @@ class AddOthersState extends State<AddOthers> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

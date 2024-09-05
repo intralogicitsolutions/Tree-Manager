@@ -1,15 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
-// import 'package:flutter_phone_state/phone_event.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
-import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/Contacts.dart';
@@ -144,7 +138,7 @@ class _JobListItemState extends State<JobListItem> {
                                                       widget.quote.jobAllocId??'');
                                               Helper.hideProgress();
                                               print(response.body);
-                                              widget?.refreshJobs();
+                                              widget.refreshJobs();
                                             }).catchError((onError) {
                                               Helper.hideProgress();
                                             });
@@ -182,7 +176,7 @@ class _JobListItemState extends State<JobListItem> {
                                                 jobNo: widget.quote.jobNo);
                                             await Navigator.of(context)
                                                 .pushNamed('job_detail');
-                                            widget?.refreshJobs();
+                                            widget.refreshJobs();
                                           });
                                         }),
                                   )),
@@ -427,7 +421,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
             jobAllocId: widget.quote.jobAllocId,
             jobNo: widget.quote.jobNo);
         await Navigator.pushNamed(context, 'job_detail');
-        widget?.refreshJobs();
+        widget.refreshJobs();
       },
       child: Container(
         color:
@@ -500,7 +494,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
                                             'comm_reci': '',
                                             'goto': 'dashboard'
                                           });
-                                      widget?.refreshJobs();
+                                      widget.refreshJobs();
                                     }),
                               )),
                           Text(
@@ -551,7 +545,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
 
  // PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+    await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -573,7 +567,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)
@@ -667,7 +661,7 @@ class _ScheduleListItemState extends State<ScheduleListItem> {
                                           onPressed: () async {
                                             await CallHelper.setMessage(
                                                 context, contact.mobile??'');
-                                            widget?.refreshJobs();
+                                            widget.refreshJobs();
                                           },
                                           child: SvgPicture.asset(
                                             'assets/images/message.svg',
@@ -843,7 +837,7 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
 
   //PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+     await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -865,48 +859,49 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)
                   .toList()[index];
               return GestureDetector(
                 onTap: () async {
-                  if (contact.mobile != null) {
-                    // call = FlutterPhoneState.startPhoneCall(contact.mobile);
-                    // await call!.done;
-                    // Navigator.pop(context);
-                    // if (call!.status == PhoneCallStatus.disconnected) {
-                    //   print('comple');
-                    //   Navigator.of(context).pushNamed('call_status',
-                    //       arguments: {'visit_type': 3, 'goto': 'dashboard'});
-                    // }
-                     final callId = UniqueKey().toString();
-                  final params = <String, dynamic>{
-                                      'id': callId, 
-                                      'nameCaller': contact.contactName ?? 'Unknown',
-                                      'appName': 'Your App Name',
-                                      'avatar': 'assets/images/avatar.png', // Optional
-                                      'handle': contact.mobile,
-                                      'type': 0, // 0 for outgoing call
-                                      'duration': 30000, // Call duration
-                                      'textAccept': 'Accept',
-                                      'textDecline': 'Decline',
-                                      'textMissedCall': 'Missed call',
-                                      'textCallback': 'Call back',
-                                    };
-                  await FlutterCallkitIncoming.startCall(params as CallKitParams );
-                  Navigator.pop(context);
-
-                  // Listen for call events
-                  FlutterCallkitIncoming.onEvent.listen((event) {
-                    if (event!.event == 'endCall') {
-                      print('Call ended');
-                      Navigator.of(context).pushNamed('call_status',
-                          arguments: {'visit_type': 3, 'goto': 'dashboard'});
-                    }
-                  });
-                  }
+                  await Helper.openDialer(contact.mobile ?? '');
+                  // if (contact.mobile != null) {
+                  //   // call = FlutterPhoneState.startPhoneCall(contact.mobile);
+                  //   // await call!.done;
+                  //   // Navigator.pop(context);
+                  //   // if (call!.status == PhoneCallStatus.disconnected) {
+                  //   //   print('comple');
+                  //   //   Navigator.of(context).pushNamed('call_status',
+                  //   //       arguments: {'visit_type': 3, 'goto': 'dashboard'});
+                  //   // }
+                  //    final callId = UniqueKey().toString();
+                  // final params = <String, dynamic>{
+                  //                     'id': callId,
+                  //                     'nameCaller': contact.contactName ?? 'Unknown',
+                  //                     'appName': 'Your App Name',
+                  //                     'avatar': 'assets/images/avatar.png', // Optional
+                  //                     'handle': contact.mobile,
+                  //                     'type': 0, // 0 for outgoing call
+                  //                     'duration': 30000, // Call duration
+                  //                     'textAccept': 'Accept',
+                  //                     'textDecline': 'Decline',
+                  //                     'textMissedCall': 'Missed call',
+                  //                     'textCallback': 'Call back',
+                  //                   };
+                  // await FlutterCallkitIncoming.startCall(params as CallKitParams );
+                  // Navigator.pop(context);
+                  //
+                  // // Listen for call events
+                  // FlutterCallkitIncoming.onEvent.listen((event) {
+                  //   if (event!.event == 'endCall') {
+                  //     print('Call ended');
+                  //     Navigator.of(context).pushNamed('call_status',
+                  //         arguments: {'visit_type': 3, 'goto': 'dashboard'});
+                  //   }
+                  // });
+                  // }
                 },
                 child: contact.contactName == null
                     ? Container(
@@ -936,47 +931,48 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
                                       height: 50,
                                       child: FloatingActionButton(
                                         onPressed: () async {
-                                          if (contact.mobile != null) {
-                                            // call = FlutterPhoneState
-                                            //     .startPhoneCall(contact.mobile);
-                                            // await call!.done;
-                                            // Navigator.pop(context);
-                                            // if (call!.status ==
-                                            //     PhoneCallStatus.disconnected) {
-                                            //   print('comple');
-                                            //   Navigator.of(context).pushNamed(
-                                            //       'call_status',
-                                            //       arguments: {
-                                            //         'visit_type': 3,
-                                            //         'goto': 'dashboard'
-                                            //       });
-                                            // }
-                                             final callId = UniqueKey().toString();
-                  final params = <String, dynamic>{
-                                      'id': callId, 
-                                      'nameCaller': contact.contactName ?? 'Unknown',
-                                      'appName': 'Your App Name',
-                                      'avatar': 'assets/images/avatar.png', // Optional
-                                      'handle': contact.mobile,
-                                      'type': 0, // 0 for outgoing call
-                                      'duration': 30000, // Call duration
-                                      'textAccept': 'Accept',
-                                      'textDecline': 'Decline',
-                                      'textMissedCall': 'Missed call',
-                                      'textCallback': 'Call back',
-                                    };
-                  await FlutterCallkitIncoming.startCall(params as CallKitParams );
-                  Navigator.pop(context);
-
-                  // Listen for call events
-                  FlutterCallkitIncoming.onEvent.listen((event) {
-                    if (event!.event == 'endCall') {
-                      print('Call ended');
-                      Navigator.of(context).pushNamed('call_status',
-                          arguments: {'visit_type': 3, 'goto': 'dashboard'});
-                    }
-                  });
-                                          }
+                                          await Helper.openDialer(contact.mobile ?? '');
+                  //                         if (contact.mobile != null) {
+                  //                           // call = FlutterPhoneState
+                  //                           //     .startPhoneCall(contact.mobile);
+                  //                           // await call!.done;
+                  //                           // Navigator.pop(context);
+                  //                           // if (call!.status ==
+                  //                           //     PhoneCallStatus.disconnected) {
+                  //                           //   print('comple');
+                  //                           //   Navigator.of(context).pushNamed(
+                  //                           //       'call_status',
+                  //                           //       arguments: {
+                  //                           //         'visit_type': 3,
+                  //                           //         'goto': 'dashboard'
+                  //                           //       });
+                  //                           // }
+                  //                            final callId = UniqueKey().toString();
+                  // final params = <String, dynamic>{
+                  //                     'id': callId,
+                  //                     'nameCaller': contact.contactName ?? 'Unknown',
+                  //                     'appName': 'Your App Name',
+                  //                     'avatar': 'assets/images/avatar.png', // Optional
+                  //                     'handle': contact.mobile,
+                  //                     'type': 0, // 0 for outgoing call
+                  //                     'duration': 30000, // Call duration
+                  //                     'textAccept': 'Accept',
+                  //                     'textDecline': 'Decline',
+                  //                     'textMissedCall': 'Missed call',
+                  //                     'textCallback': 'Call back',
+                  //                   };
+                  // await FlutterCallkitIncoming.startCall(params as CallKitParams );
+                  // Navigator.pop(context);
+                  //
+                  // // Listen for call events
+                  // FlutterCallkitIncoming.onEvent.listen((event) {
+                  //   if (event!.event == 'endCall') {
+                  //     print('Call ended');
+                  //     Navigator.of(context).pushNamed('call_status',
+                  //         arguments: {'visit_type': 3, 'goto': 'dashboard'});
+                  //   }
+                  // });
+                  //                         }
                                         },
                                         child: SvgPicture.asset(
                                           'assets/images/call.svg',
@@ -1451,7 +1447,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
     Global.hazard_images = [];
 
     await Helper.get(
-        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job?.jobAllocId}&job_id=${job?.jobId}",
+        "uploadimages/getUploadImgsByJobIdAllocId?job_alloc_id=${job.jobAllocId}&job_id=${job.jobId}",
         {}).then((data) async {
       print(data.body);
       var images = (jsonDecode(data.body) as List)
@@ -1461,7 +1457,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
       images.forEach((f) {
         if (f.imgType == '1') Global.before_images!.add(f);
         if (f.imgType == '2') Global.after_images!.add(f);
-        if (f.imgType == '3') Global.hazard_images.add(f);
+        if (f.imgType == '3') Global.hazard_images!.add(f);
       });
       await Navigator.pushNamed(context, 'hazard_photos');
     }).catchError((onError) {
@@ -1482,23 +1478,14 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
         {}).then((data) {
       Global.invoiceAllowed = jsonDecode(data.body)['invoiceAllowed'] == 'true';
     });
-
-    if (Global.hazard_uploads == null)
-      Helper.get(
-          'nativeappservice/loadOptionDetails?workflow_step=Hazard%20Upload%20Options',
-          {}).then((value) {
-        Global.hazard_uploads = (jsonDecode(value.body) as List)
-            .map((e) => Option.fromJson(e))
-            .toList();
-      });
     Helper.get(
-        'nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job?.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/getAllUsersByCompany?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
         {}).then((value) {
       Global.hzd_staffs = (jsonDecode(value.body) as List)
           .map((e) => Staff.fromJson(e))
           .toList();
       Helper.get(
-          'nativeappservice/getAllEquipmentForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job?.jobAllocId}&process_id=${Helper.user?.processId}',
+          'nativeappservice/getAllEquipmentForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
           {}).then((value) {
         Helper.hideProgress();
         Global.hzd_equips = (jsonDecode(value.body) as List)
@@ -1509,27 +1496,14 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
       }).catchError((onError) => Helper.hideProgress());
     }).catchError((onError) => Helper.hideProgress());
 
-    if (Global.hzd_qstn == null)
-      Helper.get(
-          'nativeappservice/loadOptionDetails?workflow_step=SHF%20Questions',
-          {}).then((value) {
-        Global.hzd_qstn = (jsonDecode(value.body) as List)
-            .map((e) => Option.fromJson(e))
-            .toList();
-        if (Global.hazard != null) {
-          Global.hzd_sel_answr =
-              Global.hazard!.questionnaire!.split(',').toList();
-        }
-      });
-
     Helper.get(
-        'nativeappservice/getAllTasksForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job?.jobAllocId}&process_id=${Helper.user?.processId}',
+        'nativeappservice/getAllTasksForSHF?contractor_id=${Helper.user?.companyId}&job_alloc_id=${job.jobAllocId}&process_id=${Helper.user?.processId}',
         {}).then((value) {
       var json = (jsonDecode(value.body) as List)[0] as Map<String, dynamic>;
       Global.hzd_task = [];
       for (var i = 0; i < 10; i++) {
         if (json.containsKey("Label$i")) {
-          Global.hzd_task.add(Task(
+          Global.hzd_task?.add(Task(
             label: json["Label$i"],
             value: json["Value$i"],
             caption: json["Label$i"],
@@ -1538,7 +1512,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
       }
     });
 
-    if (Global.w_task == null)
+    //if (Global.w_task == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Weather%20Hazards',
           {}).then((value) {
@@ -1547,7 +1521,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.w_rate == null)
+   // if (Global.w_rate == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Weather%20Risk',
           {}).then((value) {
@@ -1556,7 +1530,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.w_ctrl == null)
+    //if (Global.w_ctrl == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Weather%20Control',
           {}).then((value) {
@@ -1566,7 +1540,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
       });
 
     ////
-    if (Global.j_task == null)
+    //if (Global.j_task == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Job%20Site%20Hazards',
           {}).then((value) {
@@ -1575,7 +1549,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.j_rate == null)
+    //if (Global.j_rate == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Job%20Site%20Risk',
           {}).then((value) {
@@ -1584,7 +1558,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.j_ctrl == null)
+    //if (Global.j_ctrl == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Job%20Site%20Control',
           {}).then((value) {
@@ -1593,8 +1567,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    ////
-    if (Global.t_task == null)
+    //if (Global.t_task == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Tree%20Hazards',
           {}).then((value) {
@@ -1603,7 +1576,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.t_rate == null)
+   // if (Global.t_rate == null)
       Helper.get('nativeappservice/loadOptionDetails?workflow_step=Tree%20Risk',
           {}).then((value) {
         Global.t_rate = (jsonDecode(value.body) as List)
@@ -1611,7 +1584,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.t_ctrl == null)
+    //if (Global.t_ctrl == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Tree%20Control',
           {}).then((value) {
@@ -1620,8 +1593,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    ////
-    if (Global.m_task == null)
+    //if (Global.m_task == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Manual%20Tasks%20Hazards',
           {}).then((value) {
@@ -1630,7 +1602,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.m_rate == null)
+   // if (Global.m_rate == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Manual%20Tasks%20Risk',
           {}).then((value) {
@@ -1639,7 +1611,7 @@ class _InvoiceListItemState extends State<InvoiceListItem> {
             .toList();
       });
 
-    if (Global.m_ctrl == null)
+    //if (Global.m_ctrl == null)
       Helper.get(
           'nativeappservice/loadOptionDetails?workflow_step=Manual%20Tasks%20Control',
           {}).then((value) {

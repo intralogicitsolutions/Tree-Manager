@@ -1,28 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-//import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-//import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:intl/intl.dart';
-import 'package:multiple_images_picker/multiple_images_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-// import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/network_image.dart';
 import 'package:tree_manager/site_inspection/asset_thumb.dart';
 
+
 class BeforePhoto extends StatefulWidget {
-  bool showAppbar = true;
-  bool showBottomButtons = true;
+   final bool showAppbar;
+   final bool showBottomButtons;
 
   BeforePhoto({this.showAppbar = true, this.showBottomButtons = true});
 
@@ -36,11 +30,11 @@ class BeforePhotoState extends State<BeforePhoto>
     with AutomaticKeepAliveClientMixin<BeforePhoto> {
   List<XFile> assets = [];
   List<NetworkPhoto> images = [];
-  String _error = 'No Error Dectected';
   bool initialPopup = false;
 
   @override
   void initState() {
+    print('befor_image-->${Global.before_images}');
     if (Global.before_images != null) {
       images.addAll(Global.before_images as Iterable<NetworkPhoto>);
     }
@@ -49,6 +43,7 @@ class BeforePhotoState extends State<BeforePhoto>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     // var args=ModalRoute.of(context)?.settings.arguments as Map<String,dynamic>;
     WidgetsBinding.instance.addPostFrameCallback((Duration d) {
@@ -139,7 +134,8 @@ class BeforePhotoState extends State<BeforePhoto>
                                   EdgeInsets.only(bottom: 10.0, top: 30),
                                   child: FittedBox(
                                     child: FloatingActionButton(
-                                        heroTag: 'dialog_action_2',
+                                        // heroTag: 'dialog_action_2',
+                                      heroTag: 'continue_button',
                                         child: SvgPicture.asset(
                                           "assets/images/continue_button.svg",
                                           height: 60,
@@ -178,6 +174,7 @@ class BeforePhotoState extends State<BeforePhoto>
         _crossAxisCount;
     var cellHeight = 205;
     var _aspectRatio = _width / cellHeight;
+    print('images data--->${images}');
     return GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             mainAxisSpacing: 8,
@@ -264,7 +261,6 @@ class BeforePhotoState extends State<BeforePhoto>
                             // Handle the unexpected type here
                             print('Unexpected result type: ${msg.runtimeType}');
                           }
-
                         }
                       },
                     ),
@@ -280,7 +276,6 @@ class BeforePhotoState extends State<BeforePhoto>
         });
   }
 
-  File? _image;
 
   // Future getImage(ImgSource source) async {
   //   var image = await ImagePickerGC.pickImage(
@@ -323,7 +318,7 @@ class BeforePhotoState extends State<BeforePhoto>
 
         // Call setState to update the UI
         setState(() {
-          _image = file; // Update any state variables as needed
+// Update any state variables as needed
         });
       }
     } catch (e) {
@@ -374,7 +369,6 @@ class BeforePhotoState extends State<BeforePhoto>
         tmp.camera = false;
         images.add(tmp);
       });
-      _error = error;
     });
   }
 
@@ -717,6 +711,7 @@ class BeforePhotoState extends State<BeforePhoto>
           description: 'Photos loaded Successfully',
           buttonText: 'OK',
           buttonimage: 'accept.svg');
+      if (action == true)
       Navigator.pushReplacementNamed(context, 'site_inspection');
     }
     return true;
@@ -744,10 +739,11 @@ class BeforePhotoState extends State<BeforePhoto>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
 }

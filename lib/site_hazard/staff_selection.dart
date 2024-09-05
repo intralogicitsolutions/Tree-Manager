@@ -1,15 +1,11 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/Staff.dart';
-import 'package:tree_manager/pojo/Task.dart';
 
 class StaffSelection extends StatefulWidget {
   @override
@@ -21,10 +17,10 @@ class StaffSelection extends StatefulWidget {
 class StaffSelectionState extends State<StaffSelection> {
   @override
   void initState() {
-    //getStaffs();
+    // getStaffs();
     filtered = [];
-    filtered!.addAll(Global.hzd_staffs);
-    selected = Global.hzd_sel_staff ?? [];
+    filtered!.addAll(Global.hzd_staffs!);
+    selected = Global.hzd_sel_staff! ;
     print('sel sta len=${selected.length}');
     super.initState();
   }
@@ -32,7 +28,6 @@ class StaffSelectionState extends State<StaffSelection> {
   var filter_ctrl = TextEditingController();
   List<Staff>? filtered = null;
   var selected = <Staff>[];
-
   ListView makeReviewList() {
     return ListView.separated(
         separatorBuilder: (context, index) {
@@ -101,7 +96,7 @@ class StaffSelectionState extends State<StaffSelection> {
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       appBar: Helper.getAppBar(context,
-          title: "Staff Selection", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Staff Selection", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
@@ -138,11 +133,11 @@ class StaffSelectionState extends State<StaffSelection> {
                               if (text == '') {
                                 print('len zer');
                                 filtered = [];
-                                filtered?.addAll(Global.hzd_staffs);
+                                filtered?.addAll(Global.hzd_staffs!);
                               } else {
                                 print('non zero');
                                 filtered = [];
-                                Global.hzd_sel_staff.forEach((job) {
+                                Global.hzd_sel_staff?.forEach((job) {
                                   if (job.firstName!.contains(text) ||
                                       job.lastName!.contains(text))
                                     filtered!.add(job);
@@ -176,12 +171,13 @@ class StaffSelectionState extends State<StaffSelection> {
                           height: 10,
                         ),
                         Global.hzd_staffs != null
-                            ? Container(
+                            ?
+                        Container(
                                 height:
                                     MediaQuery.of(context).size.height * 0.50,
                                 child: Scrollbar(child: makeReviewList()),
                               )
-                            : Center(child: CircularProgressIndicator()),
+                           : Center(child: CircularProgressIndicator()),
                       ],
                     ),
                     Row(
@@ -240,6 +236,7 @@ class StaffSelectionState extends State<StaffSelection> {
                                 child: SvgPicture.asset(
                                     'assets/images/continue_button.svg'),
                                 onPressed: () async {
+                                  ToastContext().init(context);
                                   if (selected.length > 0) {
                                     //Global.hzd_sel_staff = selected.toSet().toList();
                                     Navigator.pushNamed(context, 'review_staff',
@@ -299,6 +296,6 @@ class StaffSelectionState extends State<StaffSelection> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

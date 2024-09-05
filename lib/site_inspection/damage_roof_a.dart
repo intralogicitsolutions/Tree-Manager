@@ -89,6 +89,6 @@ class DamageRoofAState extends State<DamageRoofA>{
 
   void bottomClick(int index) {
     
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

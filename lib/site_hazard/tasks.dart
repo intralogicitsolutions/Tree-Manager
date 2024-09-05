@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -23,13 +22,12 @@ class TasksState extends State<Tasks> {
 
   @override
   void initState() {
-    grids.addAll(Global.hzd_task);
-    try {
-      selected = Global.hzd_sel_task ?? [];
-      selectedOther=Global.hzd_sel_other_task??[];
-    } catch (e) {}
-    print('task len=${selected.length}');
     super.initState();
+    grids.addAll(Global.hzd_task!);
+      selected = Global.hzd_sel_task ?? [];
+      selectedOther=Global.hzd_sel_other_task ?? [];
+    print('task len=${selected.length}');
+  //  super.initState();
   }
 
   @override
@@ -38,7 +36,7 @@ class TasksState extends State<Tasks> {
     return Scaffold(
       appBar: Helper.getAppBar(context,
           title: "Site Hazard Checklist",
-          sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       body: SingleChildScrollView(
               child: Container(
@@ -75,6 +73,7 @@ class TasksState extends State<Tasks> {
                         childAspectRatio: 4 / 2.5,
                         crossAxisCount: 2,
                         children: List.generate(grids.length, (index) {
+                          print('length---->${grids.length}');
                           var item = grids[index];
                           return GestureDetector(
                             child: Container(
@@ -133,9 +132,10 @@ class TasksState extends State<Tasks> {
                                   context, 'add_other_task', arguments: {
                                 'selected': selectedOther,
                                 'label': 'Task'
-                              }) as List<Task>;
+                              }) as List<Task>?;
+
                               setState(() {
-                                selectedOther = sel;
+                                selectedOther = sel!;
                                 selectedOther.forEach((element) {
                                   print('object ${element.label}');
                                 });
@@ -161,6 +161,8 @@ class TasksState extends State<Tasks> {
                             child: SvgPicture.asset(
                                 'assets/images/continue_button.svg'),
                             onPressed: () {
+                              ToastContext().init(context);
+                              // if (selected.isNotEmpty || selectedOther.isNotEmpty) {
                               if (selected.length > 0 ||
                                   selectedOther.length > 0) {
                                 Global.hzd_sel_task = selected;
@@ -213,6 +215,6 @@ class TasksState extends State<Tasks> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

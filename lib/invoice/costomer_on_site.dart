@@ -1,9 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-// import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -30,7 +27,7 @@ class CustomerOnSiteState extends State<CustomerOnSite> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: Helper.getAppBar(context,
-            title: "Invoice", sub_title: 'Job TM# ${Global.job?.jobNo}'),
+            title: "Invoice", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         body: Container(
           color: Colors.white,
@@ -183,13 +180,13 @@ class CustomerOnSiteState extends State<CustomerOnSite> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   //PhoneCall? call;
   var contacts = <Contact>[];
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+     await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -211,7 +208,7 @@ class CustomerOnSiteState extends State<CustomerOnSite> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)

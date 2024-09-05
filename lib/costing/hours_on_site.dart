@@ -228,6 +228,6 @@ class _HoursOnSiteState extends State<HoursOnSite> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

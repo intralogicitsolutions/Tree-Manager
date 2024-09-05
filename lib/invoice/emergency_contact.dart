@@ -23,7 +23,7 @@ class EmergencyContactState extends State<EmergencyContact> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: Helper.getAppBar(context,
-            title: "Invoice", sub_title: 'Job TM# ${Global.job?.jobNo}'),
+            title: "Invoice", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
         bottomNavigationBar: Helper.getBottomBar(bottomClick),
         body: Container(
           color: Colors.white,
@@ -122,6 +122,6 @@ class EmergencyContactState extends State<EmergencyContact> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

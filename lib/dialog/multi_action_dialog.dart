@@ -3,19 +3,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/theme.dart';
 
 class MultiActionDialog extends StatelessWidget {
-  String title;
-  Color titleTextColor;
-  String? description;
-  Color? descriptionTextColor;
-  String? descriptionPrefixIcon;
-  String? positiveButtonText;
-  Color? positiveButtonTextColor;
-  String? positiveButtonimage;
-  Function? positiveButtonAction;
-  String? negativeButtonText;
-  Color? negativeButtonTextColor;
-  String? negativeButtonimage;
-  VoidCallback? negativeButtonAction;
+  final String title;
+  final Color titleTextColor;
+  final String? description;
+  final Color? descriptionTextColor;
+  final String? descriptionPrefixIcon;
+  final String? positiveButtonText;
+  final Color? positiveButtonTextColor;
+  final String? positiveButtonimage;
+  final Function? positiveButtonAction;
+  final String? negativeButtonText;
+  final Color? negativeButtonTextColor;
+  final String? negativeButtonimage;
+  final VoidCallback? negativeButtonAction;
   //Function? dismissAction;
   final VoidCallback? dismissAction;
 

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -49,7 +47,7 @@ class CallStatusState extends State<CallStatus> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     });
   }
@@ -70,14 +68,14 @@ class CallStatusState extends State<CallStatus> {
       if (data != null) {
         final post = {
           "id": null,
-          "job_id": "${Global.job!.jobId}",
-          "job_alloc_id": "${Global.job!.jobAllocId}",
+          "job_id": "${Global.job?.jobId??''}",
+          "job_alloc_id": "${Global.job?.jobAllocId??''}",
           "visit_type": null,
           "sched_date": null,
           "sched_note": "$data",
-          "process_id": "${Helper.user?.processId}",
-          "owner": "${Helper.user?.id}",
-          "created_by": "${Helper.user?.id}",
+          "process_id": "${Helper.user?.processId??''}",
+          "owner": "${Helper.user?.id??''}",
+          "created_by": "${Helper.user?.id??''}",
           "last_modified_by": null,
           "created_at": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
           "last_updated_at": null,
@@ -126,14 +124,14 @@ class CallStatusState extends State<CallStatus> {
       );
       final post = {
         "id": null,
-        "job_id": "${Global.job!.jobId}",
-        "job_alloc_id": "${Global.job!.jobAllocId}",
+        "job_id": "${Global.job?.jobId??''}",
+        "job_alloc_id": "${Global.job?.jobAllocId??''}",
         "visit_type": null,
         "sched_date": null,
         "sched_note": "",
-        "process_id": "${Helper.user?.processId}",
-        "owner": "${Helper.user?.id}",
-        "created_by": "${Helper.user?.id}",
+        "process_id": "${Helper.user?.processId??''}",
+        "owner": "${Helper.user?.id??''}",
+        "created_by": "${Helper.user?.id??''}",
         "last_modified_by": null,
         "created_at": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
         "last_updated_at": null,
@@ -183,7 +181,7 @@ class CallStatusState extends State<CallStatus> {
       appBar: Helper.getAppBar(
         context,
         title: "Call Status",
-        sub_title: 'Job TM# ${Global.job!.jobNo}',
+        sub_title: 'Job TM# ${Global.job?.jobNo??''}',
       ),
       body: Container(
         decoration: BoxDecoration(color: Colors.white),
@@ -243,6 +241,6 @@ class CallStatusState extends State<CallStatus> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

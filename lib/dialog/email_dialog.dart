@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/theme.dart';
 
-class EmailDialog extends StatelessWidget {
-  String title;
-  Color titleTextColor;
-  String? description;
-  Color? descriptionTextColor;
-  String? descriptionPrefixIcon;
-  String? positiveButtonText;
-  Color? positiveButtonTextColor;
-  String? positiveButtonimage;
-  Function? positiveButtonAction;
-  String? negativeButtonText;
-  Color? negativeButtonTextColor;
-  String? negativeButtonimage;
-  VoidCallback? negativeButtonAction;
-  Function? dismissAction;
+class EmailDialog extends StatefulWidget {
+  final String title;
+  final Color titleTextColor;
+  final String? description;
+  final Color? descriptionTextColor;
+  final String? descriptionPrefixIcon;
+  final String? positiveButtonText;
+  final Color? positiveButtonTextColor;
+  final String? positiveButtonimage;
+  final Function? positiveButtonAction;
+  final String? negativeButtonText;
+  final Color? negativeButtonTextColor;
+  final String? negativeButtonimage;
+  final VoidCallback? negativeButtonAction;
+  final Function? dismissAction;
 
   EmailDialog({
     required this.title,
@@ -35,7 +35,21 @@ class EmailDialog extends StatelessWidget {
     this.dismissAction,
   });
 
-  var e_ctrl = TextEditingController();
+  @override
+  State<EmailDialog> createState() => _EmailDialogState();
+}
+
+class _EmailDialogState extends State<EmailDialog> {
+ // var e_ctrl = TextEditingController();
+  late final TextEditingController e_ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    e_ctrl = TextEditingController();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -71,9 +85,9 @@ class EmailDialog extends StatelessWidget {
                       Align(
                         alignment: Alignment.topCenter,
                         child: Text(
-                          title,
+                          widget.title,
                           style: TextStyle(
-                              color: titleTextColor,
+                              color: widget.titleTextColor,
                               fontFamily: 'OpenSans',
                               fontSize: 20),
                         ),
@@ -85,11 +99,11 @@ class EmailDialog extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          if (descriptionPrefixIcon != null)
+                          if (widget.descriptionPrefixIcon != null)
                             Padding(
                               padding: EdgeInsets.only(right: 10),
                               child: SvgPicture.asset(
-                                "assets/images/$descriptionPrefixIcon",
+                                "assets/images/${widget.descriptionPrefixIcon}",
                                 width: 20,
                                 height: 20,
                               ),
@@ -97,9 +111,9 @@ class EmailDialog extends StatelessWidget {
                           //SizedBox(width: 10,),
                           Flexible(
                             child: Text(
-                              description!,
+                              widget.description!,
                               style: TextStyle(
-                                  color: descriptionTextColor,
+                                  color: widget.descriptionTextColor,
                                   fontFamily: 'OpenSans',
                                   fontSize: 16),
                             ),
@@ -131,7 +145,7 @@ class EmailDialog extends StatelessWidget {
                                     child: FloatingActionButton(
                                         heroTag: 'dialog_action_2',
                                         child: SvgPicture.asset(
-                                          "assets/images/$positiveButtonimage",
+                                          "assets/images/${widget.positiveButtonimage}",
                                           height: 60,
                                           width: 60,
                                         ),
@@ -141,9 +155,9 @@ class EmailDialog extends StatelessWidget {
                                         }),
                                   )),
                               Text(
-                                "$positiveButtonText",
+                                "${widget.positiveButtonText}",
                                 style:
-                                    TextStyle(color: positiveButtonTextColor),
+                                    TextStyle(color: widget.positiveButtonTextColor),
                               )
                             ],
                           ),
@@ -158,7 +172,7 @@ class EmailDialog extends StatelessWidget {
                                     child: FloatingActionButton(
                                         heroTag: 'dialog_action_1',
                                         child: SvgPicture.asset(
-                                          "assets/images/$negativeButtonimage",
+                                          "assets/images/${widget.negativeButtonimage}",
                                           height: 60,
                                           width: 60,
                                         ),
@@ -167,9 +181,9 @@ class EmailDialog extends StatelessWidget {
                                         }),
                                   )),
                               Text(
-                                "$negativeButtonText",
+                                "${widget.negativeButtonText}",
                                 style:
-                                    TextStyle(color: negativeButtonTextColor),
+                                    TextStyle(color: widget.negativeButtonTextColor),
                               )
                             ],
                           )
@@ -190,7 +204,7 @@ class EmailDialog extends StatelessWidget {
                             heroTag: 'dialog_close',
                             child: SvgPicture.asset('assets/images/reject.svg'),
                             onPressed: () {
-                              if (dismissAction != null) dismissAction!();
+                              if (widget.dismissAction != null) widget.dismissAction!();
                               Navigator.pop(context);
                             }),
                       )),

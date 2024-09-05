@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "enviro_trees1" "\0"
+            VALUE "FileDescription", "tree_manager" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "enviro_trees1" "\0"
+            VALUE "InternalName", "tree_manager" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "enviro_trees1.exe" "\0"
-            VALUE "ProductName", "enviro_trees1" "\0"
+            VALUE "OriginalFilename", "tree_manager.exe" "\0"
+            VALUE "ProductName", "tree_manager" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

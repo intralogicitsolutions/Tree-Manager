@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -30,10 +29,13 @@ class Q1State extends State<Q1> {
         }
         try {
           var tmp = Global.hzd_sel_answr;
-          selected1 = tmp[args!['from'] - 1];
-          selected2 = tmp[args!['from']];
-          selected3 = tmp[args!['from'] + 1];
+          selected1 = tmp?[args!['from'] - 1];
+          selected2 = tmp?[args!['from']];
+          selected3 = tmp?[args!['from'] + 1];
         } catch (e) {}
+        print('name==>${ Global.hzd_qstn!.isNotEmpty
+            ? Global.hzd_qstn![args?['from'] != null && args!['from'] > 0 ? args!['from'] - 1 : 0].caption ?? ''
+            : ''}');
       });
     });
 
@@ -47,6 +49,7 @@ class Q1State extends State<Q1> {
       {"label": "NO", "value": '2'},
       {"label": "NA", "value": '3'},
     ];
+
 
     return Scaffold(
       appBar: Helper.getAppBar(context,
@@ -65,7 +68,11 @@ class Q1State extends State<Q1> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      Global.hzd_qstn[args!['from'] - 1].caption??'',
+                      //Global.hzd_qstn?[args?['from'] - 1].caption??'',
+                      Global.hzd_qstn!.isNotEmpty
+                          ? Global.hzd_qstn![args?['from'] != null && args!['from'] > 0 ? args!['from'] - 1 : 0].caption ?? ''
+                          : '',
+                      // Global.hzd_qstn?[(args?['from'] != null ? args!['from'] - 1 : 0)].caption ?? '',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -114,7 +121,13 @@ class Q1State extends State<Q1> {
                           }),
                     ),
                     Text(
-                      Global.hzd_qstn[args!['from']].caption??'',
+                     // Global.hzd_qstn![args!['from']].caption??'',
+                      args != null && args!['from'] != null  && Global.hzd_qstn!.length > args!['from']
+                          ? Global.hzd_qstn![args!['from']].caption ?? ''
+                          : '',
+                      // args != null && args?['from'] != null
+                      //     ? Global.hzd_qstn![args?['from']].caption ?? ''
+                      //     : '',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -163,7 +176,13 @@ class Q1State extends State<Q1> {
                           }),
                     ),
                     Text(
-                      Global.hzd_qstn[args!['from'] + 1].caption??'',
+                      //Global.hzd_qstn![args!['from'] + 1].caption??'',
+                      args != null && args!['from'] != null &&  args!['from'] + 1 < Global.hzd_qstn!.length
+                          ? Global.hzd_qstn![args!['from'] + 1].caption ?? ''
+                          : '',
+                      // args != null && args?['from'] != null && args?['from'] + 1 < Global.hzd_qstn?.length
+                      //     ? Global.hzd_qstn![args?['from'] + 1].caption ?? ''
+                      //     : 'Default Caption',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -228,23 +247,23 @@ class Q1State extends State<Q1> {
                             selected3 != null) {
                           if (args!['from'] == 1) {
                             if (args!['from_review'] == true) {
-                              Global.hzd_sel_answr[0] = selected1;
-                              Global.hzd_sel_answr[1] = selected2;
-                              Global.hzd_sel_answr[2] = selected3;
+                              Global.hzd_sel_answr?[0] = selected1;
+                              Global.hzd_sel_answr?[1] = selected2;
+                              Global.hzd_sel_answr?[2] = selected3;
                             } else {
-                              Global.hzd_sel_answr.add(selected1);
-                              Global.hzd_sel_answr.add(selected2);
-                              Global.hzd_sel_answr.add(selected3);
+                              Global.hzd_sel_answr?.add(selected1);
+                              Global.hzd_sel_answr?.add(selected2);
+                              Global.hzd_sel_answr?.add(selected3);
                             }
                           } else {
                             if (args!['from_review'] == true) {
-                              Global.hzd_sel_answr[3] = selected1;
-                              Global.hzd_sel_answr[4] = selected2;
-                              Global.hzd_sel_answr[5] = selected3;
+                              Global.hzd_sel_answr?[3] = selected1;
+                              Global.hzd_sel_answr?[4] = selected2;
+                              Global.hzd_sel_answr?[5] = selected3;
                             } else {
-                              Global.hzd_sel_answr.add(selected1);
-                              Global.hzd_sel_answr.add(selected2);
-                              Global.hzd_sel_answr.add(selected3);
+                              Global.hzd_sel_answr?.add(selected1);
+                              Global.hzd_sel_answr?.add(selected2);
+                              Global.hzd_sel_answr?.add(selected3);
                             }
                           }
                           if (args!['from'] == 4) {
@@ -288,6 +307,6 @@ class Q1State extends State<Q1> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

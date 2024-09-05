@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -112,7 +111,7 @@ class DamageFenceAState extends State<DamageFenceA> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   Future<void> getAllData() async {

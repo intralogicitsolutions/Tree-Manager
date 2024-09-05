@@ -1,16 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:intl/intl.dart';
-import 'package:multiple_images_picker/multiple_images_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-// import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
@@ -30,21 +24,18 @@ class HazardUploadState extends State<HazardUpload>
   List<XFile> assets = <XFile>[];
   //List<NetworkPhoto>? images;
   List<NetworkPhoto> images = [];
-  String _error = 'No Error Dectected';
 
   @override
   void initState() {
-    print('initing after photos ${Global.hazard_images.length}');
-    if (Global.hazard_images != null) {
-      images = [];
-      if (Global.hazard_images.length > 0) images?.addAll(Global.hazard_images);
-    } else
-      images = [];
-    super.initState();
+    print('initing after photos ${Global.hazard_images!.length}');
+    images = [];
+    if (Global.hazard_images!.length > 0) images.addAll(Global.hazard_images!);
+      super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     // var args=ModalRoute.of(context)?.settings.arguments as Map<String,dynamic>;
     WidgetsBinding.instance.addPostFrameCallback((Duration d) {
@@ -55,7 +46,7 @@ class HazardUploadState extends State<HazardUpload>
     return Scaffold(
       bottomNavigationBar: Helper.getBottomBar(bottomClick),
       appBar: Helper.getAppBar(context,
-          title: "Upload Hazard", sub_title: 'Job TM# ${Global.job!.jobNo}'),
+          title: "Upload Hazard", sub_title: 'Job TM# ${Global.job?.jobNo??''}'),
       body: Stack(
         children: <Widget>[
           Center(
@@ -116,7 +107,7 @@ class HazardUploadState extends State<HazardUpload>
                                             desc: '  ');
                                         if (action == true)
                                           loadAssets();
-                                        else
+                                        else if(action == false)
                                           getImage(ImageSource.camera);
                                                                             }),
                                 )),
@@ -189,7 +180,7 @@ class HazardUploadState extends State<HazardUpload>
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    if (Global.job!.deleteSiteHazardImages == 'true' ||
+                    if (Global.job?.deleteSiteHazardImages == 'true' ||
                         item.id == null)
                       Align(
                         child: Container(
@@ -211,7 +202,8 @@ class HazardUploadState extends State<HazardUpload>
                       quality: 100,
                       //asset: asset,
                       url: asset == null && item.camera == false
-                          ? Helper.BASE_URL + item.imgPath!
+                          ? (item.imgPath != null ? Helper.BASE_URL + item.imgPath! : null)
+                          //? Helper.BASE_URL + item.imgPath!
                           : null,
                       fromFile: item.fromFile,
                       width: 150,
@@ -247,7 +239,7 @@ class HazardUploadState extends State<HazardUpload>
                         if (msg != null) {
                           setState(() {
                             item.imgDescription = msg as String?;
-                            images![index] = item;
+                            images[index] = item;
                           });
                         }
                       },
@@ -262,7 +254,6 @@ class HazardUploadState extends State<HazardUpload>
         });
   }
 
-  File? _image;
 
   // Future getImage(ImgSource source) async {
   //   var image = await ImagePickerGC.pickImage(
@@ -301,11 +292,11 @@ class HazardUploadState extends State<HazardUpload>
         var tmp = NetworkPhoto();
         tmp.fromFile = file;
         tmp.camera = source == ImageSource.camera;
-        images?.add(tmp);
+        images.add(tmp);
 
         // Call setState to update the UI
         setState(() {
-          _image = file; // Update any state variables as needed
+// Update any state variables as needed
         });
       }
     } catch (e) {
@@ -386,13 +377,19 @@ class HazardUploadState extends State<HazardUpload>
 
     setState(() {
       assets = resultList;
+      // assets.forEach((f) {
+      //   var tmp = NetworkPhoto();
+      //   tmp.fromFile = File(f.path);
+      //   tmp.camera = false;
+      //   images.add(tmp);
+      // });
       assets.forEach((f) {
+        File? file = File(f.path);
         var tmp = NetworkPhoto();
-        tmp.fromFile = File(f.path);
+        tmp.fromFile = file;
         tmp.camera = false;
         images.add(tmp);
       });
-      _error = error;
     });
   }
 
@@ -400,7 +397,7 @@ class HazardUploadState extends State<HazardUpload>
     if (image.fromFile != null) {
       setState(() {
        // assets.remove(image.localImage);
-        images!.removeAt(index);
+        images.removeAt(index);
       });
     } else {
       var action = await showDeleteConfirmation();
@@ -408,6 +405,7 @@ class HazardUploadState extends State<HazardUpload>
         var post = {
           "params": {"id": '${image.id}'}
         };
+        Helper.showProgress(context, 'Deleting Image');// add this line
         Helper.post("uploadimages/Delete", post, is_json: true).then((data) {
           var json = jsonDecode(data.body);
           if (json['success'] == 1) {
@@ -419,7 +417,7 @@ class HazardUploadState extends State<HazardUpload>
               var json = jsonDecode(data.body);
               if (json['response'] == 'success') {
                 setState(() {
-                  images!.removeAt(index);
+                  images.removeAt(index);
                   //assets.remove(image.localImage);
                 });
               }
@@ -431,11 +429,11 @@ class HazardUploadState extends State<HazardUpload>
   }
 
   Future<void> loadedMinimum({bool? upload}) async {
-    if (images!.length < 1) {
+    if (images.length < 1) {
       var action = await showMinimumWarning(title: 'Add Photo', desc: ' ');
       if (action == true)
         loadAssets();
-      else
+      else if(action == false)
         getImage(ImageSource.camera);
         } else if (upload!) {
       update();
@@ -443,7 +441,7 @@ class HazardUploadState extends State<HazardUpload>
   }
 
   void update() {
-    images!.asMap().forEach((index, it) async {
+    images.asMap().forEach((index, it) async {
       if (it.id == null) {
         it.imgName =
         "HAZARD_Image_${DateFormat('yyMMddHHmmssS').format(DateTime.now())}_$index.jpg";
@@ -498,7 +496,7 @@ class HazardUploadState extends State<HazardUpload>
             // (await it.localImage!.getByteData(quality: 10))
             //         .buffer
             //         .asUint8List()
-                : (await it.fromFile!.readAsBytes());
+                : (await it.fromFile?.readAsBytes());
             //var image = img.decodeJpg(byte.buffer.asUint8List());
             var image = img.decodeJpg(byte!);
             var finalImg = img.copyResize(image!,
@@ -514,7 +512,7 @@ class HazardUploadState extends State<HazardUpload>
                 .then((data) async {
               var json = jsonDecode(data.body);
               if (json['status'] == 1) {
-                if (index == images!.length - 1) {
+                if (index == images.length - 1) {
                   Helper.hideProgress();
                   if(Global.noti==null)
                   {
@@ -530,7 +528,7 @@ class HazardUploadState extends State<HazardUpload>
               Helper.hideProgress();
             });
           } else {
-            if (index == images!.length - 1) {
+            if (index == images.length - 1) {
               Helper.hideProgress();
               if(Global.noti==null)
               {
@@ -570,7 +568,7 @@ class HazardUploadState extends State<HazardUpload>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   @override

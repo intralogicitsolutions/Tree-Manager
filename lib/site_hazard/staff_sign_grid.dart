@@ -1,14 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/Staff.dart';
-// import 'package:velocity_x/velocity_x.dart';
 
 class StaffSignGrid extends StatefulWidget {
   @override
@@ -26,8 +23,9 @@ class StaffSignGridState extends State<StaffSignGrid> {
 
   @override
   void initState() {
-    grids = Global.hzd_sel_staff;
-    grids.addAll(Global.hzd_sel_other_staff);
+    grids = Global.hzd_sel_staff!;
+    // if(Global.hazard?.customStaffName != '')
+    grids.addAll(Global.hzd_sel_other_staff!);
     selected_staff.addAll(grids);
     try {} catch (e) {}
     print(json.encode(selected));
@@ -202,6 +200,6 @@ class StaffSignGridState extends State<StaffSignGrid> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

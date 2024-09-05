@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/Global.dart';
-// import 'package:velocity_x/velocity_x.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/Job.dart';
@@ -17,7 +15,7 @@ class ReportList extends StatefulWidget {
 
 class ReportState extends State<ReportList> {
   var counter = 10;
-  List<Job> quotes = [];
+  List<Job>? quotes = [];
   bool is_fetching = false;
 
   @override
@@ -80,11 +78,11 @@ class ReportState extends State<ReportList> {
                       ),
                     )
                   : Flexible(
-                      child: quotes.length != 0
+                      child: quotes!.length != 0
                           ? ListView.builder(
-                              itemCount: quotes == null ? 0 : quotes.length,
+                              itemCount: quotes == null ? 0 : quotes!.length,
                               itemBuilder: (context, index) {
-                                var quote = quotes[index];
+                                var quote = quotes![index];
                                 var date_string = '';
                                 var idate_string = '';
                                 try {
@@ -92,13 +90,13 @@ class ReportState extends State<ReportList> {
                                   var date_split = date;
                                   print(date_split);
                                   date_string =
-                                      "${date_split![0]}${Helper.getOrdinal(int.parse(date_split![0]))} ${Helper.intToMonth(int.parse(date_split[1]))} ${date_split[2]}";
+                                      "${date_split![0]}${Helper.getOrdinal(int.parse(date_split[0]))} ${Helper.intToMonth(int.parse(date_split[1]))} ${date_split[2]}";
 
                                   var idate = quote.invoiceDate?.split("/");
                                   var idate_split = idate;
                                   print(idate_split);
                                   idate_string =
-                                      "${idate_split![0]}${Helper.getOrdinal(int.parse(idate_split[0]))} ${Helper.intToMonth(int.parse(idate_split![1]))} ${idate_split[2]}";
+                                      "${idate_split![0]}${Helper.getOrdinal(int.parse(idate_split[0]))} ${Helper.intToMonth(int.parse(idate_split[1]))} ${idate_split[2]}";
                                 } catch (e) {}
                                 return GestureDetector(
                                   onTap: () {
@@ -170,8 +168,7 @@ class ReportState extends State<ReportList> {
                                                   Flexible(
                                                       child: Text(
                                                           'Completed on ' +
-                                                                  idate_string ??
-                                                              '   ')),
+                                                                  idate_string)),
                                                 ],
                                               ),
                                               Row(
@@ -192,8 +189,7 @@ class ReportState extends State<ReportList> {
                                                   Flexible(
                                                       child: Text(
                                                           'Payment paid on ' +
-                                                                  date_string ??
-                                                              '   ')),
+                                                                  date_string)),
                                                 ],
                                               ),
                                             ],
@@ -219,6 +215,6 @@ class ReportState extends State<ReportList> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }

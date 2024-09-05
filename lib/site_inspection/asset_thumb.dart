@@ -1,14 +1,4 @@
-// import 'dart:io';
-// import 'dart:typed_data';
-// import 'dart:math';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:multiple_images_picker/multiple_images_picker.dart';
-// // import 'package:flutter_image_compress/flutter_image_compress.dart';
-// //import 'package:flutter_image_compress/flutter_image_compress.dart';
-//  //import 'package:multi_image_picker/multi_image_picker.dart';
-//
+
 // class AssetThumb2 extends StatefulWidget {
 //   /// The asset we want to show thumb for.
 //    final Asset? asset;
@@ -332,7 +322,6 @@ class AssetThumb2 extends StatefulWidget {
       child: CircularProgressIndicator(),
     ),
   }) : super(key: key);
-
   @override
   _AssetThumb2State createState() => _AssetThumb2State();
 }
@@ -394,7 +383,13 @@ class _AssetThumb2State extends State<AssetThumb2> {
         fit: BoxFit.contain,
         filterQuality: FilterQuality.low,
         progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(),
+            Container(
+                width: 40.0,
+                height: 1.0,
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(
+                  value: downloadProgress.progress,
+                )),
         errorWidget: (context, url, error) => Icon(Icons.error),
       );
     } else if (_thumbData != null) {
@@ -406,7 +401,8 @@ class _AssetThumb2State extends State<AssetThumb2> {
         gaplessPlayback: true,
         height: 100,
       );
-    } else {
+    }
+    else {
       return spinner;
     }
   }

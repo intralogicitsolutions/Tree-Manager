@@ -1,10 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-// import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// import 'package:flutter_phone_state/flutter_phone_state.dart';
-// import 'package:flutter_phone_state/phone_event.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/call_helper.dart';
@@ -24,7 +19,7 @@ class ScheduleWorkList extends StatefulWidget {
 class ScheduleWorkState extends State<ScheduleWorkList>
     with SingleTickerProviderStateMixin {
   var counter = 10;
-  List<Job> quotes = [];
+  List<Job>? quotes = [];
   bool is_fetching = false;
 
   late AnimationController _animationController;
@@ -62,7 +57,7 @@ class ScheduleWorkState extends State<ScheduleWorkList>
           .map((f) => Job.fromJson(f))
           .toList();
       filtered.clear();
-      filtered.addAll(quotes);
+      filtered.addAll(quotes!);
 
       print("type=${quotes.runtimeType}");
     }).catchError((error) {
@@ -101,19 +96,19 @@ class ScheduleWorkState extends State<ScheduleWorkList>
                           onPressed: () {
                             setState(() {
                               filterCtrl.clear();
-                              filtered.addAll(quotes);
+                              filtered.addAll(quotes!);
                             });
                           })),
                   controller: filterCtrl,
                   onChanged: (text) {
-                    if (text == '' || text == null || text.length == 0) {
+                    if (text == '' || text.length == 0) {
                       print('len zer');
                       filtered = [];
-                      filtered.addAll(quotes);
+                      filtered.addAll(quotes!);
                     } else {
                       print('non zero');
                       filtered = [];
-                      quotes.forEach((job) {
+                      quotes?.forEach((job) {
                         if (job.jobDesc!
                                 .toLowerCase()
                                 .contains(text.toLowerCase()) ||
@@ -151,7 +146,7 @@ class ScheduleWorkState extends State<ScheduleWorkList>
                       ),
                     )
                   : Flexible(
-                      child: quotes.length != 0
+                      child: quotes?.length != 0
                           ? ListView.builder(
                               itemCount: quotes == null ? 0 : filtered.length,
                               itemBuilder: (context, index) {
@@ -194,7 +189,7 @@ class ScheduleWorkState extends State<ScheduleWorkList>
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }
 
@@ -255,7 +250,7 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                    heroTag: 'call_button_${widget.quote.jobId}',
+                                    heroTag: 'call_button_${widget.quote.jobId}_${UniqueKey()}',
                                     child: SvgPicture.asset(
                                         'assets/images/call_button_2x.svg'),
                                     onPressed: () {
@@ -276,7 +271,7 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
                               margin: EdgeInsets.only(bottom: 10.0),
                               child: FittedBox(
                                 child: FloatingActionButton(
-                                    heroTag: 'set_eta_2x_${widget.quote.jobId}_2',
+                                    heroTag: 'set_eta_2x_${widget.quote.jobId}_${UniqueKey()}',
                                     child: SvgPicture.asset(
                                         'assets/images/set_eta_2x.svg'),
                                     onPressed: () async {
@@ -323,10 +318,10 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
         if (t.homeNumber != null) {
           contacts.add(Contact(mobile: t.homeNumber));
         }
-        if (t.workNumber != null) {
+        else if (t.workNumber != null) {
           contacts.add(Contact(mobile: t.workNumber));
         }
-        if (t.mobile != null) {
+        else if (t.mobile != null) {
           contacts.add(Contact(mobile: t.mobile));
         }
       });
@@ -336,7 +331,7 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
 
   //PhoneCall? call;
   Future<void> showContactDialog() async {
-    var action = await Helper.showSingleActionModal(context,
+    await Helper.showSingleActionModal(context,
         title: 'Tap to Make a Call',
         custom: ListView.separated(
             shrinkWrap: true,
@@ -358,7 +353,7 @@ class _ScheduleWorkListItemState extends State<ScheduleWorkListItem> {
               }
             },
             itemCount:
-                contacts.where((element) => element.mobile != null).length ?? 0,
+                contacts.where((element) => element.mobile != null).length,
             itemBuilder: (context, index) {
               var contact = contacts
                   .where((element) => element.mobile != null)

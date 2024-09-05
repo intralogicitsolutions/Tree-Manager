@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -16,7 +15,7 @@ class NotificationData extends StatefulWidget {
 
 class _NotificationDataState extends State<NotificationData> {
   var counter = 10;
-  List<Noti.Notification> quotes = [];
+  List<Noti.Notification>? quotes = [];
   List<Noti.Notification> filtered = [];
   bool is_fetching = false;
 
@@ -40,7 +39,7 @@ class _NotificationDataState extends State<NotificationData> {
           .toList();
 
       filtered.clear();
-      filtered.addAll(quotes);
+      filtered.addAll(quotes!);
       print("type=${quotes.runtimeType}");
     }).catchError((error) {
       setState(() {
@@ -71,7 +70,7 @@ class _NotificationDataState extends State<NotificationData> {
                         onPressed: () {
                           setState(() {
                             filterCtrl.clear();
-                            filtered.addAll(quotes);
+                            filtered.addAll(quotes!);
                           });
                         })),
                 controller: filterCtrl,
@@ -118,7 +117,7 @@ class _NotificationDataState extends State<NotificationData> {
     if (text == '' || text.length == 0) {
       print('len zer');
       filtered = [];
-      filtered.addAll(quotes);
+      filtered.addAll(quotes!);
     } else {
       is_fetching = true;
       Helper.get(
@@ -143,7 +142,7 @@ class _NotificationDataState extends State<NotificationData> {
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   

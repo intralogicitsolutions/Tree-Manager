@@ -1,10 +1,12 @@
-import 'package:background_locator/background_locator.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:background_locator/background_locator.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:pushy_flutter/pushy_flutter.dart';
+// import 'package:pushy_flutter/pushy_flutter.dart';
+// import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -144,35 +146,127 @@ class MoreOptionState extends State<MoreOption> {
       ),
     );
   }
+  // Future signoutDialog() async {
+  //   var action = await Helper.showMultiActionModal(
+  //     context,
+  //     title: 'Logout!',
+  //     description: 'Are you sure to logout?',
+  //     negativeButtonText: 'NO',
+  //     negativeButtonimage: 'reject.svg',
+  //     positiveButtonText: 'LOGOUT',
+  //     positiveButtonimage: 'accept.svg',
+  //   );
+  //
+  //   if (action != null) {
+  //     if (action) {
+  //       SharedPreferences.getInstance().then((sp) async {
+  //         sp.remove('user');
+  //         Global.locationRunning = false;
+  //
+  //         if (await BackgroundLocator.isRegisterLocationUpdate()) {
+  //           print('registered');
+  //
+  //           // Since Firebase Cloud Messaging (FCM) doesn't have a direct toggle method,
+  //           // You can stop processing messages based on the app state or a custom condition.
+  //
+  //
+  //           // await FirebaseMessaging.instance.unsubscribeFromTopic('all_users'); // Example: Unsubscribe from a topic
+  //
+  //           await BackgroundLocator.unRegisterLocationUpdate();
+  //         }
+  //
+  //         Navigator.pushReplacementNamed(context, 'login');
+  //       });
+  //     }
+  //   }
+  // }
 
-  Future signoutDialog() async {
-    var action = await Helper.showMultiActionModal(context,
+
+  Timer? _locationUpdateTimer;
+
+  void startLocationUpdates(double intervalMinutes) {
+    var intervalSeconds = intervalMinutes * 60;
+
+    _locationUpdateTimer = Timer.periodic(Duration(seconds: intervalSeconds.toInt()), (Timer timer) async {
+      // Fetch location using Geolocator
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+      // Handle the location update
+      print('Lat: ${position.latitude}, Long: ${position.longitude}');
+
+      // Example of sending location data to a server
+      sendLocationToServer(position);
+    });
+  }
+
+  void stopLocationUpdates() {
+    _locationUpdateTimer?.cancel();
+  }
+
+  Future<void> sendLocationToServer(Position position) async {
+    // Replace with your actual implementation
+    print('Sending location to server: ${position.latitude}, ${position.longitude}');
+  }
+
+  void signoutDialog() async {
+    var action = await Helper.showMultiActionModal(
+        context,
         title: 'Logout!',
         description: 'Are you sure to logout?',
         negativeButtonText: 'NO',
-        negativeButtonimage: 'reject.svg',
+       // negativeButtonImage: 'reject.svg',
         positiveButtonText: 'LOGOUT',
-        positiveButtonimage: 'accept.svg');
-    if (action != null) {
-      if (action) {
-        SharedPreferences.getInstance().then((sp) async {
-          sp.remove('user');
-          Global.locationRunning=false;
-          if(await BackgroundLocator.isRegisterLocationUpdate())
-          {
-            print('registered');
-            Pushy.toggleNotifications(false);
-            BackgroundLocator.unRegisterLocationUpdate();
-            
-          }
-          Navigator.pushReplacementNamed(context, 'login');
-        });
-      }
+        //positiveButtonImage: 'accept.svg'
+    );
+
+    if (action != null && action) {
+      SharedPreferences.getInstance().then((sp) async {
+        // Remove user data from SharedPreferences
+        sp.remove('user');
+        Global.locationRunning = false;
+
+        // Stop periodic location updates
+        stopLocationUpdates();
+
+        // Optionally, handle Pushy notifications here if needed
+        // Pushy.toggleNotifications(false);
+
+        // Navigate to login screen
+        Navigator.pushReplacementNamed(context, 'login');
+      });
     }
   }
 
+
+
+  // Future signoutDialog() async {
+  //   var action = await Helper.showMultiActionModal(context,
+  //       title: 'Logout!',
+  //       description: 'Are you sure to logout?',
+  //       negativeButtonText: 'NO',
+  //       negativeButtonimage: 'reject.svg',
+  //       positiveButtonText: 'LOGOUT',
+  //       positiveButtonimage: 'accept.svg');
+  //   if (action != null) {
+  //     if (action) {
+  //       SharedPreferences.getInstance().then((sp) async {
+  //         sp.remove('user');
+  //         Global.locationRunning=false;
+  //         if(await BackgroundLocator.isRegisterLocationUpdate())
+  //         {
+  //           print('registered');
+  //           //Pushy.toggleNotifications(false);
+  //           BackgroundLocator.unRegisterLocationUpdate();
+  //
+  //         }
+  //         Navigator.pushReplacementNamed(context, 'login');
+  //       });
+  //     }
+  //   }
+  // }
+
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 
   comingSoonDialog() {

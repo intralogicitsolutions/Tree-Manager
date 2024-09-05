@@ -6,7 +6,6 @@ import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/Job.dart';
-import 'package:tree_manager/pojo/Job_Mock.dart';
 
 class JobList extends StatefulWidget {
   @override
@@ -20,7 +19,7 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
   var filterCtrl = TextEditingController();
   var counter = 10;
   List<Job> quotes = [];
-  List<Job> filtered = [];
+  List<Job>? filtered = [];
   bool is_fetching = false;
   Map<String, dynamic>? args;
 
@@ -59,7 +58,6 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
       setState(() {
         is_fetching = false;
       });
-      print('lllllll -=---===?  ${mockJsonList}');
       // // quotes = (json.decode(mockJsonList as String) as List)
       // //     .map((f) => Job.fromJson(mockJsonList as Map<String, dynamic>))
       // //     .toList();
@@ -72,8 +70,8 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
           .map((f) => Job.fromJson(f))
           .toList();
 
-      filtered.clear();
-      filtered.addAll(quotes);
+      filtered?.clear();
+      filtered?.addAll(quotes);
       if (args != null && args!.containsKey('job_no')) {
         print('has key job no');
         //filterCtrl.text = args['job_no'];
@@ -114,21 +112,21 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
                         onPressed: () {
                           setState(() {
                             filterCtrl.clear();
-                            filtered.addAll(quotes);
+                            filtered?.addAll(quotes);
                           });
                         })),
                 controller: filterCtrl,
                 onChanged: (text) {
-                  if (text == '' || text == null || text.length == 0) {
+                  if (text == '' || text.length == 0) {
                     print('len zer');
                     filtered = [];
-                    filtered.addAll(quotes);
+                    filtered?.addAll(quotes);
                   } else {
-                    filtered.clear();
+                    filtered?.clear();
                     quotes.forEach((job) {
                       if ((job.jobNo?.toLowerCase().contains(text.toLowerCase())?? false ) ||
                           (job.suburb?.toLowerCase().contains(text.toLowerCase()) ?? false))
-                        filtered.add(job);
+                        filtered?.add(job);
                     });
                   }
                   setState(() {});
@@ -147,16 +145,16 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
                     ),
                   )
                 : Flexible(
-                    child: filtered.length != 0
+                    child: filtered?.length != 0
                         ? ListView.builder(
-                            itemCount: filtered == null ? 0 : filtered.length,
+                            itemCount: filtered == null ? 0 : filtered?.length,
                             itemBuilder: (context, index) {
-                              var quote = filtered[index];
+                              var quote = filtered?[index];
                               return Container(
                                 margin: EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
                                 decoration: BoxDecoration(boxShadow: (() {
-                                  if (quote.overdue=='1') {
+                                  if (quote?.overdue=='1') {
                                     return [
                                       BoxShadow(
                                           color: Themer.jobGlowColor,
@@ -167,7 +165,7 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
                                     return null;
                                 })()),
                                 child: JobListItem(
-                                  quote: quote,
+                                  quote: quote!,
                                   index: index,
                                   refreshJobs: getJobs,
                                 ),
@@ -189,7 +187,7 @@ class JobListState extends State<JobList> with SingleTickerProviderStateMixin{
   }
 
   void bottomClick(int index) {
-    Helper.bottomClickAction(index, context);
+    Helper.bottomClickAction(index, context, setState);
   }
 }
 

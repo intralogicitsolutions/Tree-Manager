@@ -1,6 +1,6 @@
 library global;
 
-import 'package:background_locator/location_dto.dart';
+// import 'package:background_locator/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:tree_manager/dialog/porgess_dialog.dart';
 import 'package:tree_manager/pojo/Crew.dart';
@@ -21,6 +21,8 @@ import 'package:tree_manager/pojo/signature.dart';
 import 'package:tree_manager/pojo/tree_info.dart';
 import 'package:tree_manager/pojo/notification.dart' as Noti;
 
+import '../pojo/locationDto.dart';
+
 class Global {
   static String rateSet = "";
   static String rateClass = "";
@@ -31,7 +33,7 @@ class Global {
   static String? selectedRateClass;
 
   static List<OtherItem>? others = [];
-  static List<OtherItem> staffs = [];
+  static List<OtherItem>? staffs = [];
   static List<OtherItem> equips = [];
   static List<OtherItem>? sub_equips = [];
 
@@ -60,47 +62,47 @@ class Global {
   static InvoiceData? invoice;
 
   static bool site_hazard_update = false;
-  static  Hazard? hazard;
-  static List<NetworkPhoto> hazard_images = [];
+  static Hazard? hazard;
+  static List<NetworkPhoto>? hazard_images = [];
 
-  static List<Staff> hzd_staffs = [];
+  static List<Staff>? hzd_staffs = [];
   static List<Equip> hzd_equips = [];
-  static List<Option> hzd_qstn = [];
-  static List<Task> hzd_task = [];
+  static List<Option>? hzd_qstn = [];
+  static List<Task>? hzd_task = [];
 
-  static List<Option> w_task = [];
-  static List<Option> m_task = [];
-  static List<Option> t_task = [];
-  static List<Option> j_task = [];
+  static List<Option>? w_task = [];
+  static List<Option>? m_task = [];
+  static List<Option>? t_task = [];
+  static List<Option>? j_task = [];
 
-  static List<Option> w_ctrl = [];
-  static List<Option> m_ctrl = [];
-  static List<Option> t_ctrl = [];
-  static List<Option> j_ctrl = [];
+  static List<Option>? w_ctrl = [];
+  static List<Option>? m_ctrl = [];
+  static List<Option>? t_ctrl = [];
+  static List<Option>? j_ctrl = [];
 
-  static List<Option> w_rate = [];
-  static List<Option> m_rate = [];
-  static List<Option> t_rate = [];
-  static List<Option> j_rate = [];
+  static List<Option>? w_rate = [];
+  static List<Option>? m_rate = [];
+  static List<Option>? t_rate = [];
+  static List<Option>? j_rate = [];
 
   // Selected hazard items
-  static List<Option> sel_w_task = [];
-  static List<Option> sel_m_task = [];
-  static List<Option> sel_t_task = [];
-  static List<Option> sel_j_task = [];
-  static List<Option> sel_w_other_task = [];
-  static List<Option> sel_m_other_task = [];
-  static List<Option> sel_t_other_task = [];
-  static List<Option> sel_j_other_task = [];
+  static List<Option>? sel_w_task = [];
+  static List<Option>? sel_m_task = [];
+  static List<Option>? sel_t_task = [];
+  static List<Option>? sel_j_task = [];
+  static List<Option>? sel_w_other_task = [];
+  static List<Option>? sel_m_other_task = [];
+  static List<Option>? sel_t_other_task = [];
+  static List<Option>? sel_j_other_task = [];
 
-  static List<Option> sel_w_ctrl = [];
-  static List<Option> sel_m_ctrl = [];
-  static List<Option> sel_t_ctrl = [];
-  static List<Option> sel_j_ctrl = [];
-  static List<Option> sel_w_other_ctrl = [];
-  static List<Option> sel_m_other_ctrl = [];
-  static List<Option> sel_t_other_ctrl = [];
-  static List<Option> sel_j_other_ctrl = [];
+  static List<Option>? sel_w_ctrl = [];
+  static List<Option>? sel_m_ctrl = [];
+  static List<Option>? sel_t_ctrl = [];
+  static List<Option>? sel_j_ctrl = [];
+  static List<Option>? sel_w_other_ctrl = [];
+  static List<Option>? sel_m_other_ctrl = [];
+  static List<Option>? sel_t_other_ctrl = [];
+  static List<Option>? sel_j_other_ctrl = [];
 
   static String? sel_w_rate = "";
   static String? sel_m_rate = "";
@@ -112,14 +114,14 @@ class Global {
   static Color? sel_t_color = Colors.transparent;
   static Color? sel_j_color = Colors.transparent;
 
-  static List<Staff> hzd_sel_staff = [];
-  static List<Staff> hzd_sel_other_staff = [];
-  static List<Equip> hzd_sel_equip = [];
+  static List<Staff>? hzd_sel_staff = [];
+  static List<Staff>? hzd_sel_other_staff = [];
+  static List<Equip>? hzd_sel_equip = [];
   static List<Equip> hzd_sel_other_equip = [];
 
-  static List<String> hzd_sel_answr = [];
-  static List<Task> hzd_sel_task = [];
-  static List<Task> hzd_sel_other_task = [];
+  static List<String>? hzd_sel_answr = [];
+  static List<Task>? hzd_sel_task = [];
+  static List<Task>? hzd_sel_other_task = [];
 
   // Hazard triplets
   static List<Map<String, String>> hzd_triplet = [
@@ -167,16 +169,17 @@ class Global {
   static ProgressDialog? pd;
 
   // Preloads
-  static List<Option> comment = [];
-  static List<Option> eta_not = [];
-  static List<Option> substa_cost = [];
-  static List<Option> approval = [];
-  static List<Option> before_photos = [];
-  static List<Option> after_photos = [];
-  static List<Option> hazard_uploads = [];
-  static List<Option> emergency_contact = [];
-  static List<Option> work_not_completed = [];
-  static List<Option> payment = [];
+  static List<Option>? comment = [];
+  static List<Option>? eta_not = [];
+  static List<Option>? substa_cost = [];
+  static List<Option>? approval = [];
+  static List<Option>? before_photos = [];
+  static List<Option>? after_photos = [];
+  static List<Option>? hazard_uploads = [];
+  static List<Option>? emergency_contact = [];
+  static List<Option>? work_not_completed = [];
+  static List<Option>? payment = [];
+
   // Fence data preloads
   static List<Option> fence_height = [];
   static List<Option> fence_length = [];
@@ -185,7 +188,7 @@ class Global {
   static List<Option> fence_comments = [];
 
   // Fence data
-  static  FenceInfo? fence;
+  static FenceInfo? fence;
 
   static Map<String, dynamic> flow = {};
 
