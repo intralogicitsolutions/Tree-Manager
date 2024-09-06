@@ -748,8 +748,8 @@ class DashboardState extends State<Dashboard>
           showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (_) => WillPopScope(
-                    onWillPop: () async => await false,
+              builder: (_) => PopScope(
+                onPopInvokedWithResult: (context, result) async => await false,
                     child: AlertDialog(
                       title: Text('New Version found'),
                       content: Text('New version of TreeManager is available'),

@@ -14,7 +14,7 @@ class TreeDetail extends StatefulWidget {
 }
 
 class TreeDetailState extends State<TreeDetail> {
-  var _scrolCtrl = ScrollController();
+  // var _scrolCtrl = ScrollController();
   var selected = <String>[];
   var selected_list = <String>[];
   var grids = [
