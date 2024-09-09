@@ -24,7 +24,7 @@ class DamageFenceBState extends State<DamageFenceB> {
     if (Global.fence != null) {
       selected = Global.fence!.value4?.split(',') ?? [];
     }
-    if (Global.site_info_update == true || selected.length <= 0) {
+    if (Global.site_info_update == true) {
       selected = Global.info!.fence!.split(',');
     }
     super.initState();

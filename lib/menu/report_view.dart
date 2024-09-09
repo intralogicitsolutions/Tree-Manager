@@ -91,7 +91,7 @@ class ReportViewState extends State<ReportView> {
         "goto": 'pdf_viewer',
         'arguments': {
           "url":
-              'generate/PhotosReport?job_id=${Global.job!.jobId}&job_alloc_id=${Global.job!.jobAllocId}',
+              'generate/PhotosReport?job_id=${Global.job?.jobId??''}&job_alloc_id=${Global.job?.jobAllocId??''}',
           'title': 'Site Photos'
         },
       },
@@ -136,218 +136,242 @@ class ReportViewState extends State<ReportView> {
         appBar: Helper.getAppBar(context,
             title: 'Job #TM ${job.jobNo}',
             sub_title: 'Job TM# ${Global.job!.jobNo}'),
-        body: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(color: Colors.white),
-            width: size.width,
-            height: size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/phone.svg'),
-                              TextButton(
-                                  onPressed: () {
-                                    showContactDialog();
-                                  },
-                                  child: Text(
-                                    '${job.siteContactName}',
-                                    style: TextStyle(
-                                        color: Themer.textGreenColor,
-                                        fontSize: 18,
-                                        decoration: TextDecoration.underline),
-                                  ))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/location.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Container(
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      var action =
-                                          await Helper.showMultiActionModal(
-                                              context,
-                                              title: 'Site Address',
-                                              description: job.address ?? ' ',
-                                              negativeButtonText:
-                                                  'GET DIRECION',
-                                              negativeButtonimage:
-                                                  'get_direction.svg',
-                                              positiveButtonText: 'VIEW ON MAP',
-                                              positiveButtonimage:
-                                                  'view_on_map.svg');
-                                      if (action == true) {
-                                        Helper.openDirection(job.address??'');
-                                      } else if (action == false) {
-                                        Helper.openMap(job.address??'');
-                                      }
+        body: Container(
+          decoration: BoxDecoration(color: Colors.white),
+          width: size.width,
+          height: size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                SvgPicture.asset('assets/images/phone.svg'),
+                                TextButton(
+                                    onPressed: () {
+                                      showContactDialog();
                                     },
                                     child: Text(
-                                      '${job.address}',
+                                      '${job.siteContactName}',
                                       style: TextStyle(
                                           color: Themer.textGreenColor,
                                           fontSize: 18,
                                           decoration: TextDecoration.underline),
-                                    )),
-                              ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SvgPicture.asset('assets/images/work.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Container(
-                                child: GestureDetector(
-                                  child: Text(
-                                    job.jobDesc ?? ' ',
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Themer.textGreenColor,
-                                        fontSize: 18,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                  onTap: () {
-                                    Helper.showSingleActionModal(context,
-                                        title: 'Work Description',
-                                        description: job.jobDesc ?? ' ',
-                                        subTitle: 'Special Description',
-                                        subDescription: job.jobSpDesc ?? ' ');
-                                  },
+                                    ))
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                SvgPicture.asset('assets/images/location.svg'),
+                                SizedBox(
+                                  width: 10,
                                 ),
-                              ))
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        // if (Global.flow != null) {
-                        //   Navigator.pushNamed(context, 'work_flow');
-                        // }
-                        Navigator.pushNamed(context, 'work_flow');
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SvgPicture.asset('assets/images/view_details.svg'),
-                          Text(
-                            'View Details',
-                            style: TextStyle(
-                                color: Themer.textGreenColor,
-                                fontSize: 20,
-                                fontFamily: 'OpenSans'),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Align(
-                          child: Text(
-                            'Reports',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Align(
-                          child: RichText(
-                              text: TextSpan(
-                                  text: 'Work performed at',
-                                  style: TextStyle(color: Colors.black),
-                                  children: [
-                                TextSpan(
-                                    text: ' $date_string',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold))
-                              ])),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: BoxDecoration(color: Colors.white),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          GridView.count(
-                              shrinkWrap: true,
-                              childAspectRatio: 4 / 2.5,
-                              crossAxisCount: 2,
-                              children: List.generate(grids.length, (index) {
-                                var item = grids[index];
-                                final goto = item['goto'] as String?;
-                                 final label = item['label'] as String?;
-                                return GestureDetector(
-                                  onTap: () async {
-                                    if (item['goto'] != null) {
-                                      await Navigator.pushNamed(
-                                          context, goto!,
-                                          arguments: item['arguments']);
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.all(1),
+                                Flexible(
                                     child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Themer.textGreenColor),
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: SvgPicture.asset(
-                                              "assets/images/${statusImage(item)}",
-                                              fit: BoxFit.scaleDown,
-                                            ),
-                                          ),
-                                          Text(
-                                            label!,
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )
-                                        ],
-                                      ),
+                                  child: GestureDetector(
+                                      onTap: () async {
+                                        var action =
+                                            await Helper.showMultiActionModal(
+                                                context,
+                                                title: 'Site Address',
+                                                description: job.address ?? ' ',
+                                                negativeButtonText:
+                                                    'GET DIRECION',
+                                                negativeButtonimage:
+                                                    'get_direction.svg',
+                                                positiveButtonText: 'VIEW ON MAP',
+                                                positiveButtonimage:
+                                                    'view_on_map.svg');
+                                        if (action == true) {
+                                          Helper.openDirection(job.address??'');
+                                        } else if (action == false) {
+                                          Helper.openMap(job.address??'');
+                                        }
+                                      },
+                                      child: Text(
+                                        '${job.address}',
+                                        style: TextStyle(
+                                            color: Themer.textGreenColor,
+                                            fontSize: 18,
+                                            decoration: TextDecoration.underline),
+                                      )),
+                                ))
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SvgPicture.asset('assets/images/work.svg'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Flexible(
+                                    child: Container(
+                                  child: GestureDetector(
+                                    child: Text(
+                                      job.jobDesc ?? ' ',
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Themer.textGreenColor,
+                                          fontSize: 18,
+                                          decoration: TextDecoration.underline),
                                     ),
+                                    onTap: () {
+                                      Helper.showSingleActionModal(context,
+                                          title: 'Work Description',
+                                          description: job.jobDesc ?? ' ',
+                                          subTitle: 'Special Description',
+                                          subDescription: job.jobSpDesc ?? ' ');
+                                    },
                                   ),
-                                );
-                              }))
-                        ],
+                                ))
+                              ],
+                            )
+                          ],
+                        ),
                       ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     // if (Global.flow != null) {
+                      //     //   Navigator.pushNamed(context, 'work_flow');
+                      //     // }
+                      //     Navigator.pushNamed(context, 'work_flow');
+                      //   },
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: <Widget>[
+                      //       SvgPicture.asset('assets/images/view_details.svg'),
+                      //       Text(
+                      //         'View Details',
+                      //         style: TextStyle(
+                      //             color: Themer.textGreenColor,
+                      //             fontSize: 20,
+                      //             fontFamily: 'OpenSans'),
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  // if (Global.flow != null) {
+                  //   Navigator.pushNamed(context, 'work_flow');
+                  // }
+                  Navigator.pushNamed(context, 'work_flow');
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SvgPicture.asset('assets/images/view_details.svg'),
+                    Text(
+                      'View Details',
+                      style: TextStyle(
+                          color: Themer.textGreenColor,
+                          fontSize: 20,
+                          fontFamily: 'OpenSans'),
                     )
                   ],
-                )
-              ],
-            ),
+                ),
+              ),
+              Column(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Align(
+                        child: Text(
+                          'Reports',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Align(
+                        child: RichText(
+                            text: TextSpan(
+                                text: 'Work performed at',
+                                style: TextStyle(color: Colors.black),
+                                children: [
+                              TextSpan(
+                                  text: ' $date_string',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))
+                            ])),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        GridView.count(
+                            shrinkWrap: true,
+                            childAspectRatio: 4 / 2.5,
+                            crossAxisCount: 2,
+                            children: List.generate(grids.length, (index) {
+                              var item = grids[index];
+                              final goto = item['goto'] as String?;
+                               final label = item['label'] as String?;
+                              return GestureDetector(
+                                onTap: () async {
+                                  if (item['goto'] != null) {
+                                    await Navigator.pushNamed(
+                                        context, goto!,
+                                        arguments: item['arguments']);
+                                  }
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.all(1),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Themer.textGreenColor),
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: SvgPicture.asset(
+                                            "assets/images/${statusImage(item)}",
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
+                                        Text(
+                                          label!,
+                                          style:
+                                              TextStyle(color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }))
+                      ],
+                    ),
+                  )
+                ],
+              )
+            ],
           ),
         ));
   }

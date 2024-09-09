@@ -115,8 +115,6 @@ class SiteInspectionState extends State<SiteInspection> {
 
           Global.job = job;
 
-
-
           if (job.costExists == 'true') {
             Global.costing_update = true;
             Helper.get(

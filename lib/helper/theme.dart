@@ -16,6 +16,8 @@ class Themer{
 
   static const chatAvatarColor=Color(0xffF8F8F8);
 
+  // static const buttonColor=Color(0xffe84a4a);
+
   static const rateColors=[
     
   ];

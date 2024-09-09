@@ -226,6 +226,11 @@
 //     Helper.bottomClickAction(index, context);
 //   }
 // }
+
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
@@ -239,14 +244,25 @@ class TreeAccess extends StatefulWidget {
 }
 
 class TreeAccessState extends State<TreeAccess> {
-  List<String> selected = [];
-  List<String> selected_list = [];
-  final List<Map<String, String>> grids = [
+  var selected = <String>[];
+  var selected_list = <String>[];
+  // final List<Map<String, String>> grids = [
+  //   {"label": "Good", "value": "1"},
+  //   {"label": "Average", "value": "2"},
+  //   {"label": "Poor", "value": "3"},
+  // ];
+  var grids = [
     {"label": "Good", "value": "1"},
     {"label": "Average", "value": "2"},
     {"label": "Poor", "value": "3"},
   ];
-  final List<Map<String, String>> lists = [
+
+  // final List<Map<String?, String?>> lists = [
+  //   {"label": "Juvenile", "value": "1"},
+  //   {"label": "Semi Mature", "value": "2"},
+  //   {"label": "Mature", "value": "3"},
+  // ];
+  var lists = [
     {"label": "Juvenile", "value": "1"},
     {"label": "Semi Mature", "value": "2"},
     {"label": "Mature", "value": "3"},
@@ -254,12 +270,6 @@ class TreeAccessState extends State<TreeAccess> {
 
   @override
   void initState() {
-    super.initState();
-    // Initialize selected values from Global.info if available
-    // if (Global.info != null && Global.info!.access != null && Global.info!.age != null) {
-    //   selected = Global.info!.access!.split(',');
-    //   selected_list = Global.info!.age!.split(',');
-    // }
     try {
       if (Global.site_info_update == true) {
         selected = Global.info!.access!.split(',');
@@ -268,6 +278,14 @@ class TreeAccessState extends State<TreeAccess> {
     } catch (e) {
       print('Error initializing selected_list: $e');
     }
+    super.initState();
+  }
+@override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print('selected list2: ${selected_list.length}, ${Global.info!.age?.split(',') }');
+    print('selected list1: ${selected_list.length}, ${Global.info!.access?.split(',') }');
   }
 
   @override
@@ -299,7 +317,7 @@ class TreeAccessState extends State<TreeAccess> {
                 itemCount: grids.length,
                 itemBuilder: (context, index) {
                   var item = grids[index];
-                  var value = item['value'] ?? '';
+                  var value = item['value'];
                   return GestureDetector(
                     child: Container(
                       height: 80,
@@ -333,7 +351,7 @@ class TreeAccessState extends State<TreeAccess> {
                         if (selected.contains(value))
                           selected.remove(value);
                         else
-                          selected.add(value);
+                          selected.add(value!);
                       });
                     },
                   );
@@ -354,7 +372,7 @@ class TreeAccessState extends State<TreeAccess> {
                 itemCount: lists.length,
                 itemBuilder: (context, index) {
                   var item = lists[index];
-                  var value = item['value'] ?? '';
+                  var value = item['value']??'';
                   return GestureDetector(
                     child: Container(
                       height: 80,
@@ -385,10 +403,18 @@ class TreeAccessState extends State<TreeAccess> {
                     ),
                     onTap: () {
                       setState(() {
-                        if (selected_list.contains(value))
+                      if (value.isNotEmpty) {
+                        print('value ===> ${value}');
+                        print('value.isNotEmpty ${value.isNotEmpty}');
+                        if (selected_list.contains(value)) {
                           selected_list.remove(value);
-                        else
-                          selected_list.add(value);
+                          print('selected_list remove ${selected_list}');
+                        }
+
+                        else{
+                            selected_list.add(value);
+                        print('selected_list add ${selected_list}');}
+                        }
                       });
                     },
                   );
@@ -461,10 +487,13 @@ class TreeAccessState extends State<TreeAccess> {
                       // if (Global.info != null &&
                       //     selected_list.isNotEmpty &&
                       //     selected.isNotEmpty)
-                      if (selected.length != 0 && selected_list.length != 0)
+
+                      // if (selected.length != 0 && selected_list.length != 0)
+                      if (Global.info != null && selected_list.isNotEmpty && selected.isNotEmpty)
                       {
-                        Global.info?.access = selected_list.join(',');
-                        Global.info?.age = selected.join(',');
+                        Global.info?.access = selected.join(',');
+                        Global.info?.age = selected_list.join(',');
+                        print('age == ${selected_list.join(',') }');
                         // Global.info?.age = selected_list.join(',');
                         // Global.info?.access = selected.join(',');
                         Navigator.pushNamed(context, 'work_required');

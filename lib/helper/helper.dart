@@ -113,7 +113,7 @@ class Helper {
   // Country Declaration
   // AUS for Australia
   // UK for United Kingdom
-  static var countryCode = "AUS";
+ static var countryCode = "AUS";
 
   // App Image
 
@@ -513,6 +513,7 @@ class Helper {
 
   static Future<bool> setTreeInfo(BuildContext context) async {
     showProgress(context, 'Saving Tree Info');
+    print('saving tree info');
     var data = await post(
         "workOperationsInfo/CreateWithNewID", Global.info!.toJson(),
         is_json: true);
@@ -521,17 +522,18 @@ class Helper {
     await Helper.updateNotificationStatus(Global.job?.jobAllocId??'');
     hideProgress();
     var json = jsonDecode(data.body);
-    print('json data--->${json}');
     return json['success'] == 1;
   }
 
   static Future<bool> updateTreeInfo(BuildContext context) async {
     showProgress(context, 'Saving Tree Info');
+    print('saving tree info  +=> ${Global.info!.toJson()}');
     var data = await put("WorkOperationsInfo/Edit", Global.info!.toJson(),
         is_json: true);
     Global.job?.treeinfoExists = 'true';
     hideProgress();
     var json = jsonDecode(data.body);
+    print('data123 json=====>${json}');
     return json['success'] == 1;
   }
 
@@ -946,10 +948,13 @@ static Future<bool?> showMultiActionModal(
 
   static String makeTextAvatar(String name) {
     var text = name.trim();
+    if (text.isEmpty) {
+      return "";  // Default value for empty names
+    }
     var words = text.toUpperCase().split(" ");
     if (words.length >= 2) {
       return words[0][0] + "" + words[1][0];
-    } else if (words.length == 1) {
+    } else if (words.length == 1 && words[0].isNotEmpty) {
       return "" + words[0][0];
     } else {
       return "";

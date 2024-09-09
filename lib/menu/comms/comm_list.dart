@@ -6,6 +6,7 @@ import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/chat.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class CommList extends StatefulWidget {
   @override
@@ -109,13 +110,13 @@ class CommListState extends State<CommList> {
                                         elevation: 1,
                                         backgroundColor: Themer.chatAvatarColor,
                                         heroTag: index,
-                                        // child: Helper.makeTextAvatar(chat.username??'')
-                                        //     .text
-                                        //     .color(Themer.textGreenColor)
-                                        //     .size(20)
-                                        //     .bold
-                                        //     .fontFamily('OpenSans')
-                                        //     .make(),
+                                        child: Helper.makeTextAvatar(chat.username??'')
+                                            .text
+                                            .color(Themer.textGreenColor)
+                                            .size(20)
+                                            .bold
+                                            .fontFamily('OpenSans')
+                                            .make(),
                                       ),
                                     ),
                                     SizedBox(
@@ -128,16 +129,16 @@ class CommListState extends State<CommList> {
                                           CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
-                                        // chat.username!.text
-                                        //     .color(Themer.textGreenColor)
-                                        //     .size(20)
-                                        //     .bold
-                                        //     .fontFamily('OpenSans')
-                                        //     .make(),
-                                        // chat.schedNote!.text
-                                        //     .size(16)
-                                        //     .fontFamily('OpenSans')
-                                        //     .make(),
+                                        chat.username!.text
+                                            .color(Themer.textGreenColor)
+                                            .size(20)
+                                            .bold
+                                            .fontFamily('OpenSans')
+                                            .make(),
+                                        chat.schedNote!.text
+                                            .size(16)
+                                            .fontFamily('OpenSans')
+                                            .make(),
                                       ],
                                     ),
                                   ],
@@ -145,10 +146,10 @@ class CommListState extends State<CommList> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
-                                    // chat.createdAt!.text
-                                    //     .size(17)
-                                    //     .color(Themer.textGreenColor)
-                                    //     .make(),
+                                    chat.createdAt!.text
+                                        .size(17)
+                                        .color(Themer.textGreenColor)
+                                        .make(),
                                   ],
                                 )
                               ],

@@ -150,6 +150,7 @@ class MultiActionDialog extends StatelessWidget {
                                 child: FittedBox(
                                   child: FloatingActionButton(
                                       heroTag: 'dialog_action_1',
+                                      //backgroundColor: Themer.buttonColor,
                                       child: SvgPicture.asset(
                                         "assets/images/$negativeButtonimage",
                                         height: 60,

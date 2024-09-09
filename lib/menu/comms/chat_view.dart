@@ -5,6 +5,7 @@ import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
 import 'package:tree_manager/pojo/chat.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class ChatView extends StatefulWidget {
   @override
@@ -64,39 +65,43 @@ class ChatViewState extends State<ChatView> {
                         elevation: 1,
                         backgroundColor: Themer.chatAvatarColor,
                         heroTag: 'chat_avatar',
-                        //child: Helper.makeTextAvatar(chat!.username??'')
-                          //  .text
-                            //.color(Themer.textGreenColor)
-                            //.size(20)
-                            //.bold
-                           // .fontFamily('OpenSans')
-                            //.make(),
+                        child: Helper.makeTextAvatar(chat?.username??'')
+                           .text
+                            .color(Themer.textGreenColor)
+                            .size(20)
+                            .bold
+                           .fontFamily('OpenSans')
+                            .make(),
                       ),
                     ),
                     SizedBox(
                       width: 20,
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        // chat!.schedNote!.text
-                        //     .color(Themer.textGreenColor)
-                        //     .size(20)
-                        //     .bold
-                        //     .fontFamily('OpenSans')
-                        //     .make(),
-                      ],
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          // chat!.schedNote!.text
+                          (chat?.schedNote ?? '').text
+                              .color(Themer.textGreenColor)
+                              .size(20)
+                              .bold
+                              .fontFamily('OpenSans')
+                              .make(),
+                        ],
+                      ),
                     ),
                   ],
                 ),
                 // chat!.schedNote!.text
-                //     .color(Colors.black)
-                //     .size(16)
-                //     .fontFamily('OpenSans')
-                //     .start
-                //     .make(),
+                (chat?.schedNote ?? '').text
+                    .color(Colors.black)
+                    .size(16)
+                    .fontFamily('OpenSans')
+                    .start
+                    .make(),
                 SizedBox(
                   height: 15,
                 ),
@@ -104,18 +109,19 @@ class ChatViewState extends State<ChatView> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     // chat!.createdAt!.text
-                    //     .color(Themer.textGreenColor)
-                    //     .size(16)
-                    //     .fontFamily('OpenSans')
-                    //     .start
-                    //     .make()
+                    (chat?.createdAt ?? '').text
+                        .color(Themer.textGreenColor)
+                        .size(16)
+                        .fontFamily('OpenSans')
+                        .start
+                        .make()
                   ],
                 ),
                 Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    if (args!['update'] == true)
+                    if (args != null && args!['update'] == true)
                       Column(
                         children: <Widget>[
                           Container(

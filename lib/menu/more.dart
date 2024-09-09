@@ -214,9 +214,9 @@ class MoreOptionState extends State<MoreOption> {
         title: 'Logout!',
         description: 'Are you sure to logout?',
         negativeButtonText: 'NO',
-       // negativeButtonImage: 'reject.svg',
+       negativeButtonimage: 'reject.svg',
         positiveButtonText: 'LOGOUT',
-        //positiveButtonImage: 'accept.svg'
+        positiveButtonimage: 'accept.svg'
     );
 
     if (action != null && action) {
