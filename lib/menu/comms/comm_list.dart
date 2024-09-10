@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -72,10 +74,9 @@ class CommListState extends State<CommList> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
                     child: ListView.separated(
                         separatorBuilder: (context, index) {
                           return Divider(
@@ -122,24 +123,30 @@ class CommListState extends State<CommList> {
                                     SizedBox(
                                       width: 20,
                                     ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        chat.username!.text
-                                            .color(Themer.textGreenColor)
-                                            .size(20)
-                                            .bold
-                                            .fontFamily('OpenSans')
-                                            .make(),
-                                        chat.schedNote!.text
-                                            .size(16)
-                                            .fontFamily('OpenSans')
-                                            .make(),
-                                      ],
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Flexible(
+                                            child: chat.username!.text
+                                                .color(Themer.textGreenColor)
+                                                .size(20)
+                                                .bold
+                                                .fontFamily('OpenSans')
+                                                .make(),
+                                          ),
+                                          Flexible(
+                                            child: chat.schedNote!.text
+                                                .size(16)
+                                                .fontFamily('OpenSans')
+                                                .make(),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

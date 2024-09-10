@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -138,6 +139,8 @@ class HelpCenterState extends State<HelpCenter> {
                                   ),
                                   onTap: () async {
                                     // await startCall(help.aUPhone??'');
+                                    await Helper.openDialer(
+                                        help.aUPhone??'');
                                   },
                                 ),
                                 SizedBox(height: 10.0),
@@ -155,7 +158,7 @@ class HelpCenterState extends State<HelpCenter> {
                                     ],
                                   ),
                                   onTap: () {
-                                    Helper.openEmail(help.aUEmail ?? '');
+                                     Helper.openEmail(help.aUEmail ?? '');
                                   },
                                 ),
                                 SizedBox(height: 20.0),
@@ -185,6 +188,8 @@ class HelpCenterState extends State<HelpCenter> {
                                   ),
                                   onTap: () async {
                                     // await startCall(help.nZPhone??'');
+                                    await Helper.openDialer(
+                                        help.nZPhone??'');
                                   },
                                 ),
                                 SizedBox(height: 10.0),
@@ -237,6 +242,7 @@ class HelpCenterState extends State<HelpCenter> {
                                   ),
                                   onTap: () async {
                                     // await startCall(jsonDecode(Helper().contactDetails)["phone"]);
+                                    await Helper.openDialer(jsonDecode(Helper().contactDetails)["phone"]);
                                   },
                                 ),
                                 SizedBox(height: 10.0),

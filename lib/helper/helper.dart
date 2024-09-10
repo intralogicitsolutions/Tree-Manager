@@ -872,13 +872,30 @@ static Future<bool?> showMultiActionModal(
 
   static Future openEmail(String email) async {
    // var url = "mailto:$email";
-    var url = Uri.parse("mailto:$email");
+    var url = Uri.parse("mailto:${email}");
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
       throw 'Could not make mail.';
     }
   }
+ // static Future openEmail(String email) async {
+ //   final Uri emailUri = Uri(
+ //     scheme: 'mailto',
+ //     path: email,
+ //   );
+ //
+ //   // Try launching the email client with additional options
+ //   if (await canLaunchUrl(emailUri)) {
+ //     await launchUrl(
+ //       emailUri,
+ //       mode: LaunchMode.externalApplication,  // Opens email client externally
+ //     );
+ //   } else {
+ //     // Log or handle the error when no email client is available
+ //     throw 'Could not launch email client.';
+ //   }
+ // }
 
   static Future openDirection(String address) async {
     var url = Uri.parse("google.navigation:q=${address.replaceAll(" ", "+")}");
