@@ -50,6 +50,7 @@ class ApprovalState extends State<ApprovalList>
     Helper.get(
         "nativeappservice/jobinfoApproval?contractor_id=${Helper.user?.companyId}&process_id=1",
         {}).then((response) {
+      if (!mounted) return;
       setState(() {
         is_fetching = false;
       });
@@ -61,6 +62,7 @@ class ApprovalState extends State<ApprovalList>
 
       print("type=${quotes.runtimeType}");
     }).catchError((error) {
+      if (!mounted) return;
       setState(() {
         is_fetching = false;
       });

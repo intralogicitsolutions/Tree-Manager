@@ -281,6 +281,7 @@ class _ManualEquipState extends State<ManualEquip> {
                             ..itemCategory = 'Equipment';
                           crewDetails.add(cd);
                         });
+                        print('crewDetails ==> ${crewDetails}');
                         Navigator.pushNamed(context, 'review_quote', arguments: {'crew_details': crewDetails});
                       }
                     },

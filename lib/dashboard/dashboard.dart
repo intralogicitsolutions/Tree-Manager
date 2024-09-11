@@ -8,12 +8,16 @@ import 'dart:io';
 // import 'package:background_locator/settings/ios_settings.dart';
 // import 'package:background_locator/settings/locator_settings.dart';
 // import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
+
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:pushy_flutter/pushy_flutter.dart';
+import 'package:pushy_flutter/pushy_flutter.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,7 +32,6 @@ import 'package:tree_manager/pojo/dashboard.dart';
 import 'package:tree_manager/pojo/notification.dart' as Noti;
 import 'package:tree_manager/pojo/option.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../pojo/locationDto.dart';
 
 class Dashboard extends StatefulWidget {
@@ -48,78 +51,51 @@ class DashboardState extends State<Dashboard>
 
   late AnimationController _animationController;
   late Animation _animation;
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  // FlutterLocalNotificationsPlugin();
 
-
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     // Initialize Firebase Messaging
-//     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-//
-//     // Request permissions on iOS
-//     _firebaseMessaging.requestPermission();
-//
-//     // Set the default notification icon (for Android)
-//     // Note: This is typically set in AndroidManifest.xml or the notification payload itself.
-//     // For custom icons, you need to place your icon in the 'res/drawable' directory.
-//     // Firebase doesn't directly manage this through code like Pushy.
-//
-//     // Handle foreground messages
-//     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-//       print('Received foreground notification: ${message.data}');
-//       // Handle the notification data and display it in the app as needed
-//     });
-//
-//     // Handle background/terminated notification clicks
-//     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-//       print('Notification clicked: ${message.data}');
-//       // Handle the notification click, navigate, or perform other actions
-//     });
-//
-//     // For background message handling when the app is completely killed, implement a background message handler
-//     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-//
-//     // Initialize your other components as before
-//     Helper.counter = CounterBloc(initialCount: 0);
-//     _animationController =
-//         AnimationController(vsync: this, duration: Duration(seconds: 2));
-//     _animationController.repeat(reverse: true);
-//     _animation = Tween(begin: 2.0, end: 8.0).animate(_animationController)
-//       ..addListener(() {
-//         setState(() {});
-//       });
-//
-//     Future.delayed(Duration.zero, () {
-//       checkForUpdate();
-//     });
-//     Global.job = null;
-//     getDashboard();
-//     getCommentPreloads();
-//
-//     // Uncomment if needed
-//     // Timer.periodic(Duration(seconds: 30), (timer) {
-//     //   Helper.getNotificationCount();
-//     // });
-//
-//     setState(() {});
-//   }
-//
-// // Background message handler (to handle messages when the app is in the background)
-//   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//     print("Handling a background message: ${message.messageId}");
-//     // Process the message as needed
-//   }
 
   @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   initializeNotifications();
+  //   Firebase.initializeApp().then((_) {
+  //     // Initialize Firebase Messaging or other Firebase services
+  //     FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //
+  //     // Example of requesting permission for notifications
+  //     messaging.requestPermission();
+  //   });
+  //   firebaseRegister();
+  //   //pushyRegister(); // will be updated to firebaseRegister()
+  //   listenNotification(); // will be updated for Firebase
+  //
+  //   Helper.counter = CounterBloc(initialCount: 0);
+  //   _animationController =
+  //       AnimationController(vsync: this, duration: Duration(seconds: 2));
+  //   _animationController.repeat(reverse: true);
+  //   _animation = Tween(begin: 2.0, end: 8.0).animate(_animationController)
+  //     ..addListener(() {
+  //       setState(() {});
+  //     });
+  //
+  //   Future.delayed(Duration.zero, () {
+  //     checkForUpdate();
+  //   });
+  //   Global.job = null;
+  //   getDashboard();
+  //   getCommentPreloads();
+  // }
+  @override
   void initState() {
-    //WidgetsBinding.instance.addObserver(this);
-    // Pushy.listen();
-    // Pushy.toggleNotifications(true);
-    // Pushy.requestStoragePermission();
-    //Pushy.setNotificationIcon('ic_launcher');
-    // pushyRegister();
-    // listenNotification();
+    // WidgetsBinding.instance.addObserver(this);
+    Pushy.listen();
+    Pushy.toggleNotifications(true);
+    Pushy.requestStoragePermission();
+    Pushy.setNotificationIcon('ic_launcher');
+    pushyRegister();
+    listenNotification();
     Helper.counter = CounterBloc(initialCount: 0);
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 2));
@@ -174,7 +150,7 @@ class DashboardState extends State<Dashboard>
       {
         'label': 'Jobs to Quote',
         'icon': Helper.countryCode == "UK"
-            ? "pound_symbol_white.svg"
+            ? 'pound_symbol_white.svg'
             : 'Dollar-Quote.svg',
         'count_1': getCount('To Quote'),
         'count_2': getPending('To Quote'),
@@ -968,11 +944,62 @@ class DashboardState extends State<Dashboard>
 
 
 
-  // Future pushyRegister() async {
+  Future pushyRegister() async {
+    try {
+      // Register the device for push notifications
+      String deviceToken = await Pushy.register();
+      int deviceId = 0;
+      Helper.get(
+          'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
+          {}).then((value) {
+        var json = jsonDecode(value.body);
+        try {
+          deviceId = int.parse(json['deviceId'].toString());
+        } catch (e) {
+          deviceId = 0;
+        }
+
+        if (json['ValueExists'] != 'true') {
+          var post = {
+            "id": null,
+            "user_id": Helper.user?.id,
+            "company_id": Helper.user?.companyId,
+            "process_id": Helper.user?.processId.toString(),
+            "token": deviceToken,
+            "device_id": deviceId + 1,
+            "created_by": Helper.user!.id,
+            "created_at":
+                "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+            "last_modified_by": null,
+            "last_modified_at": null
+          };
+
+          Helper.post('UserNotifications/Create', post, is_json: true)
+              .then((value) {});
+        }
+      });
+
+      // Print token to console/logcat
+      print('Device token: $deviceToken');
+
+      // Optionally send the token to your backend server via an HTTP GET request
+      // ...
+    } on PlatformException catch (error) {
+      // Display an alert with the error message
+      print("pushy platform error ${error.message}");
+    }
+  }
+
+
+
+
+
+  // Future firebaseRegister() async {
   //   try {
-  //     // Register the device for push notifications
-  //     String deviceToken = await Pushy.register();
+  //     // Get the device token from Firebase
+  //     String? deviceToken = await FirebaseMessaging.instance.getToken();
   //     int deviceId = 0;
+  //
   //     Helper.get(
   //         'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
   //         {}).then((value) {
@@ -991,9 +1018,9 @@ class DashboardState extends State<Dashboard>
   //           "process_id": Helper.user?.processId.toString(),
   //           "token": deviceToken,
   //           "device_id": deviceId + 1,
-  //           "created_by": Helper.user!.id,
+  //           "created_by": Helper.user?.id,
   //           "created_at":
-  //               "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+  //           "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
   //           "last_modified_by": null,
   //           "last_modified_at": null
   //         };
@@ -1003,155 +1030,85 @@ class DashboardState extends State<Dashboard>
   //       }
   //     });
   //
-  //     // Print token to console/logcat
-  //     print('Device token: $deviceToken');
-  //
-  //     // Optionally send the token to your backend server via an HTTP GET request
-  //     // ...
-  //   } on PlatformException catch (error) {
-  //     // Display an alert with the error message
-  //     print("pushy platform error ${error.message}");
-  //   }
-  // }
-
-
-
-
-
-  // Future<void> pushyRegister() async {
-  //   try {
-  //     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  //
-  //     // Get the device token
-  //     String? deviceToken = await _firebaseMessaging.getToken();
-  //     if (deviceToken != null) {
-  //       int deviceId = 0;
-  //
-  //       // Send token to your backend and handle response
-  //       Helper.get(
-  //         'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
-  //         {},
-  //       ).then((value) {
-  //         var json = jsonDecode(value.body);
-  //         try {
-  //           deviceId = int.parse(json['deviceId'].toString());
-  //         } catch (e) {
-  //           deviceId = 0;
-  //         }
-  //
-  //         if (json['ValueExists'] != 'true') {
-  //           var post = {
-  //             "id": null,
-  //             "user_id": Helper.user?.id,
-  //             "company_id": Helper.user?.companyId,
-  //             "process_id": Helper.user?.processId.toString(),
-  //             "token": deviceToken,
-  //             "device_id": deviceId + 1,
-  //             "created_by": Helper.user!.id,
-  //             "created_at":
-  //             "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
-  //             "last_modified_by": null,
-  //             "last_modified_at": null
-  //           };
-  //
-  //           Helper.post('UserNotifications/Create', post, is_json: true)
-  //               .then((value) {});
-  //         }
-  //       });
-  //
-  //       // Print token to console/logcat
-  //       print('Device token: $deviceToken');
-  //
-  //       // Optionally send the token to your backend server via an HTTP GET request
-  //       // ...
-  //     } else {
-  //       print('Failed to get device token');
-  //     }
+  //     print('Firebase device token: $deviceToken');
   //   } catch (error) {
-  //     // Display an alert with the error message
-  //     print("Firebase registration error: $error");
+  //     print("Firebase error: $error");
   //   }
   // }
 
+
+
+
+
+  void listenNotification() {
+    print('Notification got');
+
+    // Listen for push notifications
+    Pushy.setNotificationListener((Map<String, dynamic> data) {
+      // Print notification payload data
+      print('Received notification: $data');
+
+      // Clear iOS app badge number
+      Pushy.clearBadge();
+    });
+
+    // Listen for notification click
+    Pushy.setNotificationClickListener((Map<String, dynamic> data) {
+      print('Notification clicked');
+
+      // Print notification payload data
+      print('Notification click: $data');
+
+      // Extract notification messsage
+      //String message = data['message'] ?? 'Hello World!';
+
+      var noti = Noti.Notification.fromJson(data);
+      Global.noti = noti;
+      print('noti=${Global.noti}');
+      Navigator.pushNamed(context, 'notification_data');
+
+      // Display an alert with the "message" payload value
+      // showDialog(
+      //     context: context,
+      //     builder: (BuildContext context) {
+      //       return AlertDialog(
+      //           title: Text('Notification click'),
+      //           content: Text(message),
+      //           actions: [
+      //             TextButton(
+      //                 child: Text('OK'),
+      //                 onPressed: () {
+      //                   Navigator.of(context, rootNavigator: true)
+      //                       .pop('dialog');
+      //                 })
+      //           ]);
+      //     });
+
+      // Clear iOS app badge number
+      Pushy.clearBadge();
+    });
+  }
 
 
 
   // void listenNotification() {
   //   print('Notification got');
   //
-  //   // Listen for push notifications
-  //   Pushy.setNotificationListener((Map<String, dynamic> data) {
-  //     // Print notification payload data
-  //     print('Received notification: $data');
-  //
-  //     // Clear iOS app badge number
-  //     Pushy.clearBadge();
-  //   });
-  //
-  //   // Listen for notification click
-  //   Pushy.setNotificationClickListener((Map<String, dynamic> data) {
-  //     print('Notification clicked');
-  //
-  //     // Print notification payload data
-  //     print('Notification click: $data');
-  //
-  //     // Extract notification messsage
-  //     //String message = data['message'] ?? 'Hello World!';
-  //
-  //     var noti = Noti.Notification.fromJson(data);
-  //     Global.noti = noti;
-  //     print('noti=${Global.noti}');
-  //     Navigator.pushNamed(context, 'notification_data');
-  //
-  //     // Display an alert with the "message" payload value
-  //     // showDialog(
-  //     //     context: context,
-  //     //     builder: (BuildContext context) {
-  //     //       return AlertDialog(
-  //     //           title: Text('Notification click'),
-  //     //           content: Text(message),
-  //     //           actions: [
-  //     //             TextButton(
-  //     //                 child: Text('OK'),
-  //     //                 onPressed: () {
-  //     //                   Navigator.of(context, rootNavigator: true)
-  //     //                       .pop('dialog');
-  //     //                 })
-  //     //           ]);
-  //     //     });
-  //
-  //     // Clear iOS app badge number
-  //     Pushy.clearBadge();
-  //   });
-  // }
-
-
-
-
-  // void listenNotification(BuildContext context) {
-  //   print('Notification listener initialized');
-  //
   //   // Listen for foreground messages
   //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //     print('Received foreground notification: ${message.data}');
+  //     print('Received notification: ${message.data}');
   //
-  //     // Handle notification data
-  //     // Example: Display a toast or an alert
-  //     String messageContent = message.data['message'] ?? 'Hello World!';
-  //
-  //     var noti = Noti.Notification.fromJson(message.data);
-  //     Global.noti = noti;
-  //     print('noti=${Global.noti}');
-  //     Navigator.pushNamed(context, 'notification_data');
+  //     // Handle the notification data here
+  //     clearBadge();// No equivalent in Firebase; implement it if needed
   //   });
   //
-  //   // Handle background/terminated message clicks
+  //   // Listen for notification click (background and terminated)
   //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //     print('Notification clicked: ${message.data}');
+  //     print('Notification clicked');
+  //     print('Notification click: ${message.data}');
+  //     clearBadge();
   //
-  //     // Handle notification click
-  //     String messageContent = message.data['message'] ?? 'Hello World!';
-  //
+  //     // Extract notification message and navigate
   //     var noti = Noti.Notification.fromJson(message.data);
   //     Global.noti = noti;
   //     print('noti=${Global.noti}');
@@ -1159,4 +1116,29 @@ class DashboardState extends State<Dashboard>
   //   });
   // }
 
+
+
+  // Future<void> initializeNotifications() async {
+  //   const AndroidInitializationSettings initializationSettingsAndroid =
+  //   AndroidInitializationSettings('ic_launcher');
+  //
+  //   final DarwinInitializationSettings initializationSettingsIOS =
+  //   DarwinInitializationSettings();
+  //
+  //   final InitializationSettings initializationSettings = InitializationSettings(
+  //     android: AndroidInitializationSettings('@drawable/ic_launcher'),
+  //     iOS: initializationSettingsIOS,
+  //   );
+  //
+  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  // }
+  // static const platform = MethodChannel('com.example.app/badge');
+  //
+  // static Future<void> clearBadge() async {
+  //   try {
+  //     await platform.invokeMethod('clearBadge');
+  //   } on PlatformException catch (e) {
+  //     print("Failed to clear badge: '${e.message}'.");
+  //   }
+  // }
 }

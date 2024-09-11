@@ -129,7 +129,7 @@ class HelpCenterState extends State<HelpCenter> {
                                       SvgPicture.asset("assets/images/phone.svg"),
                                       SizedBox(width: 15),
                                       Text(
-                                        "${help.aUPhone}",
+                                        "${help.aUPhone ?? ''}",
                                         style: TextStyle(
                                             fontSize: 18,
                                             decoration: TextDecoration.underline,
@@ -150,7 +150,7 @@ class HelpCenterState extends State<HelpCenter> {
                                     children: <Widget>[
                                       SvgPicture.asset("assets/images/E-Mail24px.svg"),
                                       SizedBox(width: 10),
-                                      Text("${help.aUEmail}",
+                                      Text("${help.aUEmail ?? ''}",
                                           style: TextStyle(
                                               fontSize: 18,
                                               decoration: TextDecoration.underline,
@@ -179,7 +179,7 @@ class HelpCenterState extends State<HelpCenter> {
                                     children: <Widget>[
                                       SvgPicture.asset("assets/images/phone.svg"),
                                       SizedBox(width: 15),
-                                      Text("${help.nZPhone}",
+                                      Text("${help.nZPhone ?? ''}",
                                           style: TextStyle(
                                               fontSize: 18,
                                               decoration: TextDecoration.underline,
@@ -199,7 +199,7 @@ class HelpCenterState extends State<HelpCenter> {
                                     children: <Widget>[
                                       SvgPicture.asset("assets/images/E-Mail24px.svg"),
                                       SizedBox(width: 10),
-                                      Text("${help.nZEmail}",
+                                      Text("${help.nZEmail ?? ''}",
                                           style: TextStyle(
                                               fontSize: 18,
                                               decoration: TextDecoration.underline,

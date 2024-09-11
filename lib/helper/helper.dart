@@ -113,7 +113,7 @@ class Helper {
   // Country Declaration
   // AUS for Australia
   // UK for United Kingdom
- static var countryCode = "AUS";
+ static var countryCode = "UK";
 
   // App Image
 

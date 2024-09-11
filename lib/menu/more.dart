@@ -1,12 +1,13 @@
 // import 'package:background_locator/background_locator.dart';
 import 'dart:async';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-// import 'package:pushy_flutter/pushy_flutter.dart';
+import 'package:pushy_flutter/pushy_flutter.dart';
 // import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tree_manager/helper/Global.dart';
@@ -229,8 +230,10 @@ class MoreOptionState extends State<MoreOption> {
         // Stop periodic location updates
         stopLocationUpdates();
 
-        // Optionally, handle Pushy notifications here if needed
-        // Pushy.toggleNotifications(false);
+       // Optionally, handle Pushy notifications here if needed
+       Pushy.toggleNotifications(false);
+       //  FirebaseMessaging messaging = FirebaseMessaging.instance;
+       //  await messaging.deleteToken();
 
         // Navigate to login screen
         Navigator.pushReplacementNamed(context, 'login');

@@ -225,7 +225,7 @@ class SiteInspectionState extends State<SiteInspection> {
       {
         "label": "JOB COSTING",
         "icon": Helper.countryCode == "UK"
-            ? "pound_symbol_white.svg"
+            ? 'pound_symbol_white.svg'
             : 'Dollar-Quote.svg',
         "action": "route",
         "goto": "crew_configuration",
@@ -514,9 +514,13 @@ class SiteInspectionState extends State<SiteInspection> {
                                         children: <Widget>[
                                           Align(
                                             alignment: Alignment.center,
-                                            child: SvgPicture.asset(
-                                              "assets/images/${statusImage(item)}",
-                                              fit: BoxFit.scaleDown,
+                                            child: SizedBox(
+                                              width: 50,
+                                              height: 50,
+                                              child: SvgPicture.asset(
+                                                "assets/images/${statusImage(item)}",
+                                                fit: BoxFit.scaleDown,
+                                              ),
                                             ),
                                           ),
                                           Text(
@@ -631,6 +635,7 @@ class SiteInspectionState extends State<SiteInspection> {
         "costformhead/getCostFormHeadByJobIdAllocId?job_alloc_id=${Global.job?.jobAllocId ?? ''}&job_id=${Global.job?.jobId ?? ''}",
         {}).then((data) {
       var json = jsonDecode(data.body) as List;
+      print('getCostHead   ====> ${json}');
       Global.head = Head.fromJson(json[0]);
       Global.substan = Global.head!.tpJobSubstantiation!;
     });
@@ -643,6 +648,7 @@ class SiteInspectionState extends State<SiteInspection> {
       Global.details = (jsonDecode(data.body) as List)
           .map((f) => Detail.fromJson(f))
           .toList();
+      print('getCostDetails ====> ${data.body}');
       var cd = <CrewDetail>[];
       Global.details.forEach((f) {
         var tmp = CrewDetail();
