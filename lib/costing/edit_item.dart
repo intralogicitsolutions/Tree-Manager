@@ -235,6 +235,7 @@ class _EditItemState extends State<EditItem> {
             onPressed: () {
               crewDetail?.hour = hours;
               crewDetail?.count = count;
+              crewDetail?.hourlyRate = calcTotal();
               Navigator.pop(context);
             },
           ),

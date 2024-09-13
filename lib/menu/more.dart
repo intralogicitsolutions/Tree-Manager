@@ -1,6 +1,9 @@
 // import 'package:background_locator/background_locator.dart';
 import 'dart:async';
 // import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -232,8 +235,11 @@ class MoreOptionState extends State<MoreOption> {
 
        // Optionally, handle Pushy notifications here if needed
        Pushy.toggleNotifications(false);
-       //  FirebaseMessaging messaging = FirebaseMessaging.instance;
-       //  await messaging.deleteToken();
+
+        // AwesomeNotifications().cancelAll();
+        // AwesomeNotifications().dismissNotificationsByChannelKey('basic_channel');
+
+        // await FirebaseMessaging.instance.deleteToken();
 
         // Navigate to login screen
         Navigator.pushReplacementNamed(context, 'login');

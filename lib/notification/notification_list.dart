@@ -219,7 +219,7 @@ class NotificationListState extends State<NotificationList> {
     if (type == '1') return 'Accept-Icon.svg';
     if (type == '2') return 'Schedule-Icon.svg';
     if (type == '3' || type == '4' || type == '5') {
-      return Helper.countryCode == "UK" ? "pound_symbol_white.svg" : 'Dollar-Quote.svg';
+      return Helper.countryCode == "UK" ? "pound_symbol_2.svg" : 'Dollar-Quote.svg';
     }
     if (type == '6') return 'EnviroApproval.svg';
     if (type == '7') return 'ScheduleWork.svg';

@@ -115,7 +115,7 @@ class SiteInspectionState extends State<SiteInspection> {
           job = Job.fromJson(jsonDecode(response.body)[0]);
 
           Global.job = job;
-
+          print('job costingExists ==> ${job.costExists}');
           if (job.costExists == 'true') {
             Global.costing_update = true;
             Helper.get(
@@ -225,7 +225,7 @@ class SiteInspectionState extends State<SiteInspection> {
       {
         "label": "JOB COSTING",
         "icon": Helper.countryCode == "UK"
-            ? 'pound_symbol_white.svg'
+            ? 'pound_symbol_2.svg'
             : 'Dollar-Quote.svg',
         "action": "route",
         "goto": "crew_configuration",

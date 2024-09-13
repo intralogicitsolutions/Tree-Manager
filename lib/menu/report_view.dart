@@ -100,7 +100,7 @@ class ReportViewState extends State<ReportView> {
       {
         "label": "JOB COSTING",
         "icon": Helper.countryCode == "UK"
-            ? "pound_symbol_white.svg"
+            ? "pound_symbol_2.svg"
             : 'Dollar-Quote.svg',
         "action": "route",
         "goto": 'pdf_viewer',

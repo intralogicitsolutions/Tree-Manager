@@ -333,7 +333,7 @@ class InvoiceState extends State<Invoice> {
                       },
                       icon: SvgPicture.asset(
                         Helper.countryCode == "UK"
-                            ? 'assets/images/pound_symbol_white.svg'
+                            ? 'assets/images/pound_symbol_2.svg'
                             : 'assets/images/Dollar-Quote.svg',
                         //color: Themer.gridItemColor,
                         colorFilter: ColorFilter.mode(Themer.gridItemColor, BlendMode.srcIn),

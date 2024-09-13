@@ -1,27 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 // import 'package:background_locator/background_locator.dart';
 // import 'package:background_locator/location_dto.dart';
 // import 'package:background_locator/settings/android_settings.dart';
 // import 'package:background_locator/settings/ios_settings.dart';
 // import 'package:background_locator/settings/locator_settings.dart';
 // import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
-
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pushy_flutter/pushy_flutter.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:pushy_flutter/pushy_flutter.dart';
 import 'package:tree_manager/helper/Global.dart';
 import 'package:tree_manager/helper/helper.dart';
 import 'package:tree_manager/helper/theme.dart';
@@ -51,29 +51,32 @@ class DashboardState extends State<Dashboard>
 
   late AnimationController _animationController;
   late Animation _animation;
+
   // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   // FlutterLocalNotificationsPlugin();
 
 
-  @override
+  // @override
   // void initState() {
   //   super.initState();
-  //
-  //   initializeNotifications();
-  //   Firebase.initializeApp().then((_) {
-  //     // Initialize Firebase Messaging or other Firebase services
-  //     FirebaseMessaging messaging = FirebaseMessaging.instance;
-  //
-  //     // Example of requesting permission for notifications
-  //     messaging.requestPermission();
-  //   });
-  //   firebaseRegister();
-  //   //pushyRegister(); // will be updated to firebaseRegister()
-  //   listenNotification(); // will be updated for Firebase
+  //   // FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //   // messaging.setAutoInitEnabled(true);
+  //   //
+  //   // // Request permission to show notifications (for iOS)
+  //   // FirebaseMessaging.instance.requestPermission(
+  //   //   alert: true,
+  //   //   badge: true,
+  //   //   sound: true,
+  //   // );
+  //   //
+  //   // // Register for push notifications
+  //   // firebaseRegister();
+  //   //initializeAwesomeNotifications();
+  //   registerForPushNotifications();
+  //   listenNotification();
   //
   //   Helper.counter = CounterBloc(initialCount: 0);
-  //   _animationController =
-  //       AnimationController(vsync: this, duration: Duration(seconds: 2));
+  //   _animationController = AnimationController(vsync: this, duration: Duration(seconds: 2));
   //   _animationController.repeat(reverse: true);
   //   _animation = Tween(begin: 2.0, end: 8.0).animate(_animationController)
   //     ..addListener(() {
@@ -83,11 +86,16 @@ class DashboardState extends State<Dashboard>
   //   Future.delayed(Duration.zero, () {
   //     checkForUpdate();
   //   });
+  //
   //   Global.job = null;
   //   getDashboard();
   //   getCommentPreloads();
+  //
   // }
-  @override
+
+
+
+ @override
   void initState() {
     // WidgetsBinding.instance.addObserver(this);
     Pushy.listen();
@@ -117,6 +125,55 @@ class DashboardState extends State<Dashboard>
     super.initState();
     setState(() {});
   }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   // Initialize Awesome Notifications
+  //   AwesomeNotifications().initialize(
+  //     'ic_launcher', // notification icon
+  //     [
+  //       NotificationChannel(
+  //         channelKey: 'basic_channel',
+  //         channelName: 'Basic notifications',
+  //         channelDescription: 'Notification channel for basic tests',
+  //         defaultColor: Color(0xFF9D50DD),
+  //         ledColor: Colors.white,
+  //         importance: NotificationImportance.High,
+  //         channelShowBadge: true,
+  //       ),
+  //     ],
+  //   );
+  //
+  //   // Register for notifications
+  //   pushyRegister();
+  //
+  //   // Listen for notifications
+  //   listenNotification();
+  //
+  //   // Initialize animation
+  //   Helper.counter = CounterBloc(initialCount: 0);
+  //   _animationController =
+  //       AnimationController(vsync: this, duration: Duration(seconds: 2));
+  //   _animationController.repeat(reverse: true);
+  //   _animation = Tween(begin: 2.0, end: 8.0).animate(_animationController)
+  //     ..addListener(() {
+  //       setState(() {});
+  //     });
+  //
+  //   // Check for app updates
+  //   Future.delayed(Duration.zero, () {
+  //     checkForUpdate();
+  //   });
+  //
+  //   // Initialize global state
+  //   Global.job = null;
+  //
+  //   // Load dashboard and preload comments
+  //   getDashboard();
+  //   getCommentPreloads();
+  // }
 
   @override
   void dispose() {
@@ -150,7 +207,7 @@ class DashboardState extends State<Dashboard>
       {
         'label': 'Jobs to Quote',
         'icon': Helper.countryCode == "UK"
-            ? 'pound_symbol_white.svg'
+            ? 'pound_symbol_2.svg'
             : 'Dollar-Quote.svg',
         'count_1': getCount('To Quote'),
         'count_2': getPending('To Quote'),
@@ -943,8 +1000,36 @@ class DashboardState extends State<Dashboard>
 
 
 
+  // Future<void> scheduleNotification(String notificationMessage) async {
+  //   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //   FlutterLocalNotificationsPlugin();
+  //
+  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //   AndroidNotificationDetails(
+  //     'your_channel_id',
+  //     'your_channel_name',
+  //     channelDescription: 'your_channel_description',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //     showWhen: false,
+  //   );
+  //
+  //   const NotificationDetails platformChannelSpecifics = NotificationDetails(
+  //     android: androidPlatformChannelSpecifics,
+  //   );
+  //
+  //   // Schedule a notification immediately (you can customize this for timing)
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0,
+  //     'Notification Title',
+  //     notificationMessage,
+  //     platformChannelSpecifics,
+  //     payload: 'notification_payload', // Payload for notification clicks
+  //   );
+  // }
 
-  Future pushyRegister() async {
+
+    Future pushyRegister() async {
     try {
       // Register the device for push notifications
       String deviceToken = await Pushy.register();
@@ -992,47 +1077,105 @@ class DashboardState extends State<Dashboard>
 
 
 
+  // Future<void> pushyRegister() async {
+  //   // Check for permission to send notifications
+  //   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+  //   if (!isAllowed) {
+  //     // Request permission
+  //     AwesomeNotifications().requestPermissionToSendNotifications();
+  //   }
+  //
+  //   // Register and store the device token on the backend (if applicable)
+  //   String deviceToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJpYXQiOjE1MDY1NjA5ODB9.LAGHEE6tyd9FmZXaK40yDeUkHVZkOl8MdXSrtEcGwB4'; // Replace with real device token logic
+  //   int deviceId = 0;
+  //
+  //   Helper.get(
+  //       'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
+  //       {}
+  //   ).then((value) {
+  //     var json = jsonDecode(value.body);
+  //     try {
+  //       deviceId = int.parse(json['deviceId'].toString());
+  //     } catch (e) {
+  //       deviceId = 0;
+  //     }
+  //
+  //     if (json['ValueExists'] != 'true') {
+  //       var post = {
+  //         "id": null,
+  //         "user_id": Helper.user?.id,
+  //         "company_id": Helper.user?.companyId,
+  //         "process_id": Helper.user?.processId.toString(),
+  //         "token": deviceToken,
+  //         "device_id": deviceId + 1,
+  //         "created_by": Helper.user?.id,
+  //         "created_at": "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+  //         "last_modified_by": null,
+  //         "last_modified_at": null
+  //       };
+  //
+  //       Helper.post('UserNotifications/Create', post, is_json: true)
+  //           .then((value) {});
+  //     }
+  //   });
+  //
+  //   // Optionally print the device token
+  //   print('Device token: $deviceToken');
+  // }
 
 
-  // Future firebaseRegister() async {
-  //   try {
-  //     // Get the device token from Firebase
-  //     String? deviceToken = await FirebaseMessaging.instance.getToken();
-  //     int deviceId = 0;
+
+
+  // Future<void> registerForPushNotifications() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
   //
-  //     Helper.get(
-  //         'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
-  //         {}).then((value) {
-  //       var json = jsonDecode(value.body);
-  //       try {
-  //         deviceId = int.parse(json['deviceId'].toString());
-  //       } catch (e) {
-  //         deviceId = 0;
-  //       }
+  //   // Request permission to show notifications
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   );
   //
-  //       if (json['ValueExists'] != 'true') {
-  //         var post = {
-  //           "id": null,
-  //           "user_id": Helper.user?.id,
-  //           "company_id": Helper.user?.companyId,
-  //           "process_id": Helper.user?.processId.toString(),
-  //           "token": deviceToken,
-  //           "device_id": deviceId + 1,
-  //           "created_by": Helper.user?.id,
-  //           "created_at":
-  //           "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
-  //           "last_modified_by": null,
-  //           "last_modified_at": null
-  //         };
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     // Get the device token
+  //     String? deviceToken = await messaging.getToken();
+  //     print('Firebase Messaging Device Token: $deviceToken');
   //
-  //         Helper.post('UserNotifications/Create', post, is_json: true)
-  //             .then((value) {});
-  //       }
-  //     });
+  //     // Send the device token to your backend
+  //     if (deviceToken != null) {
+  //       int deviceId = 0;
+  //       Helper.get(
+  //           'UserNotifications/getByUser?process_id=${Helper.user?.processId}&user_id=${Helper.user?.id}&token=$deviceToken',
+  //           {}).then((value) {
+  //         var json = jsonDecode(value.body);
+  //         try {
+  //           deviceId = int.parse(json['deviceId'].toString());
+  //         } catch (e) {
+  //           deviceId = 0;
+  //         }
   //
-  //     print('Firebase device token: $deviceToken');
-  //   } catch (error) {
-  //     print("Firebase error: $error");
+  //         if (json['ValueExists'] != 'true') {
+  //           var post = {
+  //             "id": null,
+  //             "user_id": Helper.user?.id,
+  //             "company_id": Helper.user?.companyId,
+  //             "process_id": Helper.user?.processId.toString(),
+  //             "token": deviceToken,
+  //             "device_id": deviceId + 1,
+  //             "created_by": Helper.user?.id,
+  //             "created_at":
+  //             "${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}",
+  //             "last_modified_by": null,
+  //             "last_modified_at": null
+  //           };
+  //
+  //           Helper.post('UserNotifications/Create', post, is_json: true)
+  //               .then((value) {});
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     print('User declined or has not accepted permission');
   //   }
   // }
 
@@ -1089,26 +1232,125 @@ class DashboardState extends State<Dashboard>
     });
   }
 
+  // void listenNotification() {
+  //   print('Listening for notifications...');
+  //
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     // Handle foreground notification
+  //     print('Received message: ${message.data}');
+  //
+  //     // Display local notification using awesome_notifications
+  //     AwesomeNotifications().createNotification(
+  //       content: NotificationContent(
+  //         id: 10,
+  //         channelKey: 'basic_channel',
+  //         title: message.notification?.title,
+  //         body: message.notification?.body,
+  //       ),
+  //     );
+  //   });
+  //
+  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     print('Notification clicked!');
+  //     print('Message clicked: ${message.data}');
+  //
+  //     var noti = Noti.Notification.fromJson(message.data);
+  //     Global.noti = noti;
+  //     Navigator.pushNamed(context, 'notification_data');
+  //   });
+  // }
 
 
   // void listenNotification() {
-  //   print('Notification got');
+  //   // Listen for notifications when the app is in the foreground
+  //   AwesomeNotifications().setListeners(onActionReceivedMethod: (receivedNotification) {
+  //     print('Notification clicked or received: ${receivedNotification.toMap()}');
   //
-  //   // Listen for foreground messages
+  //     // Extract notification message
+  //     String message = receivedNotification.payload?['message'] ?? 'Hello World!';
+  //
+  //     // Handle the notification data
+  //     var noti = Noti.Notification.fromJson(receivedNotification.toMap());
+  //     Global.noti = noti;
+  //     print('noti=${Global.noti}');
+  //
+  //     // Navigate to the notification data page
+  //     Navigator.pushNamed(context, 'notification_data');
+  //
+  //     // Optional: Show a dialog
+  //     // showDialog(
+  //     //   context: context,
+  //     //   builder: (BuildContext context) {
+  //     //     return AlertDialog(
+  //     //       title: Text('Notification click'),
+  //     //       content: Text(message),
+  //     //       actions: [
+  //     //         TextButton(
+  //     //           child: Text('OK'),
+  //     //           onPressed: () {
+  //     //             Navigator.of(context).pop();
+  //     //           },
+  //     //         ),
+  //     //       ],
+  //     //     );
+  //     //   },
+  //     // );
+  //     throw '';
+  //   });
+  //
+  //   // Optional: Handle notification actions when the app is in the background or terminated
+  //
+  // }
+
+
+  // void setupNotificationListeners() {
+  //   AwesomeNotifications().setListeners(
+  //     onActionReceivedMethod: (ReceivedAction receivedAction) {
+  //       // Print the notification payload data
+  //       print('Received notification action: ${receivedAction.payload}');
+  //
+  //       // Clear iOS app badge number (optional, if you're using badges)
+  //       AwesomeNotifications().resetGlobalBadge();
+  //
+  //       // Check if notification was clicked
+  //       if (receivedAction.buttonKeyPressed != null || receivedAction.buttonKeyInput != null) {
+  //         print('Notification clicked');
+  //
+  //         // Extract message from payload (adjust according to your payload structure)
+  //         String message = receivedAction.payload?['message'] ?? '';
+  //         print('Notification message: $message');
+  //
+  //         // Assuming you're navigating based on a payload
+  //         var noti = Noti.Notification.fromJson(receivedAction.payload!);
+  //         Global.noti = noti;
+  //         print('noti=${Global.noti}');
+  //
+  //         // Navigate to notification data page
+  //         Navigator.pushNamed(context, 'notification_data');
+  //       }
+  //     },
+  //   );
+  // }
+
+
+
+
+// void listenNotification() {
   //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
   //     print('Received notification: ${message.data}');
   //
-  //     // Handle the notification data here
-  //     clearBadge();// No equivalent in Firebase; implement it if needed
+  //     // Optionally clear the badge on iOS
+  //     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //       alert: true,
+  //       badge: true,
+  //       sound: true,
+  //     );
   //   });
   //
-  //   // Listen for notification click (background and terminated)
   //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
   //     print('Notification clicked');
   //     print('Notification click: ${message.data}');
-  //     clearBadge();
   //
-  //     // Extract notification message and navigate
   //     var noti = Noti.Notification.fromJson(message.data);
   //     Global.noti = noti;
   //     print('noti=${Global.noti}');
@@ -1117,28 +1359,45 @@ class DashboardState extends State<Dashboard>
   // }
 
 
-
-  // Future<void> initializeNotifications() async {
-  //   const AndroidInitializationSettings initializationSettingsAndroid =
-  //   AndroidInitializationSettings('ic_launcher');
-  //
-  //   final DarwinInitializationSettings initializationSettingsIOS =
-  //   DarwinInitializationSettings();
-  //
-  //   final InitializationSettings initializationSettings = InitializationSettings(
-  //     android: AndroidInitializationSettings('@drawable/ic_launcher'),
-  //     iOS: initializationSettingsIOS,
+  // void initializeAwesomeNotifications() {
+  //   AwesomeNotifications().initialize(
+  //     'ic_launcher', // Your app icon
+  //     [
+  //       NotificationChannel(
+  //         channelKey: 'basic_channel',
+  //         channelName: 'Basic notifications',
+  //         channelDescription: 'Notification channel for basic notifications',
+  //         defaultColor: Color(0xFF9D50DD),
+  //         ledColor: Colors.white,
+  //         importance: NotificationImportance.High,
+  //         channelShowBadge: true,
+  //       ),
+  //     ],
   //   );
-  //
-  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   // }
-  // static const platform = MethodChannel('com.example.app/badge');
-  //
-  // static Future<void> clearBadge() async {
-  //   try {
-  //     await platform.invokeMethod('clearBadge');
-  //   } on PlatformException catch (e) {
-  //     print("Failed to clear badge: '${e.message}'.");
-  //   }
-  // }
+
+
+// Future<void> initializeNotifications() async {
+//     const AndroidInitializationSettings initializationSettingsAndroid =
+//     AndroidInitializationSettings('ic_launcher');
+//
+//     final DarwinInitializationSettings initializationSettingsIOS =
+//     DarwinInitializationSettings();
+//
+//     final InitializationSettings initializationSettings = InitializationSettings(
+//       android: AndroidInitializationSettings('@drawable/ic_launcher'),
+//       iOS: initializationSettingsIOS,
+//     );
+//
+//     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+//   }
+//   static const platform = MethodChannel('com.example.app/badge');
+//
+//   static Future<void> clearBadge() async {
+//     try {
+//       await platform.invokeMethod('clearBadge');
+//     } on PlatformException catch (e) {
+//       print("Failed to clear badge: '${e.message}'.");
+//     }
+//   }
 }

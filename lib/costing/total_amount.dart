@@ -46,7 +46,7 @@ class TotalAmountState extends State<TotalAmount> {
       print('crew_detail==>${jsonEncode(f)}');
       total += double.parse(f.count.toString()) * f.hourlyRate * f.hour;
     });
-    print(total);
+    print('Total ===> ${total}');
     return total;
   }
 
@@ -236,8 +236,10 @@ class TotalAmountState extends State<TotalAmount> {
         "nativeappservice/getApprovalLimitDetails?wpcompanyId=${Global.job?.wpcompanyid??''}&reqId=${Global.job?.reqid??''}",
         {}).then((data) {
       var json = jsonDecode(data.body);
+      print('get approval limit data ----> ${data.body}');
       try {
         approval_limit = double.parse(json[0]["approval_limit"].toString());
+        print('approval_limit ===> ${approval_limit}');
       } catch (e) {
         approval_limit = -1.0;
       }
@@ -668,9 +670,9 @@ class TotalAmountState extends State<TotalAmount> {
             );
             try {
               print('trying this');
-              // Navigator.pushReplacementNamed(context, 'site_inspection');
-              Navigator.popUntil(context,
-                  ModalRoute.withName('site_inspection'));
+              Navigator.pushReplacementNamed(context, 'site_inspection');
+              // Navigator.popUntil(context,
+              //     ModalRoute.withName('site_inspection'));
             } catch (e) {
               print('this is $e');
               Navigator.of(context).pushNamedAndRemoveUntil(

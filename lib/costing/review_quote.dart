@@ -244,9 +244,9 @@ class ReviewQuoteState extends State<ReviewQuote> {
                                 'others': others
                               }) as Map<String, dynamic>?;
 
-                              staffs = edited?['staffs'];
-                              equips = edited?['equips'];
-                              others = edited?['others'];
+                              staffs = edited?['staffs'] ?? <CrewDetail>[];
+                              equips = edited?['equips'] ?? <CrewDetail>[];
+                              others = edited?['others'] ?? <CrewDetail>[];
                               Global.crewDetails = null;
                               Global.crewDetails = [];
                               Global.crewDetails?.addAll(staffs);

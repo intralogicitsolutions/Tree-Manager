@@ -1,3 +1,5 @@
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tree_manager/helper/helper.dart';
@@ -5,11 +7,14 @@ import 'dialog/splashscreen.dart';
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride, kDebugMode;
 
-void main() {
+void main() async{
+
   // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   if (kDebugMode) {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
   }
+  WidgetsFlutterBinding.ensureInitialized();
+ // await Firebase.initializeApp();
   // CatcherOptions debugOptions = CatcherOptions(PageReportMode(), [
   //   ConsoleHandler(
   //       enableApplicationParameters: true,

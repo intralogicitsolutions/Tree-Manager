@@ -41,12 +41,14 @@ class _HoursOnSiteState extends State<HoursOnSite> {
     final url = "nativeappservice/crewDetail?contractor_id=${Helper.user?.companyId}&crew_id=${crew?.id}&rateset_id=${Global.rateSet}&rateclass_id=${selectedRateClass}&process_id=${Helper.user?.processId}";
     
     Helper.get(url, {}).then((response) {
-      crewDetails = (jsonDecode(response.body) as List)
-          .map((f) => CrewDetail.fromJson(f))
-          .toList();
-      setState(() {
-        calcTotal();
-      });
+      if (mounted) {
+        crewDetails = (jsonDecode(response.body) as List)
+            .map((f) => CrewDetail.fromJson(f))
+            .toList();
+        setState(() {
+          calcTotal();
+        });
+      }
     }).catchError((error) {
       print("Error occurred: $error");
     });

@@ -755,7 +755,7 @@ static Future<bool?> showMultiActionModal(
     var client = http.Client();
     var tmp_url = BASE_URL + url + Uri.https("", "", query).query;
     Uri uri = Uri.parse(tmp_url);
-    // print('temp_url=====>${tmp_url}');
+    print('temp_url=====>${tmp_url}');
     //print(tmp_url);
     var data = await client.get(uri, headers: {
       'Content-Type': 'application/json',
